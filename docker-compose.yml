@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  nginx:
-    container_name: nginx
+  web:
     image: nginx:alpine
     ports:
       - "3000:80"
     volumes:
-      - ./index.html:/usr/share/nginx/html/index.html
+      - ./src/index.html:/usr/share/nginx/html/index.html
+      - ./src/style.css:/usr/share/nginx/html/style.css

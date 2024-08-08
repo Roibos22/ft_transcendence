@@ -1,8 +1,11 @@
+# Project name (adjust this if your project name is different)
+PROJECT_NAME	:= ft_transendence
+
 # FILES AND DIRS
 COMPOSE_FILE	:= docker-compose.yml
 
 # Docker compose command
-DOCKER_COMPOSE := docker compose -f $(COMPOSE_FILE)
+DOCKER_COMPOSE	:= docker compose -f $(COMPOSE_FILE)
 
 # Colors
 BLUE := \033[34m
@@ -29,7 +32,7 @@ run:
 # Stop all running containers
 stop:
 	@echo "$(BLUE)Stopping all containers ...$(RESET)"
-	@$(DOCKER_COMPOSE) stop $$(docker ps -q) 2>/dev/null || true
+	@$(DOCKER_COMPOSE) stop
 	@echo "$(GREEN)Containers stopped$(RESET)"
 
 # Start stopped containers
@@ -42,6 +45,8 @@ start:
 remove:
 	@echo "$(BLUE)Removing containers ...$(RESET)"
 	@$(DOCKER_COMPOSE) down
+	@docker rm -f $$(docker ps -aq) || true
+	@docker network rm $(PROJECT_NAME)_default 2>/dev/null || true
 	@echo "$(GREEN)Containers removed$(RESET)"
 
 # Clean up and prune docker system
