@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const gameSetup = document.getElementById('gameSetup');
 	const playerForm = document.getElementById('playerForm');
-	const canvas = document.getElementById('gameCanvas');
+	const gameView = document.getElementById('gameView');
+	const playerInfo = document.getElementById('playerInfo');
 
 	playerForm.addEventListener('submit', (e) => {
 		e.preventDefault();
@@ -11,7 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (!player2) player2 = "Player 2";
 
 		gameSetup.style.display = 'none';
-		canvas.style.display = 'block';			
+		gameView.style.display = 'block';
+
+		playerInfo.textContent = `${player1} vs ${player2}`;
+
 		console.log(`Game started with ${player1} and ${player2}`);
 	});
 });
