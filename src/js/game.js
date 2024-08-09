@@ -21,9 +21,6 @@ class Game {
 		this.isGameRunning = false;
 		this.waitingForSpaceBar = true;
 
-		this.player1 = "";
-		this.player2 = "";
-
 		this.render = new Render(this);
 		this.input = new Input(this);
 	}
@@ -42,7 +39,9 @@ class Game {
 		this.gameSetup.style.display = 'none';
 		this.gameView.style.display = 'block';
 
-		this.playerInfo.textContent = `${this.player1} vs ${this.player2}`;
+		this.player1Score = 0;
+		this.player2Score = 0;
+		this.updateScoreDisplay();
 	}
 
 	startGame() {
@@ -75,11 +74,23 @@ class Game {
 			this.ballSpeedY = -this.ballSpeedY;
 		}
 
-		if (this.ballX < 0 || this.ballX > this.canvas.width) {
+		if (this.ballX < 0) {
+			this.player2Score++;
 			this.waitingForSpaceBar = true;
 			this.isGameRunning = false;
 			this.resetBallPosition();
+			this.updateScoreDisplay();
+		} else if (this.ballX > this.canvas.width) {
+			this.player1Score++;
+			this.waitingForSpaceBar = true;
+			this.isGameRunning = false;
+			this.resetBallPosition();
+			this.updateScoreDisplay();
 		}
+	}
+
+	updateScoreDisplay() {
+		this.playerInfo.textContent = `${this.player1} (${this.player1Score}) vs ${this.player2} (${this.player2Score})`;
 	}
 
 	resetBallPosition() {
