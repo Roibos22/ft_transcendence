@@ -15,8 +15,8 @@ class Game {
 		this.rightPaddleY = this.canvas.height / 2 - this.paddleHeight / 2;
 		this.ballX = this.canvas.width / 2;
 		this.ballY = this.canvas.height / 2;
-		this.ballSpeedX = 10;
-		this.ballSpeedY = 10;
+		this.ballSpeedX = 8;
+		this.ballSpeedY = 8;
 
 		this.isGameRunning = false;
 		this.waitingForSpaceBar = true;
@@ -41,14 +41,29 @@ class Game {
 
 	handleFormSubmit(e) {
 		e.preventDefault();
-		this.player1 = document.getElementById('player1').value.trim() || "Player 1";
-		this.player2 = document.getElementById('player2').value.trim() || "Player 2";
+
+		const playerInputs = document.querySelectorAll('#playerInputs input');
+
+		this.players = [];
+
+		playerInputs.forEach((input, index) => {
+			const playerName = input.value.trim() || `Player ${index + 1}`;
+			this.players.push({
+				name: playerName,
+				score: 0
+			});
+		});
+
+		while (this.players.length < 2) {
+			this.players.push({
+				name: `Player ${this.players.length + 1}`,
+				score: 0
+			});
+		}
 
 		this.gameSetup.style.display = 'none';
 		this.gameView.style.display = 'block';
 
-		this.player1Score = 0;
-		this.player2Score = 0;
 		this.updateScoreDisplay();
 	}
 
@@ -76,13 +91,13 @@ class Game {
 		}
 
 		if (this.ballX < 0) {
-			this.player2Score++;
+			this.players[1].score++;
 			this.waitingForSpaceBar = true;
 			this.isGameRunning = false;
 			this.resetBallPosition();
 			this.updateScoreDisplay();
 		} else if (this.ballX > this.canvas.width) {
-			this.player1Score++;
+			this.players[0].score++;
 			this.waitingForSpaceBar = true;
 			this.isGameRunning = false;
 			this.resetBallPosition();
@@ -91,7 +106,7 @@ class Game {
 	}
 
 	updateScoreDisplay() {
-		this.playerInfo.textContent = `${this.player1} (${this.player1Score}) vs ${this.player2} (${this.player2Score})`;
+		this.playerInfo.textContent = `${this.players[0].name} (${this.players[0].score}) vs ${this.players[1].name} (${this.players[1].score})`;
 	}
 
 	resetBallPosition() {

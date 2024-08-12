@@ -8,6 +8,8 @@
 </head>
 <body>
 	<div id="app">
+
+		<!-- GAME SETUP -->
 		<div id="gameSetup">
 			<h1>Pong Game</h1>
 			<form id="playerForm">
@@ -23,10 +25,14 @@
 			<button type="button" id="addPlayer">+</button>
 			<button type="button" id="startGame">Start Game</button>
 		</div>
+
+		<!-- GAME VIEW -->
 		<div id="gameView" style="display: none;">
 			<div id="playerInfo"></div>
 			<canvas id="gameCanvas" width="800" height="400"></canvas>
+			
 		</div>
+
 	</div>
 	<script src="js/render.js"></script>
 	<script src="js/input.js"></script>
