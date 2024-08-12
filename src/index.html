@@ -4,17 +4,24 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ft_transcendence</title>
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 	<div id="app">
 		<div id="gameSetup">
 			<h1>Pong Game</h1>
 			<form id="playerForm">
-				<input type="text" id="player1" placeholder="Player 1">
-				<input type="text" id="player2" placeholder="Player 2">
-				<button type="submit">Start Game</button>
+				<div id="playerInputs">
+					<div>
+						<input type="text" id="player1" placeholder="Player 1">
+					</div>
+					<div>
+						<input type="text" id="player2" placeholder="Player 2">
+					</div>
+				</div>
 			</form>
+			<button type="button" id="addPlayer">+</button>
+			<button type="button" id="startGame">Start Game</button>
 		</div>
 		<div id="gameView" style="display: none;">
 			<div id="playerInfo"></div>
@@ -25,4 +32,14 @@
 	<script src="js/input.js"></script>
 	<script src="js/game.js"></script>
 	<script src="js/main.js"></script>
+	<script>
+		document.getElementById('addPlayer').addEventListener('click', function() {
+			const playerInputs = document.getElementById('playerInputs');
+			const playerCount = playerInputs.children.length + 1;
+			const newPlayerDiv = document.createElement('div');
+			newPlayerDiv.innerHTML = `<input type="text" id="player${playerCount}" placeholder="Player ${playerCount}">`;
+			playerInputs.appendChild(newPlayerDiv);
+		});
+	</script>
+</body>
 </html>

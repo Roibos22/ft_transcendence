@@ -1,3 +1,4 @@
+/* Global Styles */
 body {
 	font-family: Arial, sans-serif;
 	display: flex;
@@ -8,13 +9,57 @@ body {
 	background-color: #f0f0f0;
 }
 
+button {
+	color: white;
+	border: none;
+	cursor: pointer;
+}
+
+/* Game Setup Styles */
 #gameSetup {
 	text-align: center;
 }
 
-input, button {
-	margin: 10px;
-	padding: 5px;
+/* Form and Button Styles */
+
+#playerForm input,
+button {
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 20px;
+	border: 1px solid #ccc;
+	margin-bottom: 10px;
+}
+
+#startGame {
+	background-color: #4CAF50;
+}
+
+#startGame:hover {
+	background-color: #45a049;
+}
+
+#addPlayer {
+	background-color: #008CBA;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	font-size: 24px;
+	font-weight: bold;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 10px auto;
+}
+
+#addPlayer:hover {
+	background-color: #007B9A;
+}
+
+/* Game View Styles */
+#gameView {
+	display: none;
 }
 
 #playerInfo {
@@ -27,8 +72,4 @@ input, button {
 
 #gameCanvas {
 	border: 3px solid black;
-}
-
-#gameView {
-	display: none;
 }

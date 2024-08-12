@@ -15,8 +15,8 @@ class Game {
 		this.rightPaddleY = this.canvas.height / 2 - this.paddleHeight / 2;
 		this.ballX = this.canvas.width / 2;
 		this.ballY = this.canvas.height / 2;
-		this.ballSpeedX = 5;
-		this.ballSpeedY = 5;
+		this.ballSpeedX = 10;
+		this.ballSpeedY = 10;
 
 		this.isGameRunning = false;
 		this.waitingForSpaceBar = true;
@@ -26,9 +26,17 @@ class Game {
 	}
 
 	init() {
-		this.playerForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
+		document.getElementById('startGame').addEventListener('click', (e) => this.handleFormSubmit(e));
+		console.log('Starting the game!');
 		this.input.init();
 		this.startGame();
+	}
+
+	startGame() {
+		this.waitingForSpaceBar = true;
+		this.isGameRunning = false;
+		this.resetBallPosition();
+		this.gameLoop();
 	}
 
 	handleFormSubmit(e) {
@@ -42,13 +50,6 @@ class Game {
 		this.player1Score = 0;
 		this.player2Score = 0;
 		this.updateScoreDisplay();
-	}
-
-	startGame() {
-		this.waitingForSpaceBar = true;
-		this.isGameRunning = false;
-		this.resetBallPosition();
-		this.gameLoop();
 	}
 
 	gameLoop() {
