@@ -21,6 +21,9 @@ class Game {
 		this.isGameRunning = false;
 		this.waitingForSpaceBar = true;
 
+		// here:
+		this.tournament = null;
+
 		this.render = new Render(this);
 		this.input = new Input(this);
 	}
@@ -64,7 +67,18 @@ class Game {
 		this.gameSetup.style.display = 'none';
 		this.gameView.style.display = 'block';
 
-		this.updateScoreDisplay();
+		this.tournament = new Tournament(this.players);
+		this.startTournament();
+	}
+
+	startTournament() {
+		this.updateScoreDisplay()
+		this.startGame()
+	}
+
+	updateScoreDisplay() {
+		const currentMatch = this.tournament.getCurrentMatch();
+		this.playerInfo.textContent = `${currentMatch[0].name} (${currentMatch[0].score}) vs ${currentMatch[1].name} (${currentMatch[1].score})`;
 	}
 
 	gameLoop() {
@@ -103,10 +117,6 @@ class Game {
 			this.resetBallPosition();
 			this.updateScoreDisplay();
 		}
-	}
-
-	updateScoreDisplay() {
-		this.playerInfo.textContent = `${this.players[0].name} (${this.players[0].score}) vs ${this.players[1].name} (${this.players[1].score})`;
 	}
 
 	resetBallPosition() {
