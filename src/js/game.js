@@ -78,7 +78,9 @@ class Game {
 
 	updateScoreDisplay() {
 		const currentMatch = this.tournament.getCurrentMatch();
+		const tournamentInfo = document.getElementById('tournamentInfo');
 		this.playerInfo.textContent = `${currentMatch[0].name} (${currentMatch[0].score}) vs ${currentMatch[1].name} (${currentMatch[1].score})`;
+		tournamentInfo.textContent = `Match ${this.tournament.currentMatchIndex + 1}/${this.tournament.matches.length} | Game ${this.tournament.currentGameNumber}/${this.tournamentSettings.numberOfGames} | Games Won: ${currentMatch.players[0].name} (${currentMatch.players[0].gamesWon}) - ${currentMatch.players[1].name} (${currentMatch.players[1].gamesWon})`;
 	}
 
 	gameLoop() {
