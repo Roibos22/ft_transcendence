@@ -25,5 +25,13 @@ class Render {
 			ctx.textAlign = 'center';
 			ctx.fillText('Press Space to Start', canvas.width / 2, canvas.height / 3);
 		}
+
+		if (this.game.gameFinished) {
+			ctx.fillStyle = 'white';
+			ctx.font = '20px Arial';
+			ctx.textAlign = 'center';
+			ctx.fillText('Game Finished!', canvas.width / 2, canvas.height / 3);
+			// ctx.fillText('Game Finished!', canvas.width / 2, canvas.height / 3);
+		}
 	}
 }

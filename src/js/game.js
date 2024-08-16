@@ -21,6 +21,8 @@ class Game {
 
 		this.isGameRunning = false;
 		this.waitingForSpaceBar = true;
+		this.waitingForEnter = false;
+		this.gameFinished = false
 
 		this.players = [];
 		this.tournament = null;
@@ -37,7 +39,6 @@ class Game {
 	init() {
 		document.getElementById('startGame').addEventListener('click', (e) => this.handleFormSubmit(e));
 		console.log('Starting the game!');
-		//this.tournament = new Tournament(this.players, this.tournamentSettings);
 		this.input.init();
 	}
 
@@ -74,6 +75,7 @@ class Game {
 		this.isGameRunning = false;
 		this.resetBallPosition();
 		this.updateScoreDisplay();
+		this.render.draw();
 		this.gameLoop();
 	}
 
@@ -90,8 +92,8 @@ class Game {
 			this.movePaddles();
 			this.moveBall();
 			this.checkCollision();
+			this.render.draw();
 		}
-		this.render.draw();
 		console.log("draw game")
 		requestAnimationFrame(() => this.gameLoop());
 	}
@@ -111,18 +113,34 @@ class Game {
 
 		if (this.ballX < 0) {
 			this.tournament.getCurrentMatch().players[1].score++;
-			//this.players[1].score++;
 			this.waitingForSpaceBar = true;
 			this.isGameRunning = false;
 			this.resetBallPosition();
-			this.updateScoreDisplay();
+			this.updateStandings();
 		} else if (this.ballX > this.canvas.width) {
 			this.tournament.getCurrentMatch().players[0].score++;
 			this.waitingForSpaceBar = true;
 			this.isGameRunning = false;
 			this.resetBallPosition();
-			this.updateScoreDisplay();
+			this.updateStandings();
 		}
+	}
+
+	updateStandings() {
+		this.updateScoreDisplay();
+		const currentMatch = this.tournament.getCurrentMatch();
+
+		if (currentMatch.players[0].score >= this.tournamentSettings.pointsToWin || currentMatch.players[1].score >= this.tournamentSettings.pointsToWin) {
+			console.log("Game OVER!");
+			this.isGameRunning = false;
+			this.waitingForSpaceBar = false;
+			this.waitingForEnter = true;
+			this.gameFinished = true;
+		}
+
+		// show who won and next game (or restart) in gameCanvas
+
+		// press enter to continue to next game
 	}
 
 	resetBallPosition() {
