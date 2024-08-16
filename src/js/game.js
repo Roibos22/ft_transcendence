@@ -2,9 +2,10 @@ class Game {
 	constructor() {
 		this.canvas = document.getElementById('gameCanvas');
 		this.ctx = this.canvas.getContext('2d');
-		this.gameSetup = document.getElementById('gameSetup');
+		this.gameSetupView = document.getElementById('gameSetupView');
 		this.playerForm = document.getElementById('playerForm');
 		this.gameView = document.getElementById('gameView');
+		this.settingsView = document.getElementById('settingsView');
 		this.playerInfo = document.getElementById('playerInfo');
 
 		this.paddleHeight = 100;
@@ -21,33 +22,29 @@ class Game {
 		this.isGameRunning = false;
 		this.waitingForSpaceBar = true;
 
-		// here:
+		this.players = [];
 		this.tournament = null;
 
 		this.render = new Render(this);
 		this.input = new Input(this);
+
+		this.tournamentSettings = {
+			pointsToWin: 5,
+			numberOfGames: 1
+		};
 	}
 
 	init() {
 		document.getElementById('startGame').addEventListener('click', (e) => this.handleFormSubmit(e));
 		console.log('Starting the game!');
+		//this.tournament = new Tournament(this.players, this.tournamentSettings);
 		this.input.init();
-		this.startGame();
-	}
-
-	startGame() {
-		this.waitingForSpaceBar = true;
-		this.isGameRunning = false;
-		this.resetBallPosition();
-		this.gameLoop();
 	}
 
 	handleFormSubmit(e) {
 		e.preventDefault();
 
 		const playerInputs = document.querySelectorAll('#playerInputs input');
-
-		this.players = [];
 
 		playerInputs.forEach((input, index) => {
 			const playerName = input.value.trim() || `Player ${index + 1}`;
@@ -64,23 +61,28 @@ class Game {
 			});
 		}
 
-		this.gameSetup.style.display = 'none';
+		this.gameSetupView.style.display = 'none';
+		this.settingsView.style.display = 'none';
 		this.gameView.style.display = 'block';
 
-		this.tournament = new Tournament(this.players);
-		this.startTournament();
+		this.tournament = new Tournament(this.players, this.tournamentSettings);
+		this.startGame()
 	}
 
-	startTournament() {
-		this.updateScoreDisplay()
-		this.startGame()
+	startGame() {
+		this.waitingForSpaceBar = true;
+		this.isGameRunning = false;
+		this.resetBallPosition();
+		this.updateScoreDisplay();
+		this.gameLoop();
 	}
 
 	updateScoreDisplay() {
 		const currentMatch = this.tournament.getCurrentMatch();
 		const tournamentInfo = document.getElementById('tournamentInfo');
-		this.playerInfo.textContent = `${currentMatch[0].name} (${currentMatch[0].score}) vs ${currentMatch[1].name} (${currentMatch[1].score})`;
-		tournamentInfo.textContent = `Match ${this.tournament.currentMatchIndex + 1}/${this.tournament.matches.length} | Game ${this.tournament.currentGameNumber}/${this.tournamentSettings.numberOfGames} | Games Won: ${currentMatch.players[0].name} (${currentMatch.players[0].gamesWon}) - ${currentMatch.players[1].name} (${currentMatch.players[1].gamesWon})`;
+		console.log("current match: ", currentMatch.players[0])
+		this.playerInfo.textContent = `${currentMatch.players[0].name} (${currentMatch.players[0].score}) vs ${currentMatch.players[1].name} (${currentMatch.players[1].score})`;
+		//tournamentInfo.textContent = `Match ${this.tournament.currentMatchIndex + 1}/${this.tournament.matches.length} | Game ${this.tournament.currentGameNumber}/${this.tournamentSettings.numberOfGames} | Games Won: ${currentMatch.players[0].name} (${currentMatch.players[0].gamesWon}) - ${currentMatch.players[1].name} (${currentMatch.players[1].gamesWon})`;
 	}
 
 	gameLoop() {
@@ -90,6 +92,7 @@ class Game {
 			this.checkCollision();
 		}
 		this.render.draw();
+		console.log("draw game")
 		requestAnimationFrame(() => this.gameLoop());
 	}
 
@@ -107,13 +110,14 @@ class Game {
 		}
 
 		if (this.ballX < 0) {
-			this.players[1].score++;
+			this.tournament.getCurrentMatch().players[1].score++;
+			//this.players[1].score++;
 			this.waitingForSpaceBar = true;
 			this.isGameRunning = false;
 			this.resetBallPosition();
 			this.updateScoreDisplay();
 		} else if (this.ballX > this.canvas.width) {
-			this.players[0].score++;
+			this.tournament.getCurrentMatch().players[0].score++;
 			this.waitingForSpaceBar = true;
 			this.isGameRunning = false;
 			this.resetBallPosition();
@@ -134,4 +138,12 @@ class Game {
 			this.ballSpeedX = -this.ballSpeedX;
 		}
 	}
+
+	// startNextGame() {
+	// 	const currentMatch = this.tournament.getCurrentMatch();
+	// 	currentMatch.players[0].score = 0;
+	// 	currentMatch.players[1].score = 0;
+	// 	this.updateScoreDisplay();
+	// 	this.startGame();
+	// }
 }
