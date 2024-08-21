@@ -15,7 +15,12 @@ class Input {
 					this.game.isGameRunning = true;
 				}
 				break;
-			case 'Enter': console.log("Enter pressed"); break;
+			case 'Enter': 
+				console.log("Enter pressed"); 
+				if (this.game.waitingForEnter) {
+					this.game.startNextMatch();
+				}
+				break;
 			case 'w': this.game.leftPaddleY -= 10; break;
 			case 's': this.game.leftPaddleY += 10; break;
 			case 'ArrowUp': this.game.rightPaddleY -= 10; break;

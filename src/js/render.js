@@ -27,11 +27,25 @@ class Render {
 		}
 
 		if (this.game.gameFinished) {
+			console.log("Draw win screen")
 			ctx.fillStyle = 'white';
 			ctx.font = '20px Arial';
 			ctx.textAlign = 'center';
 			ctx.fillText('Game Finished!', canvas.width / 2, canvas.height / 3);
-			// ctx.fillText('Game Finished!', canvas.width / 2, canvas.height / 3);
+
+			const currentMatch = this.game.tournament.getCurrentMatch();
+			console.log(currentMatch);
+			const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
+
+			ctx.fillStyle = 'white';
+			ctx.font = '24px Arial';
+			ctx.fillText(`${winner.name} wins!`, canvas.width / 2, canvas.height / 1.6);
+				
+			if (this.game.tournament.currentMatchIndex < this.game.tournament.matches.length) {
+				ctx.fillText('Press Enter for next match', canvas.width / 2, canvas.height / 1.3);
+			} else {
+				ctx.fillText('Tournament Completed!', canvas.width / 2, canvas.height / 1.3);
+			}
 		}
 	}
 }

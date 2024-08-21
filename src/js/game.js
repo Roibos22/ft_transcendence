@@ -7,6 +7,9 @@ class Game {
 		this.gameView = document.getElementById('gameView');
 		this.settingsView = document.getElementById('settingsView');
 		this.playerInfo = document.getElementById('playerInfo');
+		this.tournamentInfo = document.getElementById('tournamentInfo');
+		this.tournamentInfoMatches = document.getElementById('tournamentInfoMatches');
+		this.tournamentInfoStandings = document.getElementById('tournamentInfoStandings');
 
 		this.paddleHeight = 100;
 		this.paddleWidth = 10;
@@ -84,7 +87,49 @@ class Game {
 		const tournamentInfo = document.getElementById('tournamentInfo');
 		console.log("current match: ", currentMatch.players[0])
 		this.playerInfo.textContent = `${currentMatch.players[0].name} (${currentMatch.players[0].score}) vs ${currentMatch.players[1].name} (${currentMatch.players[1].score})`;
-		//tournamentInfo.textContent = `Match ${this.tournament.currentMatchIndex + 1}/${this.tournament.matches.length} | Game ${this.tournament.currentGameNumber}/${this.tournamentSettings.numberOfGames} | Games Won: ${currentMatch.players[0].name} (${currentMatch.players[0].gamesWon}) - ${currentMatch.players[1].name} (${currentMatch.players[1].gamesWon})`;
+		this.updateTournamentInfo()
+	}
+
+	updateTournamentInfo() {
+		this.tournamentInfo.textContent = 'Tournament';
+		// Update matches
+		const matchesList = this.tournament.matches.map((match, index) => {
+			const player1 = match.players[0].name;
+			const player2 = match.players[1].name;
+			if (match.completed) {
+				return `${player1} ${match.players[0].score} - ${match.players[1].score} ${player2} (Completed)`;
+			} else if (index === this.tournament.currentMatchIndex) {
+				return `${player1} vs ${player2} (Current Match)`;
+			} else {
+				return `${player1} vs ${player2} (Upcoming)`;
+			}
+		}).join('<br>');
+		this.tournamentInfoMatches.innerHTML = `<strong>All Matches:</strong><br>${matchesList}`;
+	
+		// Update standings
+		const standings = this.tournament.getStandings();
+		const standingsTable = `
+			<table border="1">
+				<tr>
+					<th>Rank</th>
+					<th>Name</th>
+					<th>Wins</th>
+					<th>Losses</th>
+					<th>Points</th>
+				</tr>
+				${standings.map(player => `
+					<tr>
+						<td>${player.rank}</td>
+						<td>${player.name}</td>
+						<td>${player.wins}</td>
+						<td>${player.losses}</td>
+						<td>${player.points}</td>
+					</tr>
+				`).join('')}
+			</table>
+		`;
+		this.tournamentInfoStandings.innerHTML = `<strong>Standings:</strong><br>${standingsTable}`;
+
 	}
 
 	gameLoop() {
@@ -130,13 +175,33 @@ class Game {
 		this.updateScoreDisplay();
 		const currentMatch = this.tournament.getCurrentMatch();
 
-		if (currentMatch.players[0].score >= this.tournamentSettings.pointsToWin || currentMatch.players[1].score >= this.tournamentSettings.pointsToWin) {
+		if (currentMatch.players[0].score >= this.tournamentSettings.pointsToWin || 
+			currentMatch.players[1].score >= this.tournamentSettings.pointsToWin) {
 			console.log("Game OVER!");
 			this.isGameRunning = false;
 			this.waitingForSpaceBar = false;
 			this.waitingForEnter = true;
 			this.gameFinished = true;
+
+			this.tournament.completeMatch(currentMatch);
+			this.updateTournamentInfo();
+			this.render.draw();
+
+			// // Display who won and next game (or tournament end) in gameCanvas
+			// const winner = currentMatch.players[0].score > currentMatch.players[1].score ? 
+			// currentMatch.players[0] : currentMatch.players[1];
+			// this.ctx.fillStyle = 'white';
+			// this.ctx.font = '24px Arial';
+			// this.ctx.fillText(`${winner.name} wins!`, this.canvas.width / 2 - 50, this.canvas.height / 2 - 30);
+				
+			// if (this.tournament.currentMatchIndex < this.tournament.matches.length) {
+			// 	this.ctx.fillText('Press Enter for next match', this.canvas.width / 2 - 100, this.canvas.height / 2 + 30);
+			// } else {
+			// 	this.ctx.fillText('Tournament Completed!', this.canvas.width / 2 - 100, this.canvas.height / 2 + 30);
+			// }
 		}
+
+
 
 		// show who won and next game (or restart) in gameCanvas
 
@@ -156,6 +221,21 @@ class Game {
 			this.ballSpeedX = -this.ballSpeedX;
 		}
 	}
+
+	startNextMatch() {
+    if (this.tournament.currentMatchIndex < this.tournament.matches.length) {
+        this.gameFinished = false;
+        this.waitingForEnter = false;
+        const nextMatch = this.tournament.getCurrentMatch();
+        nextMatch.players[0].score = 0;
+        nextMatch.players[1].score = 0;
+        this.updateScoreDisplay();
+        this.startGame();
+    } else {
+        console.log("Tournament completed!");
+        // You might want to display a final tournament summary or restart option here
+    }
+}
 
 	// startNextGame() {
 	// 	const currentMatch = this.tournament.getCurrentMatch();
