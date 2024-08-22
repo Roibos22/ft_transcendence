@@ -1,9 +1,5 @@
 class Game {
 	constructor() {
-		this.render = new Render(this);
-		this.input = new Input(this);
-		this.physics = new GamePhysics(this);
-
 		this.canvas = document.getElementById('gameCanvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.gameSetupView = document.getElementById('gameSetupView');
@@ -15,10 +11,10 @@ class Game {
 		this.tournamentInfoMatches = document.getElementById('tournamentInfoMatches');
 		this.tournamentInfoStandings = document.getElementById('tournamentInfoStandings');
 
-		this.isGameRunning = false;
-		this.waitingForSpaceBar = true;
-		this.waitingForEnter = false;
-		this.gameFinished = false
+		this.render = new Render(this);
+		this.input = new Input(this);
+		this.physics = new GamePhysics(this);
+		this.state = new GameState(this);
 
 		this.players = [];
 		this.tournament = null;
@@ -64,13 +60,26 @@ class Game {
 	}
 
 	startGame() {
-		this.waitingForSpaceBar = true;
-		this.isGameRunning = false;
+		this.state.waitingForSpaceBar = true;
+		this.state.isGameRunning = false;
 		this.physics.resetBallPosition();
 		this.updateScoreDisplay();
 		this.render.draw();
 		this.gameLoop();
 	}
+
+	gameLoop() {
+		if (this.state.isGameRunning) {
+			this.physics.movePaddles();
+			this.physics.moveBall();
+			this.physics.checkCollision();
+			this.render.draw();
+		}
+		console.log("draw game")
+		requestAnimationFrame(() => this.gameLoop());
+	}
+
+
 
 	updateScoreDisplay() {
 		const currentMatch = this.tournament.getCurrentMatch();
@@ -122,16 +131,7 @@ class Game {
 
 	}
 
-	gameLoop() {
-		if (this.isGameRunning) {
-			this.physics.movePaddles();
-			this.physics.moveBall();
-			this.physics.checkCollision();
-			this.render.draw();
-		}
-		console.log("draw game")
-		requestAnimationFrame(() => this.gameLoop());
-	}
+
 
 	updateStandings() {
 		this.updateScoreDisplay();
@@ -139,32 +139,19 @@ class Game {
 
 		if (currentMatch.players[0].score >= this.tournamentSettings.pointsToWin || 
 			currentMatch.players[1].score >= this.tournamentSettings.pointsToWin) {
-			console.log("Game OVER!");
-			this.isGameRunning = false;
-			this.waitingForSpaceBar = false;
-			this.waitingForEnter = true;
-			this.gameFinished = true;
-
-			this.tournament.completeMatch(currentMatch);
-			this.updateTournamentInfo();
+			this.state.isGameRunning = false;
+			this.state.waitingForSpaceBar = false;
+			this.state.waitingForEnter = true;
+			this.state.gameFinished = true;
 			this.render.draw();
 
+			this.updateTournamentInfo();
+			this.tournament.completeMatch(currentMatch);
+
 		}
 
 	}
 
-	startNextMatch() {
-		if (this.tournament.currentMatchIndex < this.tournament.matches.length) {
-			this.gameFinished = false;
-			this.waitingForEnter = false;
-			const nextMatch = this.tournament.getCurrentMatch();
-			nextMatch.players[0].score = 0;
-			nextMatch.players[1].score = 0;
-			this.updateScoreDisplay();
-			this.startGame();
-		} else {
-			console.log("Tournament completed!");
-		}
-	}
+
 
 }

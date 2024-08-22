@@ -13,21 +13,20 @@ class Render {
 		ctx.fillStyle = 'white';
 		ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
 		ctx.fillRect(canvas.width - paddleWidth, rightPaddleY, paddleWidth, paddleHeight);
-
 		ctx.beginPath();
 		ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
 		ctx.fillStyle = 'white';
 		ctx.fill();
 		ctx.closePath();
 
-		if (this.game.waitingForSpaceBar) {
+		if (this.game.state.waitingForSpaceBar) {
 			ctx.fillStyle = 'white';
 			ctx.font = '20px Arial';
 			ctx.textAlign = 'center';
 			ctx.fillText('Press Space to Start', canvas.width / 2, canvas.height / 3);
 		}
 
-		if (this.game.gameFinished) {
+		if (this.game.state.gameFinished) {
 			console.log("Draw win screen")
 			ctx.fillStyle = 'white';
 			ctx.font = '20px Arial';
@@ -35,7 +34,7 @@ class Render {
 			ctx.fillText('Game Finished!', canvas.width / 2, canvas.height / 3);
 
 			const currentMatch = this.game.tournament.getCurrentMatch();
-			console.log(currentMatch);
+			console.log(currentMatch.players[0]);
 			const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
 
 			ctx.fillStyle = 'white';

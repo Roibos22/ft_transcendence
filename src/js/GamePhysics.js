@@ -28,14 +28,14 @@ class GamePhysics {
 
 		if (this.ballX < 0) {
 			this.game.tournament.getCurrentMatch().players[1].score++;
-			this.game.waitingForSpaceBar = true;
-			this.game.isGameRunning = false;
+			this.game.state.waitingForSpaceBar = true;
+			this.game.state.isGameRunning = false;
 			this.resetBallPosition();
 			this.game.updateStandings();
 		} else if (this.ballX > this.game.canvas.width) {
 			this.game.tournament.getCurrentMatch().players[0].score++;
-			this.game.waitingForSpaceBar = true;
-			this.game.isGameRunning = false;
+			this.game.state.waitingForSpaceBar = true;
+			this.game.state.isGameRunning = false;
 			this.resetBallPosition();
 			this.game.updateStandings();
 		}

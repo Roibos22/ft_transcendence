@@ -37,15 +37,7 @@ class Tournament {
 		this.players.find(p => p.name === loser.name).losses++;
 		this.players.find(p => p.name === winner.name).points += 3;
 		this.players.find(p => p.name === loser.name).points += 1;
-
 		match.completed = true;
-
-
-		this.currentMatchIndex++;
-		if (this.currentMatchIndex >= this.matches.length) {
-			// Tournament is over
-			console.log("Tournament completed!");
-		}
 	}
 
 	getStandings() {
@@ -59,63 +51,4 @@ class Tournament {
 				points: player.points
 			}));
 	}
-
-	// updateScore(playerIndex) {
-	// 	const currentMatch = this.getCurrentMatch();
-	// 	currentMatch.players[playerIndex].score++;
-
-	// 	if (currentMatch.players[playerIndex].score >= this.settings.pointsToWin) {
-	// 		currentMatch.players[playerIndex].gamesWon++;
-	// 		currentMatch.games.push(currentMatch.players[playerIndex].name);
-			
-	// 		if (currentMatch.games.length >= this.settings.numberOfGames) {
-	// 			this.currentMatchIndex++;
-	// 			this.currentGameNumber = 1;
-	// 			if (this.currentMatchIndex >= this.matches.length) {
-	// 				return 'tournament_end';
-	// 			}
-	// 			return 'match_end';
-	// 		} else {
-	// 			this.currentGameNumber++;
-	// 			return 'game_end';
-	// 		}
-	// 	}
-
-	// 	return 'continue';
-	// }
-
-	// getTournamentStandings() {
-	// 	const standings = {};
-	// 	this.players.forEach(player => standings[player.name] = 0);
-
-	// 	this.matches.forEach((match, index) => {
-	// 		if (index < this.currentMatchIndex || (index === this.currentMatchIndex && match.games.length > 0)) {
-	// 			match.games.forEach(winner => {
-	// 				standings[winner]++;
-	// 			});
-	// 		}
-	// 	});
-
-	// 	return Object.entries(standings)
-	// 		.sort((a, b) => b[1] - a[1])
-	// 		.map(([name, wins]) => `${name}: ${wins} wins`);
-	// }
-
-	// resetCurrentMatch() {
-	// 	const currentMatch = this.getCurrentMatch();
-	// 	currentMatch.players.forEach(player => {
-	// 		player.score = 0;
-	// 	});
-	// }
-
-	// getMatchResults() {
-	// 	return this.matches.map(match => ({
-	// 		players: match.players.map(p => p.name),
-	// 		games: match.games,
-	// 		winner: match.games.length > 0 ? 
-	// 			(match.games.filter(g => g === match.players[0].name).length > match.games.filter(g => g === match.players[1].name).length ? 
-	// 				match.players[0].name : match.players[1].name) : 
-	// 			null
-	// 	}));
-	// }
 }

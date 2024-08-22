@@ -10,15 +10,21 @@ class Input {
 	handleKeyPress(e) {
 		switch(e.key) {
 			case ' ':
-				if (this.game.waitingForSpaceBar) {
-					this.game.waitingForSpaceBar = false;
-					this.game.isGameRunning = true;
+				if (this.game.state.waitingForSpaceBar) {
+					this.game.state.waitingForSpaceBar = false;
+					this.game.state.isGameRunning = true;
 				}
 				break;
 			case 'Enter': 
 				console.log("Enter pressed"); 
-				if (this.game.waitingForEnter) {
-					this.game.startNextMatch();
+				if (this.game.state.waitingForEnter) {
+
+					this.game.tournament.currentMatchIndex++;
+					// if (this.game.tournament.currentMatchIndex >= this.game.tournament.matches.length) {
+					// 	console.log("Tournament completed!");
+					// }
+
+					this.game.state.startNextMatch();
 				}
 				break;
 			case 'w': this.game.physics.leftPaddleY -= 10; break;
