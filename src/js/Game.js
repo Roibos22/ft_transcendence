@@ -1,5 +1,9 @@
 class Game {
 	constructor() {
+		this.render = new Render(this);
+		this.input = new Input(this);
+		this.physics = new GamePhysics(this);
+
 		this.canvas = document.getElementById('gameCanvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.gameSetupView = document.getElementById('gameSetupView');
@@ -11,17 +15,6 @@ class Game {
 		this.tournamentInfoMatches = document.getElementById('tournamentInfoMatches');
 		this.tournamentInfoStandings = document.getElementById('tournamentInfoStandings');
 
-		this.paddleHeight = 100;
-		this.paddleWidth = 10;
-		this.ballRadius = 5;
-
-		this.leftPaddleY = this.canvas.height / 2 - this.paddleHeight / 2;
-		this.rightPaddleY = this.canvas.height / 2 - this.paddleHeight / 2;
-		this.ballX = this.canvas.width / 2;
-		this.ballY = this.canvas.height / 2;
-		this.ballSpeedX = 8;
-		this.ballSpeedY = 8;
-
 		this.isGameRunning = false;
 		this.waitingForSpaceBar = true;
 		this.waitingForEnter = false;
@@ -29,10 +22,6 @@ class Game {
 
 		this.players = [];
 		this.tournament = null;
-
-		this.render = new Render(this);
-		this.input = new Input(this);
-		this.physics = new GamePhysics(this);
 
 		this.tournamentSettings = {
 			pointsToWin: 5,
@@ -165,17 +154,17 @@ class Game {
 	}
 
 	startNextMatch() {
-	if (this.tournament.currentMatchIndex < this.tournament.matches.length) {
-		this.gameFinished = false;
-		this.waitingForEnter = false;
-		const nextMatch = this.tournament.getCurrentMatch();
-		nextMatch.players[0].score = 0;
-		nextMatch.players[1].score = 0;
-		this.updateScoreDisplay();
-		this.startGame();
-	} else {
-		console.log("Tournament completed!");
+		if (this.tournament.currentMatchIndex < this.tournament.matches.length) {
+			this.gameFinished = false;
+			this.waitingForEnter = false;
+			const nextMatch = this.tournament.getCurrentMatch();
+			nextMatch.players[0].score = 0;
+			nextMatch.players[1].score = 0;
+			this.updateScoreDisplay();
+			this.startGame();
+		} else {
+			console.log("Tournament completed!");
+		}
 	}
-}
 
 }

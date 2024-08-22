@@ -21,10 +21,10 @@ class Input {
 					this.game.startNextMatch();
 				}
 				break;
-			case 'w': this.game.leftPaddleY -= 10; break;
-			case 's': this.game.leftPaddleY += 10; break;
-			case 'ArrowUp': this.game.rightPaddleY -= 10; break;
-			case 'ArrowDown': this.game.rightPaddleY += 10; break;
+			case 'w': this.game.physics.leftPaddleY -= 10; break;
+			case 's': this.game.physics.leftPaddleY += 10; break;
+			case 'ArrowUp': this.game.physics.rightPaddleY -= 10; break;
+			case 'ArrowDown': this.game.physics.rightPaddleY += 10; break;
 		}
 	}
 }
