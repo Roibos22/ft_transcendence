@@ -32,6 +32,7 @@ class Game {
 
 		this.render = new Render(this);
 		this.input = new Input(this);
+		this.physics = new GamePhysics(this);
 
 		this.tournamentSettings = {
 			pointsToWin: 5,
@@ -76,7 +77,7 @@ class Game {
 	startGame() {
 		this.waitingForSpaceBar = true;
 		this.isGameRunning = false;
-		this.resetBallPosition();
+		this.physics.resetBallPosition();
 		this.updateScoreDisplay();
 		this.render.draw();
 		this.gameLoop();
@@ -134,41 +135,13 @@ class Game {
 
 	gameLoop() {
 		if (this.isGameRunning) {
-			this.movePaddles();
-			this.moveBall();
-			this.checkCollision();
+			this.physics.movePaddles();
+			this.physics.moveBall();
+			this.physics.checkCollision();
 			this.render.draw();
 		}
 		console.log("draw game")
 		requestAnimationFrame(() => this.gameLoop());
-	}
-
-	movePaddles() {
-		this.leftPaddleY = Math.max(Math.min(this.leftPaddleY, this.canvas.height - this.paddleHeight), 0);
-		this.rightPaddleY = Math.max(Math.min(this.rightPaddleY, this.canvas.height - this.paddleHeight), 0);
-	}
-
-	moveBall() {
-		this.ballX += this.ballSpeedX;
-		this.ballY += this.ballSpeedY;
-
-		if (this.ballY - this.ballRadius < 0 || this.ballY + this.ballRadius > this.canvas.height) {
-			this.ballSpeedY = -this.ballSpeedY;
-		}
-
-		if (this.ballX < 0) {
-			this.tournament.getCurrentMatch().players[1].score++;
-			this.waitingForSpaceBar = true;
-			this.isGameRunning = false;
-			this.resetBallPosition();
-			this.updateStandings();
-		} else if (this.ballX > this.canvas.width) {
-			this.tournament.getCurrentMatch().players[0].score++;
-			this.waitingForSpaceBar = true;
-			this.isGameRunning = false;
-			this.resetBallPosition();
-			this.updateStandings();
-		}
 	}
 
 	updateStandings() {
@@ -187,61 +160,22 @@ class Game {
 			this.updateTournamentInfo();
 			this.render.draw();
 
-			// // Display who won and next game (or tournament end) in gameCanvas
-			// const winner = currentMatch.players[0].score > currentMatch.players[1].score ? 
-			// currentMatch.players[0] : currentMatch.players[1];
-			// this.ctx.fillStyle = 'white';
-			// this.ctx.font = '24px Arial';
-			// this.ctx.fillText(`${winner.name} wins!`, this.canvas.width / 2 - 50, this.canvas.height / 2 - 30);
-				
-			// if (this.tournament.currentMatchIndex < this.tournament.matches.length) {
-			// 	this.ctx.fillText('Press Enter for next match', this.canvas.width / 2 - 100, this.canvas.height / 2 + 30);
-			// } else {
-			// 	this.ctx.fillText('Tournament Completed!', this.canvas.width / 2 - 100, this.canvas.height / 2 + 30);
-			// }
 		}
 
-
-
-		// show who won and next game (or restart) in gameCanvas
-
-		// press enter to continue to next game
-	}
-
-	resetBallPosition() {
-		this.ballX = this.canvas.width / 2;
-		this.ballY = this.canvas.height / 2;
-	}
-
-	checkCollision() {
-		if (this.ballX - this.ballRadius < this.paddleWidth && this.ballY > this.leftPaddleY && this.ballY < this.leftPaddleY + this.paddleHeight) {
-			this.ballSpeedX = -this.ballSpeedX;
-		}
-		if (this.ballX + this.ballRadius > this.canvas.width - this.paddleWidth && this.ballY > this.rightPaddleY && this.ballY < this.rightPaddleY + this.paddleHeight) {
-			this.ballSpeedX = -this.ballSpeedX;
-		}
 	}
 
 	startNextMatch() {
-    if (this.tournament.currentMatchIndex < this.tournament.matches.length) {
-        this.gameFinished = false;
-        this.waitingForEnter = false;
-        const nextMatch = this.tournament.getCurrentMatch();
-        nextMatch.players[0].score = 0;
-        nextMatch.players[1].score = 0;
-        this.updateScoreDisplay();
-        this.startGame();
-    } else {
-        console.log("Tournament completed!");
-        // You might want to display a final tournament summary or restart option here
-    }
+	if (this.tournament.currentMatchIndex < this.tournament.matches.length) {
+		this.gameFinished = false;
+		this.waitingForEnter = false;
+		const nextMatch = this.tournament.getCurrentMatch();
+		nextMatch.players[0].score = 0;
+		nextMatch.players[1].score = 0;
+		this.updateScoreDisplay();
+		this.startGame();
+	} else {
+		console.log("Tournament completed!");
+	}
 }
 
-	// startNextGame() {
-	// 	const currentMatch = this.tournament.getCurrentMatch();
-	// 	currentMatch.players[0].score = 0;
-	// 	currentMatch.players[1].score = 0;
-	// 	this.updateScoreDisplay();
-	// 	this.startGame();
-	// }
 }
