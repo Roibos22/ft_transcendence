@@ -11,18 +11,21 @@ class Tournament {
 	generateMatches() {
 		console.log("creating match");
 		const matches = [];
-		for (let i = 0; i < this.players.length; i++) {
-			for (let j = i + 1; j < this.players.length; j++) {
-				matches.push({
-					players: [
-						{ ...this.players[i], score: 0 },
-						{ ...this.players[j], score: 0 }
-					],
-					completed: false
-				});
-				console.log("created match");
+		for (let a = 0; a < this.game.tournamentSettings.numberOfGames; a++) {
+			for (let i = 0; i < this.players.length; i++) {
+				for (let j = i + 1; j < this.players.length; j++) {
+					matches.push({
+						players: [
+							{ ...this.players[i], score: 0 },
+							{ ...this.players[j], score: 0 }
+						],
+						completed: false
+					});
+					console.log("created match");
+				}
 			}
 		}
+
 		return matches;
 	}
 
