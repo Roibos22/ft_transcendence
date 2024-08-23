@@ -15,7 +15,7 @@ class GameState {
 			const nextMatch = this.game.tournament.getCurrentMatch();
 			nextMatch.players[0].score = 0;
 			nextMatch.players[1].score = 0;
-			this.game.updateScoreDisplay();
+			this.game.uiManager.updateScoreDisplay();
 			this.game.startGame();
 		} else {
 			console.log("Tournament completed!");
