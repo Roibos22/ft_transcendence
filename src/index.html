@@ -29,11 +29,22 @@
 		<!-- GAME SETTINGS -->
 		<div id="settingsView">
 			<h3>Settings</h3>
-			<label for="pointsToWin">Points to win:</label>
-			<input type="number" id="pointsToWin" value="5" min="1">
-			<br>
-			<label for="numberOfGames">Number of games per match:</label>
-			<input type="number" id="numberOfGames" value="1" min="1">
+			<div class="setting-item">
+				<span class="setting-label">Points to win:</span>
+				<div class="value-control">
+					<button class="control-button" onclick="updateValue('pointsToWin', -1)">-</button>
+					<div id="pointsToWinDisplay" class="value-display">5</div>
+					<button class="control-button" onclick="updateValue('pointsToWin', 1)">+</button>
+				</div>
+			</div>
+			<div class="setting-item">
+				<span class="setting-label">Number of games:</span>
+				<div class="value-control">
+					<button class="control-button" onclick="updateValue('numberOfGames', -1)">-</button>
+					<div id="numberOfGamesDisplay" class="value-display">1</div>
+					<button class="control-button" onclick="updateValue('numberOfGames', 1)">+</button>
+				</div>
+			</div>
 		</div>
 		
 		<!-- GAME VIEW -->

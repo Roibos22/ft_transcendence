@@ -92,3 +92,49 @@ button {
 #tournamentInfoMatches, #tournamentInfoStandings {
 	width: 48%;
 }
+
+#settingsView {
+	font-family: Arial, sans-serif;
+	max-width: 300px;
+	margin: 0 auto;
+}
+.setting-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+.setting-label {
+	flex: 1;
+	margin-right: 10px;
+}
+.value-control {
+	display: flex;
+	align-items: center;
+}
+.value-display {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-color: #f0f0f0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	margin: 0 10px;
+}
+.control-button {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	border: none;
+	background-color: #007bff;
+	color: white;
+	font-size: 20px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.control-button:hover {
+	background-color: #0056b3;
+}

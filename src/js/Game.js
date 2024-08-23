@@ -1,5 +1,6 @@
 class Game {
-	constructor() {
+	constructor(settings) {
+		
 		this.canvas = document.getElementById('gameCanvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.gameSetupView = document.getElementById('gameSetupView');
@@ -10,6 +11,8 @@ class Game {
 		this.tournamentInfo = document.getElementById('tournamentInfo');
 		this.tournamentInfoMatches = document.getElementById('tournamentInfoMatches');
 		this.tournamentInfoStandings = document.getElementById('tournamentInfoStandings');
+		this.pointsToWinDisplay = document.getElementById('pointsToWinDisplay');
+		this.numberOfGamesDisplay = document.getElementById('numberOfGamesDisplay');
 
 		this.render = new Render(this);
 		this.input = new Input(this);
@@ -20,10 +23,8 @@ class Game {
 		this.players = [];
 		this.tournament = null;
 
-		this.tournamentSettings = {
-			pointsToWin: 5,
-			numberOfGames: 1
-		};
+		this.tournamentSettings = settings;
+
 	}
 
 	init() {
