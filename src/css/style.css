@@ -16,12 +16,11 @@ button {
 }
 
 /* Game Setup Styles */
-#gameSetup {
+#gameSetupView {
 	text-align: center;
 }
 
 /* Form and Button Styles */
-
 #playerForm input,
 button {
 	width: 100%;
@@ -60,6 +59,8 @@ button {
 /* Game View Styles */
 #gameView {
 	display: none;
+	width: 800px;
+	margin: 0 auto;
 }
 
 #playerInfo {
@@ -72,11 +73,6 @@ button {
 
 #gameCanvas {
 	border: 3px solid black;
-}
-
-#gameView {
-	width: 800px;
-	margin: 0 auto;
 }
 
 #tournamentInfo {
@@ -93,24 +89,29 @@ button {
 	width: 48%;
 }
 
+/* Settings View Styles */
 #settingsView {
 	font-family: Arial, sans-serif;
 	max-width: 300px;
 	margin: 0 auto;
 }
+
 .setting-item {
 	display: flex;
 	align-items: center;
 	margin-bottom: 20px;
 }
+
 .setting-label {
 	flex: 1;
 	margin-right: 10px;
 }
+
 .value-control {
 	display: flex;
 	align-items: center;
 }
+
 .value-display {
 	width: 40px;
 	height: 40px;
@@ -122,6 +123,7 @@ button {
 	font-weight: bold;
 	margin: 0 10px;
 }
+
 .control-button {
 	width: 30px;
 	height: 30px;
@@ -135,6 +137,7 @@ button {
 	justify-content: center;
 	align-items: center;
 }
+
 .control-button:hover {
 	background-color: #0056b3;
 }
