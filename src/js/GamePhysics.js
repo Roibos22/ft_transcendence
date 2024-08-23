@@ -22,18 +22,18 @@ class GamePhysics {
 		this.ballX += this.ballSpeedX;
 		this.ballY += this.ballSpeedY;
 
+		// horizontal collision
 		if (this.ballY - this.ballRadius < 0 || this.ballY + this.ballRadius > this.game.canvas.height) {
 			this.ballSpeedY = -this.ballSpeedY;
 		}
 
-		if (this.ballX < 0) {
-			this.game.tournament.getCurrentMatch().players[1].score++;
-			this.game.state.waitingForSpaceBar = true;
-			this.game.state.isGameRunning = false;
-			this.resetBallPosition();
-			this.game.uiManager.updateStandings();
-		} else if (this.ballX > this.game.canvas.width) {
-			this.game.tournament.getCurrentMatch().players[0].score++;
+		// vertical collision -> point scored
+		if (this.ballX < 0 || this.ballX > this.game.canvas.width) {
+			if (this.ballX < 0) {
+				this.game.tournament.getCurrentMatch().players[1].score++;
+			} else if (this.ballX > this.game.canvas.width) {
+				this.game.tournament.getCurrentMatch().players[0].score++;
+			}
 			this.game.state.waitingForSpaceBar = true;
 			this.game.state.isGameRunning = false;
 			this.resetBallPosition();
