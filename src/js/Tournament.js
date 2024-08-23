@@ -9,19 +9,17 @@ class Tournament {
 	}
 
 	generateMatches() {
-		console.log("creating match");
 		const matches = [];
-		for (let a = 0; a < this.game.tournamentSettings.numberOfGames; a++) {
-			for (let i = 0; i < this.players.length; i++) {
-				for (let j = i + 1; j < this.players.length; j++) {
+		for (let i = 0; i < this.game.tournamentSettings.numberOfGames; i++) {
+			for (let j = 0; j < this.players.length; j++) {
+				for (let k = j + 1; k < this.players.length; k++) {
 					matches.push({
 						players: [
-							{ ...this.players[i], score: 0 },
-							{ ...this.players[j], score: 0 }
+							{ ...this.players[j], score: 0 },
+							{ ...this.players[k], score: 0 }
 						],
 						completed: false
 					});
-					console.log("created match");
 				}
 			}
 		}
