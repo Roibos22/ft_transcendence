@@ -50,12 +50,12 @@ class GamePhysics {
 		if (this.ballX - this.ballRadius < this.paddleWidth && 
 			this.ballY > this.leftPaddleY && 
 			this.ballY < this.leftPaddleY + this.paddleHeight) {
-			this.ballSpeedX = -this.ballSpeedX;
+				this.ballSpeedX = -this.ballSpeedX;
 		}
 		if (this.ballX + this.ballRadius > this.game.canvas.width - this.paddleWidth && 
 			this.ballY > this.rightPaddleY && 
 			this.ballY < this.rightPaddleY + this.paddleHeight) {
-			this.ballSpeedX = -this.ballSpeedX;
+				this.ballSpeedX = -this.ballSpeedX;
 		}
 	}
 }

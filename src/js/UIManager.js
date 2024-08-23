@@ -25,6 +25,7 @@ class UIManager {
 		const currentMatch = this.game.tournament.getCurrentMatch();
 		this.game.playerInfo.textContent = `${currentMatch.players[0].name} (${currentMatch.players[0].score}) vs ${currentMatch.players[1].name} (${currentMatch.players[1].score})`;
 		this.updateTournamentInfo()
+		
 	}
 
 	updateTournamentInfo() {

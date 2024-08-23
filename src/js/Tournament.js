@@ -49,11 +49,6 @@ class Tournament {
 
 	}
 
-	updateScores(match, indexPlayerScored) {
-		//match.players[indexPlayerScored].score++;
-		this.game.uiManager.updateTournamentInfo();
-	}
-
 	getStandings() {
 		return this.players
 			.sort((a, b) => b.points - a.points || (b.wins - b.losses) - (a.wins - a.losses))
