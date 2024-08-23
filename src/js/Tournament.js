@@ -39,20 +39,18 @@ class Tournament {
 		this.players.find(p => p.name === winner.name).points += 2;
 		this.players.find(p => p.name === loser.name).points += 0;
 		match.completed = true;
+
+		if (this.game.animationFrameId) {
+			cancelAnimationFrame(this.game.animationFrameId);
+			this.game.animationFrameId = null;
+		}
+		this.game.state.isGameRunning = false;
+
 	}
 
 	updateScores(match, indexPlayerScored) {
-		match.players[indexPlayerScored].score++;
+		//match.players[indexPlayerScored].score++;
 		this.game.uiManager.updateTournamentInfo();
-
-
-		//const winner = match.players[0].score > match.players[1].score ? match.players[0] : match.players[1];
-		//const loser = match.players[0] === winner ? match.players[1] : match.players[0];
-		
-		//this.players.find(p => p.name === winner.name).wins++;
-		//this.players.find(p => p.name === loser.name).losses++;
-		//this.players.find(p => p.name === winner.name).points += 2;
-		//this.players.find(p => p.name === loser.name).points += 0;
 	}
 
 	getStandings() {

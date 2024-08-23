@@ -61,6 +61,10 @@ class Game {
 	}
 
 	startGame() {
+		if (this.animationFrameId) {
+			cancelAnimationFrame(this.animationFrameId);
+			this.animationFrameId = null;
+		}
 		this.state.waitingForSpaceBar = true;
 		this.state.isGameRunning = false;
 		this.physics.resetBallPosition();
@@ -74,10 +78,8 @@ class Game {
 			this.physics.movePaddles();
 			this.physics.moveBall();
 			this.physics.checkCollision();
-			this.render.draw();
 		}
-		console.log("draw game")
-		requestAnimationFrame(() => this.gameLoop());
+		this.render.draw();
+		this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
 	}
-
 }
