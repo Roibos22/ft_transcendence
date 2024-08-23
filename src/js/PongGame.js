@@ -73,11 +73,7 @@ class PongGame {
 			cancelAnimationFrame(this.animationFrameId);
 			this.animationFrameId = null;
 		}
-		this.state.waitingForSpaceBar = true;
-		this.state.isGameRunning = false;
-		this.physics.resetBallPosition();
-		this.uiManager.updateUI();
-		this.render.draw();
+		this.state.startNextMatch();
 		this.gameLoop();
 	}
 
