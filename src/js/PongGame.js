@@ -1,6 +1,28 @@
-class Game {
+class PongGame {
 	constructor(settings) {
-		
+		this.tournamentSettings = settings;
+
+		this.initElements()
+		this.initModules()
+
+		this.players = [];
+		this.tournament = null;
+	}
+
+	init() {
+		document.getElementById('startGame').addEventListener('click', (e) => this.handleFormSubmit(e));
+		this.input.init();
+	}
+
+	initModules() {
+		this.render = new Render(this);
+		this.input = new Input(this);
+		this.physics = new GamePhysics(this);
+		this.state = new GameState(this);
+		this.uiManager = new UIManager(this);
+	}
+
+	initElements() {
 		this.canvas = document.getElementById('gameCanvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.gameSetupView = document.getElementById('gameSetupView');
@@ -13,31 +35,18 @@ class Game {
 		this.tournamentInfoStandings = document.getElementById('tournamentInfoStandings');
 		this.pointsToWinDisplay = document.getElementById('pointsToWinDisplay');
 		this.numberOfGamesDisplay = document.getElementById('numberOfGamesDisplay');
-
-		this.render = new Render(this);
-		this.input = new Input(this);
-		this.physics = new GamePhysics(this);
-		this.state = new GameState(this);
-		this.uiManager = new UIManager(this);
-
-		this.players = [];
-		this.tournament = null;
-
-		this.tournamentSettings = settings;
-
-	}
-
-	init() {
-		document.getElementById('startGame').addEventListener('click', (e) => this.handleFormSubmit(e));
-		console.log('Starting the game!');
-		this.input.init();
 	}
 
 	handleFormSubmit(e) {
 		e.preventDefault();
+		this.collectPlayerData();
+		this.setupGameView();
+		this.tournament = new Tournament(this, this.players, this.tournamentSettings);
+		this.startGame()
+	}
 
+	collectPlayerData() {
 		const playerInputs = document.querySelectorAll('#playerInputs input');
-
 		playerInputs.forEach((input, index) => {
 			const playerName = input.value.trim() || `Player ${index + 1}`;
 			this.players.push({
@@ -45,20 +54,18 @@ class Game {
 				score: 0
 			});
 		});
-
 		while (this.players.length < 2) {
 			this.players.push({
 				name: `Player ${this.players.length + 1}`,
 				score: 0
 			});
 		}
+	}
 
+	setupGameView() {
 		this.gameSetupView.style.display = 'none';
 		this.settingsView.style.display = 'none';
 		this.gameView.style.display = 'block';
-
-		this.tournament = new Tournament(this, this.players, this.tournamentSettings);
-		this.startGame()
 	}
 
 	startGame() {

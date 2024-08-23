@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.error('Add player button not found');
 	}
 
-	const game = new Game(settings);
+	const game = new PongGame(settings);
 	window.game = game;
 	game.init();
 });
