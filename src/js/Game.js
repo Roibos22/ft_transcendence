@@ -96,14 +96,14 @@ class Game {
 			const player1 = match.players[0].name;
 			const player2 = match.players[1].name;
 			if (match.completed) {
-				return `${player1} ${match.players[0].score} - ${match.players[1].score} ${player2} (Completed)`;
+				return `${player1} vs ${player2} ${match.players[0].score}:${match.players[1].score}`;
 			} else if (index === this.tournament.currentMatchIndex) {
-				return `${player1} vs ${player2} (Current Match)`;
+				return `<strong>${player1} vs ${player2}</strong>`;
 			} else {
-				return `${player1} vs ${player2} (Upcoming)`;
+				return `${player1} vs ${player2}`;
 			}
 		}).join('<br>');
-		this.tournamentInfoMatches.innerHTML = `<strong>All Matches:</strong><br>${matchesList}`;
+		this.tournamentInfoMatches.innerHTML = `<strong>Matches:</strong><br>${matchesList}`;
 	
 		// Update standings
 		const standings = this.tournament.getStandings();

@@ -73,3 +73,22 @@ button {
 #gameCanvas {
 	border: 3px solid black;
 }
+
+#gameView {
+	width: 800px;
+	margin: 0 auto;
+}
+
+#tournamentInfo {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+#tournamentInfoContainer {
+	display: flex;
+	justify-content: space-between;
+}
+
+#tournamentInfoMatches, #tournamentInfoStandings {
+	width: 48%;
+}
