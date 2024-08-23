@@ -4,6 +4,7 @@ class UIManager {
 	}
 
 	updateStandings() {
+		console.log("updateStandings");
 		this.updateScoreDisplay();
 		const currentMatch = this.game.tournament.getCurrentMatch();
 
@@ -14,19 +15,20 @@ class UIManager {
 			this.game.state.waitingForEnter = true;
 			this.game.state.gameFinished = true;
 			this.game.render.draw();
-
-			this.updateTournamentInfo();
 			this.game.tournament.completeMatch(currentMatch);
+			this.updateTournamentInfo();
 		}
 	}
 
 	updateScoreDisplay() {
+		console.log("updateStandings");
 		const currentMatch = this.game.tournament.getCurrentMatch();
 		this.game.playerInfo.textContent = `${currentMatch.players[0].name} (${currentMatch.players[0].score}) vs ${currentMatch.players[1].name} (${currentMatch.players[1].score})`;
 		this.updateTournamentInfo()
 	}
 
 	updateTournamentInfo() {
+		console.log("updateTournamentInfo");
 		this.game.tournamentInfo.textContent = 'Tournament';
 		this.updateMatchList();
 		this.updateTable();
@@ -39,7 +41,7 @@ class UIManager {
 			if (match.completed) {
 				return `${player1} vs ${player2} ${match.players[0].score}:${match.players[1].score}`;
 			} else if (index === this.game.tournament.currentMatchIndex) {
-				return `<strong>${player1} vs ${player2}</strong>`;
+				return `<strong>${player1} vs ${player2} ${match.players[0].score}:${match.players[1].score}</strong>`;
 			} else {
 				return `${player1} vs ${player2}`;
 			}

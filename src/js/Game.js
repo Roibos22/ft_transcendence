@@ -56,7 +56,7 @@ class Game {
 		this.settingsView.style.display = 'none';
 		this.gameView.style.display = 'block';
 
-		this.tournament = new Tournament(this.players, this.tournamentSettings);
+		this.tournament = new Tournament(this, this.players, this.tournamentSettings);
 		this.startGame()
 	}
 
@@ -79,7 +79,5 @@ class Game {
 		console.log("draw game")
 		requestAnimationFrame(() => this.gameLoop());
 	}
-
-	
 
 }

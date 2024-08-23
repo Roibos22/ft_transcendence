@@ -18,12 +18,7 @@ class Input {
 			case 'Enter': 
 				console.log("Enter pressed"); 
 				if (this.game.state.waitingForEnter) {
-
 					this.game.tournament.currentMatchIndex++;
-					// if (this.game.tournament.currentMatchIndex >= this.game.tournament.matches.length) {
-					// 	console.log("Tournament completed!");
-					// }
-
 					this.game.state.startNextMatch();
 				}
 				break;
