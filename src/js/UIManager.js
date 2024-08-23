@@ -3,17 +3,36 @@ class UIManager {
 		this.game = game;
 	}
 
+	updateStandings() {
+		this.updateScoreDisplay();
+		const currentMatch = this.game.tournament.getCurrentMatch();
+
+		if (currentMatch.players[0].score >= this.game.tournamentSettings.pointsToWin || 
+			currentMatch.players[1].score >= this.game.tournamentSettings.pointsToWin) {
+			this.game.state.isGameRunning = false;
+			this.game.state.waitingForSpaceBar = false;
+			this.game.state.waitingForEnter = true;
+			this.game.state.gameFinished = true;
+			this.game.render.draw();
+
+			this.updateTournamentInfo();
+			this.game.tournament.completeMatch(currentMatch);
+		}
+	}
+
 	updateScoreDisplay() {
 		const currentMatch = this.game.tournament.getCurrentMatch();
-		//const tournamentInfo = document.getElementById('tournamentInfo');
-		console.log("current match: ", currentMatch.players[0])
 		this.game.playerInfo.textContent = `${currentMatch.players[0].name} (${currentMatch.players[0].score}) vs ${currentMatch.players[1].name} (${currentMatch.players[1].score})`;
 		this.updateTournamentInfo()
 	}
 
 	updateTournamentInfo() {
 		this.game.tournamentInfo.textContent = 'Tournament';
-		// Update matches
+		this.updateMatchList();
+		this.updateTable();
+	}
+
+	updateMatchList() {
 		const matchesList = this.game.tournament.matches.map((match, index) => {
 			const player1 = match.players[0].name;
 			const player2 = match.players[1].name;
@@ -26,8 +45,9 @@ class UIManager {
 			}
 		}).join('<br>');
 		this.game.tournamentInfoMatches.innerHTML = `<strong>Matches:</strong><br>${matchesList}`;
-	
-		// Update standings
+	}
+
+	updateTable() {
 		const standings = this.game.tournament.getStandings();
 		const standingsTable = `
 			<table border="1">
@@ -50,26 +70,6 @@ class UIManager {
 			</table>
 		`;
 		this.game.tournamentInfoStandings.innerHTML = `<strong>Standings:</strong><br>${standingsTable}`;
-	}
-
-
-
-	updateStandings() {
-		this.updateScoreDisplay();
-		const currentMatch = this.game.tournament.getCurrentMatch();
-
-		if (currentMatch.players[0].score >= this.game.tournamentSettings.pointsToWin || 
-			currentMatch.players[1].score >= this.game.tournamentSettings.pointsToWin) {
-			this.game.state.isGameRunning = false;
-			this.game.state.waitingForSpaceBar = false;
-			this.game.state.waitingForEnter = true;
-			this.game.state.gameFinished = true;
-			this.game.render.draw();
-
-			this.updateTournamentInfo();
-			this.game.tournament.completeMatch(currentMatch);
-
-		}
 	}
 
 }
