@@ -76,7 +76,7 @@ class PongGame {
 		this.state.waitingForSpaceBar = true;
 		this.state.isGameRunning = false;
 		this.physics.resetBallPosition();
-		this.uiManager.updateScoreDisplay();
+		this.uiManager.updateUI();
 		this.render.draw();
 		this.gameLoop();
 	}

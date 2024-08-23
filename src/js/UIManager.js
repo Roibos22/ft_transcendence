@@ -3,36 +3,15 @@ class UIManager {
 		this.game = game;
 	}
 
-	updateStandings() {
-		console.log("updateStandings");
-		this.updateScoreDisplay();
-		const currentMatch = this.game.tournament.getCurrentMatch();
-
-		if (currentMatch.players[0].score >= this.game.tournamentSettings.pointsToWin || 
-			currentMatch.players[1].score >= this.game.tournamentSettings.pointsToWin) {
-			this.game.state.isGameRunning = false;
-			this.game.state.waitingForSpaceBar = false;
-			this.game.state.waitingForEnter = true;
-			this.game.state.gameFinished = true;
-			this.game.render.draw();
-			this.game.tournament.completeMatch(currentMatch);
-			this.updateTournamentInfo();
-		}
-	}
-
-	updateScoreDisplay() {
-		console.log("updateStandings");
-		const currentMatch = this.game.tournament.getCurrentMatch();
-		this.game.playerInfo.textContent = `${currentMatch.players[0].name} (${currentMatch.players[0].score}) vs ${currentMatch.players[1].name} (${currentMatch.players[1].score})`;
-		this.updateTournamentInfo()
-		
-	}
-
-	updateTournamentInfo() {
-		console.log("updateTournamentInfo");
-		this.game.tournamentInfo.textContent = 'Tournament';
+	updateUI() {
+		this.updateScoreHeader()
 		this.updateMatchList();
 		this.updateTable();
+	}
+
+	updateScoreHeader() {
+		const currentMatch = this.game.tournament.getCurrentMatch();
+		this.game.playerInfo.textContent = `${currentMatch.players[0].name} (${currentMatch.players[0].score}) vs ${currentMatch.players[1].name} (${currentMatch.players[1].score})`;
 	}
 
 	updateMatchList() {

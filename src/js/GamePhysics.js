@@ -34,10 +34,7 @@ class GamePhysics {
 			} else if (this.ballX > this.game.canvas.width) {
 				this.game.tournament.getCurrentMatch().players[0].score++;
 			}
-			this.game.state.waitingForSpaceBar = true;
-			this.game.state.isGameRunning = false;
-			this.resetBallPosition();
-			this.game.uiManager.updateStandings();
+			this.game.state.pointScored();
 		}
 	}
 
