@@ -58,7 +58,7 @@ function addPlayer() {
 	}
 	const playerCount = playerInputs.children.length + 1;
 	const newPlayerDiv = document.createElement('div');
-	newPlayerDiv.innerHTML = `<input type="text" id="player${playerCount}" placeholder="Player ${playerCount}">`;
+	newPlayerDiv.innerHTML = `<div class="mb-3"> <input type="text" class="form-control" id="player${playerCount}" placeholder="Player ${playerCount}"> </div>`;
 	playerInputs.appendChild(newPlayerDiv);
 }
 
