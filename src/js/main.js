@@ -2,15 +2,26 @@ document.addEventListener('DOMContentLoaded', () => {
 	initSettingsUI();
 
 	const addPlayerButton = document.getElementById('addPlayer');
-	if (addPlayerButton) {
-		addPlayerButton.addEventListener('click', addPlayer);
-	} else {
-		console.error('Add player button not found');
-	}
+	addPlayerButton.addEventListener('click', addPlayer);
 
 	const game = new PongGame(settings);
 	window.game = game;
 	game.init();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+	const loginView = document.getElementById('loginView');
+	const gameSetupView = document.getElementById('gameSetupView');
+	const loginForm = document.getElementById('loginForm');
+
+	loginForm.addEventListener('submit', function(e) {
+		e.preventDefault();
+		const username = document.getElementById('username').value;
+		const password = document.getElementById('password').value;
+		loginView.style.display = 'none';
+		gameSetupView.style.display = 'block';
+
+	});
 });
 
 const settings = {
