@@ -10,9 +10,13 @@
 <body>
 	<div id="app">
 
-		<!-- GAME SETUP -->
+		<!-- GAME SETUP VIEW -->
 		<div class="container-md" id="gameSetupView">
+			
+			<!-- HEADING -->
 			<h1 class="text-center mt-4 mb-4">Welcome to Pong!</h1>
+
+			<!-- PLAYER INOUT FIELDS -->
 			<form id="playerForm">
 				<div id="playerInputs" class="player-input-fields">
 					<div class="mb-3">
@@ -23,68 +27,81 @@
 					</div>
 				</div>
 			</form>
+
+			<!-- BUTTONS -->
 			<div class="d-flex flex-column align-items-center">
 				<button type="button" id="addPlayer" class="btn btn-primary mb-2" style="width: 150px;">Add Player</button>
 				<button type="button" id="startGame" class="btn btn-success" style="width: 150px;">Start Game</button>
 			</div>
+
+			<!-- TOURNAMENT SETTINGS -->
+			<div id="settingsView" class="container-md settings-input-fields mt-4">
+				<h5 class="text-center mt-4 mb-4"">Tournament Settings</h5>
+
+				<!-- POINTS TO WIN -->
+				<div class="mb-3">
+				<label for="pointsToWin" class="form-label">Points to win:</label>
+				<div class="input-group">
+					<button class="btn btn-outline-secondary" type="button" onclick="updateValue('pointsToWin', -1)">-</button>
+					<span id="pointsToWinDisplay" class="form-control text-center">5</span>
+					<button class="btn btn-outline-secondary" type="button" onclick="updateValue('pointsToWin', 1)">+</button>
+				</div>
+				</div>
+
+				<!-- NUMBER OF GAMES -->
+				<div class="mb-3">
+				<label for="numberOfGames" class="form-label">Number of games:</label>
+				<div class="input-group">
+					<button class="btn btn-outline-secondary" type="button" onclick="updateValue('numberOfGames', -1)">-</button>
+					<span id="numberOfGamesDisplay" class="form-control text-center">1</span>
+					<button class="btn btn-outline-secondary" type="button" onclick="updateValue('numberOfGames', 1)">+</button>
+				</div>
+				</div>
+			</div>
 		</div>
 
-		<!-- GAME SETTINGS -->
-		<div id="settingsView" class="container-md settings-input-fields mt-4">
-			<h5 class="text-center mt-4 mb-4"">Tournament Settings</h5>
-			<div class="mb-3">
-			  <label for="pointsToWin" class="form-label">Points to win:</label>
-			  <div class="input-group">
-				<button class="btn btn-outline-secondary" type="button" onclick="updateValue('pointsToWin', -1)">-</button>
-				<span id="pointsToWinDisplay" class="form-control text-center">5</span>
-				<button class="btn btn-outline-secondary" type="button" onclick="updateValue('pointsToWin', 1)">+</button>
-			  </div>
-			</div>
-			<div class="mb-3">
-			  <label for="numberOfGames" class="form-label">Number of games:</label>
-			  <div class="input-group">
-				<button class="btn btn-outline-secondary" type="button" onclick="updateValue('numberOfGames', -1)">-</button>
-				<span id="numberOfGamesDisplay" class="form-control text-center">1</span>
-				<button class="btn btn-outline-secondary" type="button" onclick="updateValue('numberOfGames', 1)">+</button>
-			  </div>
-			</div>
-		  </div>
-		
 		<!-- GAME VIEW -->
 		<div id="gameView" class="container mt-4" style="display: none;">
+
+			<!-- CURRENT MATCH INFO -->
 			<div class="row mb-3">
-			  <div class="col-12">
-				<h1 id="playerInfo"></h1>
-			  </div>
+				<div class="col-12">
+					<h1 id="playerInfo"></h1>
+				</div>
 			</div>
-			
+
+			<!-- GAME CANVAS -->
 			<div class="row mb-3">
 			  <div class="col-12 text-center">
-				<canvas id="gameCanvas" class="img-fluid" width="1000" height="500"></canvas>
+				<canvas id="gameCanvas" class="img-fluid rounded" width="1000" height="500"></canvas>
 			  </div>
 			</div>
 			
+			<!-- TORUNAMENT INFO -->
 			<div class="container-fluid px-0" style="max-width: 1000px;">
 				<div class="row g-3">
-				  <div class="col-md-6">
-					<div id="tournamentInfoMatches" class="card">
-					  <div class="card-header bg-dark text-white text-center">
-						<h5 class="mb-0">Matches</h5>
-					  </div>
-					  <div class="card-body"></div>
+					
+					<!-- MATCHES INFO -->
+					<div class="col-md-6">
+						<div id="tournamentInfoMatches" class="card rounded">
+							<div class="card-header bg-dark text-white text-center rounded-top">
+								<h5 class="mb-0">Matches</h5>
+							</div>
+							<div class="card-body rounded-bottom"></div>
+						</div>
 					</div>
-				  </div>
-				  <div class="col-md-6">
-					<div id="tournamentInfoStandings" class="card">
-					  <div class="card-header bg-dark text-white text-center">
-						<h5 class="mb-0">Standings</h5>
-					  </div>
-					  <div class="card-body"></div>
+
+					<!-- STANDINGS -->
+					<div class="col-md-6">
+						<div id="tournamentInfoStandings" class="card rounded">
+							<div class="card-header bg-dark text-white text-center rounded-top">
+							<h5 class="mb-0">Standings</h5>
+						</div>
+						<div class="card-body rounded-bottom"></div>
 					</div>
-				  </div>
+					</div>
 				</div>
-			  </div>
-			
+			</div>
 		</div>
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
