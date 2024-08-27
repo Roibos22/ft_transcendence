@@ -78,11 +78,12 @@ class PongGame {
 	}
 
 	gameLoop() {
+		this.input.update();
 		if (this.state.currentState === GameStates.RUNNING) {
-			this.physics.movePaddles();
 			this.physics.moveBall();
 			this.physics.checkCollision();
 		}
+		this.physics.movePaddles();
 		this.render.draw();
 		this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
 	}
