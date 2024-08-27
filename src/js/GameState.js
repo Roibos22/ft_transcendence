@@ -46,6 +46,7 @@ class GameState {
 
 	resetMatchState() {
 		this.currentState = GameStates.WAITING_TO_START;
+		this.game.physics.resetPaddles();
 		this.waitingForEnter = true;
 	}
 

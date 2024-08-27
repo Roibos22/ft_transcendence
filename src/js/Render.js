@@ -33,7 +33,9 @@ class Render {
 				const currentMatch = this.game.tournament.getCurrentMatch();
 				const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
 				this.drawTopText(`${winner.name} wins the match!`);
-				this.drawBottomText('Press Enter for next match');
+				const nextMatch = this.game.tournament.getNextMatch();
+				const nextMatchText = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
+				this.drawBottomText(`Press Enter to start next match:\n${nextMatchText}`);
 				break;
 			case GameStates.FINISHED:
 				this.drawTopText('Tournament Completed!');
@@ -50,9 +52,18 @@ class Render {
 		ctx.fillText(text, canvas.width / 2, canvas.height / 4);
 	}
 
-	drawBottomText(text, fontSize = '36px') {
+	drawBottomText(text) {
 		const { ctx, canvas } = this.game;
-		ctx.font = `${fontSize} Arial`;
-		ctx.fillText(text, canvas.width / 2, canvas.height * 3 / 4);
+		const lines = text.split('\n');
+		const lineHeight = 60; // Adjust this value to change the space between lines
+		const startY = canvas.height * 3 / 4;
+
+		ctx.font = '36px Arial';
+		ctx.fillStyle = 'white';
+		ctx.textAlign = 'center';
+
+		lines.forEach((line, index) => {
+			ctx.fillText(line.trim(), canvas.width / 2, startY + (index * lineHeight));
+		});
 	}
 }

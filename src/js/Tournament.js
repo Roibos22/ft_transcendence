@@ -31,6 +31,10 @@ class Tournament {
 		return this.matches[this.currentMatchIndex];
 	}
 
+	getNextMatch() {
+		return this.matches[this.currentMatchIndex + 1];
+	}
+
 	completeMatch(match) {
 		const winner = match.players[0].score > match.players[1].score ? match.players[0] : match.players[1];
 		const loser = match.players[0] === winner ? match.players[1] : match.players[0];
