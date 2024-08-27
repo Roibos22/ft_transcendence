@@ -40,13 +40,20 @@ class Tournament {
 		this.players.find(p => p.name === winner.name).points += 2;
 		this.players.find(p => p.name === loser.name).points += 0;
 		match.completed = true;
-
+	
 		if (this.game.animationFrameId) {
 			cancelAnimationFrame(this.game.animationFrameId);
 			this.game.animationFrameId = null;
 		}
-		this.game.state.isGameRunning = false;
-
+	
+		if (this.currentMatchIndex >= this.matches.length - 1) {
+			this.game.state.currentState = GameStates.FINISHED;
+		} else {
+			this.game.state.currentState = GameStates.MATCH_ENDED;
+		}
+		this.game.state.waitingForEnter = true;
+	
+		this.game.uiManager.updateUI();
 	}
 
 	getStandings() {

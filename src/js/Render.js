@@ -19,33 +19,40 @@ class Render {
 		ctx.fill();
 		ctx.closePath();
 
-		if (this.game.state.waitingForSpaceBar) {
-			ctx.fillStyle = 'white';
-			ctx.font = '20px Arial';
-			ctx.textAlign = 'center';
-			ctx.fillText('Press Space to Start', canvas.width / 2, canvas.height / 3);
+		ctx.fillStyle = 'white';
+		ctx.textAlign = 'center';
+
+		switch (this.game.state.currentState) {
+			case GameStates.WAITING_TO_START:
+				this.drawTopText('Press Enter to Start');
+				break;
+			case GameStates.COUNTDOWN:
+				this.drawTopText(this.game.state.countdownValue.toString());
+				break;
+			case GameStates.MATCH_ENDED:
+				const currentMatch = this.game.tournament.getCurrentMatch();
+				const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
+				this.drawTopText(`${winner.name} wins the match!`);
+				this.drawBottomText('Press Enter for next match');
+				break;
+			case GameStates.FINISHED:
+				this.drawTopText('Tournament Completed!');
+				const finalMatch = this.game.tournament.getCurrentMatch();
+				const tournamentWinner = finalMatch.players[0].score > finalMatch.players[1].score ? finalMatch.players[0] : finalMatch.players[1];
+				this.drawBottomText(`${tournamentWinner.name} wins the tournament!`);
+				break;
 		}
+	}
 
-		if (this.game.state.gameFinished) {
-			console.log("Draw win screen")
-			ctx.fillStyle = 'white';
-			ctx.font = '20px Arial';
-			ctx.textAlign = 'center';
-			ctx.fillText('Game Finished!', canvas.width / 2, canvas.height / 3);
+	drawTopText(text, fontSize = '36px') {
+		const { ctx, canvas } = this.game;
+		ctx.font = `${fontSize} Arial`;
+		ctx.fillText(text, canvas.width / 2, canvas.height / 4);
+	}
 
-			const currentMatch = this.game.tournament.getCurrentMatch();
-			console.log(currentMatch.players[0]);
-			const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
-
-			ctx.fillStyle = 'white';
-			ctx.font = '24px Arial';
-			ctx.fillText(`${winner.name} wins!`, canvas.width / 2, canvas.height / 1.6);
-				
-			if (this.game.tournament.currentMatchIndex < this.game.tournament.matches.length) {
-				ctx.fillText('Press Enter for next match', canvas.width / 2, canvas.height / 1.3);
-			} else {
-				ctx.fillText('Tournament Completed!', canvas.width / 2, canvas.height / 1.3);
-			}
-		}
+	drawBottomText(text, fontSize = '36px') {
+		const { ctx, canvas } = this.game;
+		ctx.font = `${fontSize} Arial`;
+		ctx.fillText(text, canvas.width / 2, canvas.height * 3 / 4);
 	}
 }

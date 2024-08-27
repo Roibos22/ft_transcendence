@@ -9,7 +9,6 @@ class Input {
 
 	handleKeyPress(e) {
 		switch(e.key) {
-			case ' ': this.handleSpacebarKey(); break;
 			case 'Enter':  this.handleEnterKey(); break;
 			case 'w': this.game.physics.leftPaddleY -= 10; break;
 			case 's': this.game.physics.leftPaddleY += 10; break;
@@ -18,17 +17,18 @@ class Input {
 		}
 	}
 
-	handleSpacebarKey() {
-		if (this.game.state.waitingForSpaceBar) {
-			this.game.state.waitingForSpaceBar = false;
-			this.game.state.isGameRunning = true;
-		}
-	}
-
 	handleEnterKey() {
 		if (this.game.state.waitingForEnter) {
-			this.game.tournament.currentMatchIndex++;
-			this.game.state.startNextMatch();
+			if (this.game.state.currentState === GameStates.MATCH_ENDED) {
+				this.game.tournament.currentMatchIndex++;
+				this.game.state.startNextMatch();
+				this.game.state.startCountdown()
+			} else if (this.game.state.currentState === GameStates.FINISHED) {
+				console.log("TOURNAMENT COMPLETED");
+			} else {
+				this.game.state.startCountdown();
+			}
+			this.game.state.waitingForEnter = false;
 		}
 	}
 }
