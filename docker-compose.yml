@@ -1,9 +1,34 @@
 version: '3.8'
 
 services:
-  web:
+
+  postgres_db:
+    image: postgres
+    hostname: localhost
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: trans_db 
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+  
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+
+  client:
     image: nginx:alpine
     ports:
       - "3000:80"
     volumes:
-      - ./src:/usr/share/nginx/html/
+      - ./client:/usr/share/nginx/html/
+
+volumes:
+  postgres-data:
