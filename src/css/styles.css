@@ -10,17 +10,17 @@
 	margin-right: auto;
 }
 
-.background-gradient {
-    min-height: 100vh;
-    width: 100%;
-    background: #d7b8f3;
-    background: linear-gradient(to right, rgba(215, 184, 243, 1), rgba(187, 217, 255, 1));
-    background-attachment: fixed;
-    background-size: cover;
+.login-card {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+.background-gradient {
+	min-height: 100vh;
+	width: 100%;
+	background: #d7b8f3;
+	background: linear-gradient(to right, rgba(215, 184, 243, 1), rgba(187, 217, 255, 1));
+	background-attachment: fixed;
+	background-size: cover;
 }

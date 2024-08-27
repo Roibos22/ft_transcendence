@@ -1,13 +1,34 @@
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('DOMContentLoaded', () => {
+// 	// initSettingsUI();
+
+// 	// const addPlayerButton = document.getElementById('addPlayer');
+// 	// addPlayerButton.addEventListener('click', addPlayer);
+
+// 	// const game = new PongGame(settings);
+// 	// window.game = game;
+// 	// game.init();
+// });
+
+function initGame(username) {
 	initSettingsUI();
 
 	const addPlayerButton = document.getElementById('addPlayer');
 	addPlayerButton.addEventListener('click', addPlayer);
 
+	setFirstPlayerName(username);
+
 	const game = new PongGame(settings);
 	window.game = game;
 	game.init();
-});
+}
+
+function setFirstPlayerName(username) {
+	const playerInputs = document.getElementById('playerInputs');
+	const firstPlayerInput = playerInputs.querySelector('input');
+	if (username) {
+		firstPlayerInput.value = username;
+	}
+}
 
 document.addEventListener('DOMContentLoaded', function() {
 	const loginView = document.getElementById('loginView');
@@ -17,16 +38,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	loginForm.addEventListener('submit', function(e) {
 		e.preventDefault();
 		const username = document.getElementById('username').value;
-		const password = document.getElementById('password').value;
+		//const password = document.getElementById('password').value;
 		loginView.style.display = 'none';
 		gameSetupView.style.display = 'block';
-
+		initGame(username)
 	});
 });
 
 const settings = {
 	pointsToWin: 5,
-	numberOfGames: 1
+	numberOfGames: 1,
+	username: ""
 };
 
 function initSettingsUI() {
