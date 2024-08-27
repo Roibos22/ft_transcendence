@@ -13,6 +13,13 @@ class Input {
 	init() {
 		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
 		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
+	}
+
+	preventDefaultScroll(e) {
+		if (['ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
+			e.preventDefault();
+		}
 	}
 
 	handleKeyDown(e) {
