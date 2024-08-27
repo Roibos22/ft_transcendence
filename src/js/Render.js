@@ -34,8 +34,10 @@ class Render {
 				const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
 				this.drawTopText(`${winner.name} wins the match!`);
 				const nextMatch = this.game.tournament.getNextMatch();
-				const nextMatchText = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
-				this.drawBottomText(`Press Enter to start next match:\n${nextMatchText}`);
+				if (nextMatch) {
+					const nextMatchText = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
+					this.drawBottomText(`Press Enter to start next match:\n${nextMatchText}`);
+				}
 				break;
 			case GameStates.FINISHED:
 				this.drawTopText('Tournament Completed!');

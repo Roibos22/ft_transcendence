@@ -49,14 +49,13 @@ class Tournament {
 			cancelAnimationFrame(this.game.animationFrameId);
 			this.game.animationFrameId = null;
 		}
-	
+
 		if (this.currentMatchIndex >= this.matches.length - 1) {
 			this.game.state.currentState = GameStates.FINISHED;
 		} else {
 			this.game.state.currentState = GameStates.MATCH_ENDED;
 		}
 		this.game.state.waitingForEnter = true;
-	
 		this.game.uiManager.updateUI();
 	}
 

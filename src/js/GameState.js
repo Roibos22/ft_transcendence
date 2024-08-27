@@ -39,8 +39,8 @@ class GameState {
 			this.game.physics.resetBallPosition();
 			this.game.uiManager.updateUI();
 		} else {
-			console.log("Tournament completed!");
 			this.currentState = GameStates.FINISHED;
+			this.game.uiManager.updateUI();
 		}
 	}
 
@@ -65,7 +65,6 @@ class GameState {
 
 		if (currentMatch.players[0].score >= this.game.tournamentSettings.pointsToWin || 
 			currentMatch.players[1].score >= this.game.tournamentSettings.pointsToWin) {
-			console.log("MATCH WON!");
 			this.currentState = GameStates.MATCH_ENDED;
 			this.waitingForEnter = true;
 			this.game.render.draw();
