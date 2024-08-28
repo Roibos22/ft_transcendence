@@ -9,7 +9,7 @@
 </head>
 <body>
 	<div id="app" class="background-gradient  p-5">
-
+		
 		<!-- LOGIN VIEW -->
 		<div id="loginView" class="login-container">
 			<div class="login-card">
@@ -43,6 +43,17 @@
 			
 			<!-- HEADING -->
 			<h1 class="text-center">Welcome to Pong!</h1>
+
+			<!-- SEGMENTED PICKER GAME MODE -->
+			<div class="d-flex flex-column align-items-center mt-3 mb-3">
+				<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+					<input type="radio" class="btn-check" name="btnradio" id="btn_singleplayer" autocomplete="off" checked>
+					<label class="btn btn-outline-primary" style="width: 150px;" for="btn_singleplayer">Single Player</label>
+				
+					<input type="radio" class="btn-check" name="btnradio" id="btn_multiplayer" autocomplete="off">
+					<label class="btn btn-outline-primary" style="width: 150px;" for="btn_multiplayer">Multi Player</label>
+				</div>
+			</div>
 
 			<!-- PLAYER INOUT FIELDS -->
 			<form id="playerForm">

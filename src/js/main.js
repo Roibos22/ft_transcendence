@@ -1,13 +1,42 @@
-// document.addEventListener('DOMContentLoaded', () => {
-// 	// initSettingsUI();
+document.addEventListener('DOMContentLoaded', function() {
+	const loginView = document.getElementById('loginView');
+	const gameSetupView = document.getElementById('gameSetupView');
+	const loginForm = document.getElementById('loginForm');
 
-// 	// const addPlayerButton = document.getElementById('addPlayer');
-// 	// addPlayerButton.addEventListener('click', addPlayer);
+	const singlePlayerBtn = document.getElementById('btn_singleplayer');
+	const multiPlayerBtn = document.getElementById('btn_multiplayer');
 
-// 	// const game = new PongGame(settings);
-// 	// window.game = game;
-// 	// game.init();
-// });
+	singlePlayerBtn.addEventListener('change', updateUIForGameMode);
+	multiPlayerBtn.addEventListener('change', updateUIForGameMode);
+
+	loginForm.addEventListener('submit', function(e) {
+		e.preventDefault();
+		const username = document.getElementById('username').value;
+		//const password = document.getElementById('password').value;
+		loginView.style.display = 'none';
+		gameSetupView.style.display = 'block';
+		initGame(username)
+	});
+
+	updateUIForGameMode();
+});
+
+function updateUIForGameMode() {
+	const singlePlayerBtn = document.getElementById('btn_singleplayer');
+	const multiPlayerBtn = document.getElementById('btn_multiplayer');
+	const player2Input = document.getElementById('player2');
+	const addPlayerButton = document.getElementById('addPlayer');
+
+	if (singlePlayerBtn.checked) {
+		// delete all added players
+		player2Input.style.display = 'none';
+		addPlayerButton.style.display = 'none';
+	} else if (multiPlayerBtn.checked) {
+		player2Input.style.display = 'block';
+		addPlayerButton.style.display = 'block';
+	}
+}
+
 
 function initGame(username) {
 	initSettingsUI();
@@ -29,21 +58,6 @@ function setFirstPlayerName(username) {
 		firstPlayerInput.value = username;
 	}
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-	const loginView = document.getElementById('loginView');
-	const gameSetupView = document.getElementById('gameSetupView');
-	const loginForm = document.getElementById('loginForm');
-
-	loginForm.addEventListener('submit', function(e) {
-		e.preventDefault();
-		const username = document.getElementById('username').value;
-		//const password = document.getElementById('password').value;
-		loginView.style.display = 'none';
-		gameSetupView.style.display = 'block';
-		initGame(username)
-	});
-});
 
 const settings = {
 	pointsToWin: 5,
