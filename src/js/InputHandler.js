@@ -7,7 +7,6 @@ class Input {
 			ArrowUp: false,
 			ArrowDown: false
 		};
-		this.paddleSpeed = 5; // Pixels per frame
 	}
 
 	init() {
@@ -65,13 +64,13 @@ class Input {
 			if (this.keys.ArrowUp) {
 				this.game.physics.leftPaddleY = Math.max(
 					0, 
-					this.game.physics.leftPaddleY - this.paddleSpeed
+					this.game.physics.leftPaddleY - this.game.physics.paddleSpeed
 				);
 			}
 			if (this.keys.ArrowDown) {
 				this.game.physics.leftPaddleY = Math.min(
 					this.game.canvas.height - this.game.physics.paddleHeight, 
-					this.game.physics.leftPaddleY + this.paddleSpeed
+					this.game.physics.leftPaddleY + this.game.physics.paddleSpeed
 				);
 			}
 		}
@@ -82,25 +81,25 @@ class Input {
 			if (this.keys.w) {
 				this.game.physics.leftPaddleY = Math.max(
 					0, 
-					this.game.physics.leftPaddleY - this.paddleSpeed
+					this.game.physics.leftPaddleY - this.game.physics.paddleSpeed
 				);
 			}
 			if (this.keys.s) {
 				this.game.physics.leftPaddleY = Math.min(
 					this.game.canvas.height - this.game.physics.paddleHeight, 
-					this.game.physics.leftPaddleY + this.paddleSpeed
+					this.game.physics.leftPaddleY + this.game.physics.paddleSpeed
 				);
 			}
 			if (this.keys.ArrowUp) {
 				this.game.physics.rightPaddleY = Math.max(
 					0, 
-					this.game.physics.rightPaddleY - this.paddleSpeed
+					this.game.physics.rightPaddleY - this.game.physics.paddleSpeed
 				);
 			}
 			if (this.keys.ArrowDown) {
 				this.game.physics.rightPaddleY = Math.min(
 					this.game.canvas.height - this.game.physics.paddleHeight, 
-					this.game.physics.rightPaddleY + this.paddleSpeed
+					this.game.physics.rightPaddleY + this.game.physics.paddleSpeed
 				);
 			}
 		}

@@ -2,10 +2,9 @@ class AIPlayer {
 	constructor(game) {
 		this.game = game;
 		this.lastDecisionTime = 0;
-		this.decisionInterval = 500;
+		this.decisionInterval = 1000;
 		this.targetY = this.game.physics.rightPaddleY;
 		this.paddleHeight = this.game.physics.paddleHeight;
-		this.speed = 5;
 	}
 
 	update() {
@@ -18,7 +17,7 @@ class AIPlayer {
 		
 		const distanceToTarget = this.targetY - this.game.physics.rightPaddleY;
 		const direction = Math.sign(distanceToTarget);
-		const movement = Math.min(Math.abs(distanceToTarget), this.speed);
+		const movement = Math.min(Math.abs(distanceToTarget), this.game.physics.paddleSpeed);
 		
 		this.game.physics.rightPaddleY += direction * movement;
 		this.game.physics.rightPaddleY = Math.max(0, Math.min(this.game.canvas.height - this.paddleHeight, this.game.physics.rightPaddleY));
