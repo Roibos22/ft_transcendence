@@ -53,6 +53,31 @@ class Input {
 	}
 
 	update() {
+		if (this.game.tournamentSettings.mode === GameModes.SINGLE) {
+			this.updateSinglePlayerMode();
+		} else if (this.game.tournamentSettings.mode === GameModes.MULTI) {
+			this.updateMultiPlayerMode();
+		}
+	}
+
+	updateSinglePlayerMode() {
+		if (this.game.state.currentState === GameStates.RUNNING || this.game.state.currentState === GameStates.COUNTDOWN) {
+			if (this.keys.ArrowUp) {
+				this.game.physics.leftPaddleY = Math.max(
+					0, 
+					this.game.physics.leftPaddleY - this.paddleSpeed
+				);
+			}
+			if (this.keys.ArrowDown) {
+				this.game.physics.leftPaddleY = Math.min(
+					this.game.canvas.height - this.game.physics.paddleHeight, 
+					this.game.physics.leftPaddleY + this.paddleSpeed
+				);
+			}
+		}
+	}
+
+	updateMultiPlayerMode() {
 		if (this.game.state.currentState === GameStates.RUNNING || this.game.state.currentState === GameStates.COUNTDOWN) {
 			if (this.keys.w) {
 				this.game.physics.leftPaddleY = Math.max(
