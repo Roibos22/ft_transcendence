@@ -29,9 +29,11 @@ function updateUIForGameMode() {
 	if (singlePlayerBtn.checked) {
 		deleteAllPlayersButOne();
 		addPlayerButton.style.display = 'none';
+		settings.mode = GameModes.SINGLE;
 	} else if (multiPlayerBtn.checked) {
 		addPlayer()
 		addPlayerButton.style.display = 'block';
+		settings.mode = GameModes.MULTI;
 	}
 }
 
@@ -56,10 +58,16 @@ function setFirstPlayerName(username) {
 	}
 }
 
+const GameModes = {
+	SINGLE: 'single',
+	MULTI: 'multi',
+};
+
 const settings = {
 	pointsToWin: 5,
 	numberOfGames: 1,
-	username: ""
+	username: "",
+	mode: GameModes.SINGLE
 };
 
 function initSettingsUI() {

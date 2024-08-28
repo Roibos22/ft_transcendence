@@ -54,9 +54,9 @@ class PongGame {
 				score: 0
 			});
 		});
-		while (this.players.length < 2) {
+		if (this.tournamentSettings.mode === GameModes.SINGLE) {
 			this.players.push({
-				name: `Player ${this.players.length + 1}`,
+				name: "AI Player",
 				score: 0
 			});
 		}
