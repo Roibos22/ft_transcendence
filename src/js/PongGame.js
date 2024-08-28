@@ -20,6 +20,7 @@ class PongGame {
 		this.physics = new GamePhysics(this);
 		this.state = new GameState(this);
 		this.uiManager = new UIManager(this);
+		this.aiPlayer = new AIPlayer(this);
 	}
 
 	initElements() {
@@ -82,6 +83,9 @@ class PongGame {
 		if (this.state.currentState === GameStates.RUNNING) {
 			this.physics.moveBall();
 			this.physics.checkCollision();
+			if (this.tournamentSettings.mode === GameModes.SINGLE) {
+				this.aiPlayer.update();
+			}
 		}
 		this.physics.movePaddles();
 		this.render.draw();
