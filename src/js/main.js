@@ -24,19 +24,16 @@ document.addEventListener('DOMContentLoaded', function() {
 function updateUIForGameMode() {
 	const singlePlayerBtn = document.getElementById('btn_singleplayer');
 	const multiPlayerBtn = document.getElementById('btn_multiplayer');
-	const player2Input = document.getElementById('player2');
 	const addPlayerButton = document.getElementById('addPlayer');
 
 	if (singlePlayerBtn.checked) {
-		// delete all added players
-		player2Input.style.display = 'none';
+		deleteAllPlayersButOne();
 		addPlayerButton.style.display = 'none';
 	} else if (multiPlayerBtn.checked) {
-		player2Input.style.display = 'block';
+		addPlayer()
 		addPlayerButton.style.display = 'block';
 	}
 }
-
 
 function initGame(username) {
 	initSettingsUI();
@@ -109,3 +106,10 @@ function addPlayer() {
 	playerInputs.appendChild(newPlayerDiv);
 }
 
+function deleteAllPlayersButOne() {
+	const playerInputs = document.getElementById('playerInputs');
+	const inputDivs = Array.from(playerInputs.children);
+	for (let i = inputDivs.length - 1; i > 0; i--) {
+		playerInputs.removeChild(inputDivs[i]);
+	}
+}
