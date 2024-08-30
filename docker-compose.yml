@@ -30,5 +30,15 @@ services:
     volumes:
       - ./client:/usr/share/nginx/html/
 
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres_db
+
 volumes:
   postgres-data:

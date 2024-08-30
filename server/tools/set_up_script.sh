@@ -6,6 +6,7 @@ while ! nc -z postgres_db 5432; do
 done
 echo "PostgreSQL is up - executing commands."
 
+python manage.py makemigrations
 python manage.py migrate
 
 exec python manage.py runserver 0.0.0.0:8000
