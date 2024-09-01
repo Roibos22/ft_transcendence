@@ -1,21 +1,73 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
+	const loginView = document.getElementById('loginView');
+	const gameSetupView = document.getElementById('gameSetupView');
+	const loginForm = document.getElementById('loginForm');
+
+	const singlePlayerBtn = document.getElementById('btn_singleplayer');
+	const multiPlayerBtn = document.getElementById('btn_multiplayer');
+
+	singlePlayerBtn.addEventListener('change', updateUIForGameMode);
+	multiPlayerBtn.addEventListener('change', updateUIForGameMode);
+
+	loginForm.addEventListener('submit', function(e) {
+		e.preventDefault();
+		const username = document.getElementById('username').value;
+		//const password = document.getElementById('password').value;
+		loginView.style.display = 'none';
+		gameSetupView.style.display = 'block';
+		initGame(username)
+	});
+
+	updateUIForGameMode();
+});
+
+function updateUIForGameMode() {
+	const singlePlayerBtn = document.getElementById('btn_singleplayer');
+	const multiPlayerBtn = document.getElementById('btn_multiplayer');
+	const addPlayerButton = document.getElementById('addPlayer');
+
+	if (singlePlayerBtn.checked) {
+		deleteAllPlayersButOne();
+		addPlayerButton.style.display = 'none';
+		settings.mode = GameModes.SINGLE;
+	} else if (multiPlayerBtn.checked) {
+		addPlayer()
+		addPlayerButton.style.display = 'block';
+		settings.mode = GameModes.MULTI;
+	}
+}
+
+function initGame(username) {
 	initSettingsUI();
 
 	const addPlayerButton = document.getElementById('addPlayer');
-	if (addPlayerButton) {
-		addPlayerButton.addEventListener('click', addPlayer);
-	} else {
-		console.error('Add player button not found');
-	}
+	addPlayerButton.addEventListener('click', addPlayer);
+
+	setFirstPlayerName(username);
 
 	const game = new PongGame(settings);
 	window.game = game;
 	game.init();
-});
+}
+
+function setFirstPlayerName(username) {
+	const playerInputs = document.getElementById('playerInputs');
+	const firstPlayerInput = playerInputs.querySelector('input');
+	if (username) {
+		firstPlayerInput.value = username;
+	}
+}
+
+const GameModes = {
+	SINGLE: 'single',
+	MULTI: 'multi',
+};
 
 const settings = {
 	pointsToWin: 5,
-	numberOfGames: 1
+	numberOfGames: 1,
+	username: "",
+	mode: GameModes.SINGLE
 };
 
 function initSettingsUI() {
@@ -58,7 +110,14 @@ function addPlayer() {
 	}
 	const playerCount = playerInputs.children.length + 1;
 	const newPlayerDiv = document.createElement('div');
-	newPlayerDiv.innerHTML = `<input type="text" id="player${playerCount}" placeholder="Player ${playerCount}">`;
+	newPlayerDiv.innerHTML = `<div class="mb-3"> <input type="text" class="form-control" id="player${playerCount}" placeholder="Player ${playerCount}"> </div>`;
 	playerInputs.appendChild(newPlayerDiv);
 }
 
+function deleteAllPlayersButOne() {
+	const playerInputs = document.getElementById('playerInputs');
+	const inputDivs = Array.from(playerInputs.children);
+	for (let i = inputDivs.length - 1; i > 0; i--) {
+		playerInputs.removeChild(inputDivs[i]);
+	}
+}

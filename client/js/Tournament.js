@@ -31,6 +31,10 @@ class Tournament {
 		return this.matches[this.currentMatchIndex];
 	}
 
+	getNextMatch() {
+		return this.matches[this.currentMatchIndex + 1];
+	}
+
 	completeMatch(match) {
 		const winner = match.players[0].score > match.players[1].score ? match.players[0] : match.players[1];
 		const loser = match.players[0] === winner ? match.players[1] : match.players[0];
@@ -40,13 +44,19 @@ class Tournament {
 		this.players.find(p => p.name === winner.name).points += 2;
 		this.players.find(p => p.name === loser.name).points += 0;
 		match.completed = true;
-
+	
 		if (this.game.animationFrameId) {
 			cancelAnimationFrame(this.game.animationFrameId);
 			this.game.animationFrameId = null;
 		}
-		this.game.state.isGameRunning = false;
 
+		if (this.currentMatchIndex >= this.matches.length - 1) {
+			this.game.state.currentState = GameStates.FINISHED;
+		} else {
+			this.game.state.currentState = GameStates.MATCH_ENDED;
+		}
+		this.game.state.waitingForEnter = true;
+		this.game.uiManager.updateUI();
 	}
 
 	getStandings() {

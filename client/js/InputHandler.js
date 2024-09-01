@@ -1,34 +1,107 @@
 class Input {
 	constructor(game) {
 		this.game = game;
+		this.keys = {
+			w: false,
+			s: false,
+			ArrowUp: false,
+			ArrowDown: false
+		};
 	}
 
 	init() {
-		document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
+		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
 	}
 
-	handleKeyPress(e) {
-		switch(e.key) {
-			case ' ': this.handleSpacebarKey(); break;
-			case 'Enter':  this.handleEnterKey(); break;
-			case 'w': this.game.physics.leftPaddleY -= 10; break;
-			case 's': this.game.physics.leftPaddleY += 10; break;
-			case 'ArrowUp': this.game.physics.rightPaddleY -= 10; break;
-			case 'ArrowDown': this.game.physics.rightPaddleY += 10; break;
+	preventDefaultScroll(e) {
+		if (['ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
+			e.preventDefault();
 		}
 	}
 
-	handleSpacebarKey() {
-		if (this.game.state.waitingForSpaceBar) {
-			this.game.state.waitingForSpaceBar = false;
-			this.game.state.isGameRunning = true;
+	handleKeyDown(e) {
+		if (e.key in this.keys) {
+			this.keys[e.key] = true;
+		} else if (e.key === 'Enter') {
+			this.handleEnterKey();
+		}
+	}
+
+	handleKeyUp(e) {
+		if (e.key in this.keys) {
+			this.keys[e.key] = false;
 		}
 	}
 
 	handleEnterKey() {
 		if (this.game.state.waitingForEnter) {
-			this.game.tournament.currentMatchIndex++;
-			this.game.state.startNextMatch();
+			if (this.game.state.currentState === GameStates.MATCH_ENDED) {
+				this.game.tournament.currentMatchIndex++;
+				this.game.state.startNextMatch();
+				this.game.state.startCountdown();
+			} else if (this.game.state.currentState === GameStates.FINISHED) {
+				console.log("TOURNAMENT COMPLETED");
+				// Add logic to restart the tournament or return to main menu
+			} else {
+				this.game.state.startCountdown();
+			}
+			this.game.state.waitingForEnter = false;
+		}
+	}
+
+	update() {
+		if (this.game.tournamentSettings.mode === GameModes.SINGLE) {
+			this.updateSinglePlayerMode();
+		} else if (this.game.tournamentSettings.mode === GameModes.MULTI) {
+			this.updateMultiPlayerMode();
+		}
+	}
+
+	updateSinglePlayerMode() {
+		if (this.game.state.currentState === GameStates.RUNNING || this.game.state.currentState === GameStates.COUNTDOWN) {
+			if (this.keys.ArrowUp) {
+				this.game.physics.leftPaddleY = Math.max(
+					0, 
+					this.game.physics.leftPaddleY - this.game.physics.paddleSpeed
+				);
+			}
+			if (this.keys.ArrowDown) {
+				this.game.physics.leftPaddleY = Math.min(
+					this.game.canvas.height - this.game.physics.paddleHeight, 
+					this.game.physics.leftPaddleY + this.game.physics.paddleSpeed
+				);
+			}
+		}
+	}
+
+	updateMultiPlayerMode() {
+		if (this.game.state.currentState === GameStates.RUNNING || this.game.state.currentState === GameStates.COUNTDOWN) {
+			if (this.keys.w) {
+				this.game.physics.leftPaddleY = Math.max(
+					0, 
+					this.game.physics.leftPaddleY - this.game.physics.paddleSpeed
+				);
+			}
+			if (this.keys.s) {
+				this.game.physics.leftPaddleY = Math.min(
+					this.game.canvas.height - this.game.physics.paddleHeight, 
+					this.game.physics.leftPaddleY + this.game.physics.paddleSpeed
+				);
+			}
+			if (this.keys.ArrowUp) {
+				this.game.physics.rightPaddleY = Math.max(
+					0, 
+					this.game.physics.rightPaddleY - this.game.physics.paddleSpeed
+				);
+			}
+			if (this.keys.ArrowDown) {
+				this.game.physics.rightPaddleY = Math.min(
+					this.game.canvas.height - this.game.physics.paddleHeight, 
+					this.game.physics.rightPaddleY + this.game.physics.paddleSpeed
+				);
+			}
 		}
 	}
 }

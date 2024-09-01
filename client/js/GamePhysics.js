@@ -11,6 +11,12 @@ class GamePhysics {
 		this.ballY = this.game.canvas.height / 2;
 		this.ballSpeedX = 8;
 		this.ballSpeedY = 8;
+		this.paddleSpeed = 8;
+	}
+
+	resetPaddles() {
+		this.leftPaddleY = this.game.canvas.height / 2 - this.paddleHeight / 2;
+		this.rightPaddleY = this.game.canvas.height / 2 - this.paddleHeight / 2;
 	}
 
 	movePaddles() {

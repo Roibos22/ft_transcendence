@@ -1,12 +1,37 @@
+const GameStates = {
+	WAITING_TO_START: 'waitingToStart',
+	COUNTDOWN: 'countdown',
+	RUNNING: 'running',
+	FINISHED: 'finished',
+	MATCH_ENDED: 'matchEnded'
+};
+
 class GameState {
 	constructor(game) {
 		this.game = game;
-
-		this.isGameRunning = false;
-		this.waitingForSpaceBar = true;
-		this.waitingForEnter = false;
-		this.gameFinished = false
+		this.currentState = GameStates.WAITING_TO_START;
+		this.countdownValue = 3;
+		this.waitingForEnter = true;
 	}
+
+	startOrResumeGame() {
+		this.currentState = GameStates.RUNNING;
+	}
+
+	startCountdown() {
+		this.currentState = GameStates.COUNTDOWN;
+		this.countdownValue = 3;
+		this.countdownInterval = setInterval(() => {
+			this.countdownValue--;
+			if (this.countdownValue === 0) {
+				clearInterval(this.countdownInterval);
+				this.isCountingDown = false;
+				this.startOrResumeGame();
+			}
+			this.game.render.draw();
+		}, 1000);
+	}
+
 
 	startNextMatch() {
 		if (this.game.tournament.currentMatchIndex < this.game.tournament.matches.length) {
@@ -14,24 +39,25 @@ class GameState {
 			this.game.physics.resetBallPosition();
 			this.game.uiManager.updateUI();
 		} else {
-			console.log("Tournament completed!");
-			this.gameFinished = true;
+			this.currentState = GameStates.FINISHED;
+			this.game.uiManager.updateUI();
 		}
 	}
 
 	resetMatchState() {
-		this.gameFinished = false;
-		this.waitingForEnter = false;
-		this.waitingForSpaceBar = true;
-		this.isGameRunning = false;
+		this.currentState = GameStates.WAITING_TO_START;
+		this.game.physics.resetPaddles();
+		this.waitingForEnter = true;
 	}
 
 	pointScored() {
-		this.waitingForSpaceBar = true;
-		this.isGameRunning = false;
 		this.game.physics.resetBallPosition();
-		this.checkIfMatchWon()
+		this.checkIfMatchWon();
 		this.game.uiManager.updateUI();
+
+		if (this.currentState !== GameStates.MATCH_ENDED && this.currentState !== GameStates.FINISHED) {
+			this.startCountdown();
+		}
 	}
 
 	checkIfMatchWon() {
@@ -39,10 +65,8 @@ class GameState {
 
 		if (currentMatch.players[0].score >= this.game.tournamentSettings.pointsToWin || 
 			currentMatch.players[1].score >= this.game.tournamentSettings.pointsToWin) {
-			this.isGameRunning = false;
-			this.waitingForSpaceBar = false;
+			this.currentState = GameStates.MATCH_ENDED;
 			this.waitingForEnter = true;
-			this.gameFinished = true;
 			this.game.render.draw();
 			this.game.tournament.completeMatch(currentMatch);
 			this.game.uiManager.updateUI();

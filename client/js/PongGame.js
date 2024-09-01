@@ -20,6 +20,7 @@ class PongGame {
 		this.physics = new GamePhysics(this);
 		this.state = new GameState(this);
 		this.uiManager = new UIManager(this);
+		this.aiPlayer = new AIPlayer(this);
 	}
 
 	initElements() {
@@ -54,9 +55,9 @@ class PongGame {
 				score: 0
 			});
 		});
-		while (this.players.length < 2) {
+		if (this.tournamentSettings.mode === GameModes.SINGLE) {
 			this.players.push({
-				name: `Player ${this.players.length + 1}`,
+				name: "AI Player",
 				score: 0
 			});
 		}
@@ -78,11 +79,15 @@ class PongGame {
 	}
 
 	gameLoop() {
-		if (this.state.isGameRunning) {
-			this.physics.movePaddles();
+		this.input.update();
+		if (this.state.currentState === GameStates.RUNNING) {
 			this.physics.moveBall();
 			this.physics.checkCollision();
+			if (this.tournamentSettings.mode === GameModes.SINGLE) {
+				this.aiPlayer.update();
+			}
 		}
+		this.physics.movePaddles();
 		this.render.draw();
 		this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
 	}
