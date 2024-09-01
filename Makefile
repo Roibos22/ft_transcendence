@@ -44,7 +44,7 @@ start:
 # Remove all containers
 remove:
 	@echo "$(BLUE)Removing containers ...$(RESET)"
-	@$(DOCKER_COMPOSE) down
+	@$(DOCKER_COMPOSE) down -v
 	@docker rm -f $$(docker ps -aq) || true
 	@docker network rm $(PROJECT_NAME)_default 2>/dev/null || true
 	@echo "$(GREEN)Containers removed$(RESET)"
