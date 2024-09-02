@@ -11,7 +11,11 @@ class Game(models.Model):
         MaxValueValidator(MAX_SCORE),
         default=0
     )
-    score_player2 = models.IntegerField(default=0)
+    score_player2 = models.IntegerField(
+        MinValueValidator(MIN_SCORE),
+        MaxValueValidator(MAX_SCORE),
+        default=0
+	)
     game_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
