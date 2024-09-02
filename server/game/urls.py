@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import get_users, create_user
+from .views import get_games, create_game
 
 urlpatterns = [
-    path('', get_users, name='get_users'),
-    path('create/', create_user, name='create_user')
+    path('', get_games, name='get_games'),
+    path('create/', create_game, name='create_game')
 ]

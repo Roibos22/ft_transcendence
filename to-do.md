@@ -27,3 +27,8 @@ Layers:
 - API <-> Users/Games: The API layer exposes endpoints for external interactions, enabling clients to manage user profiles, authenticate, or interact with game data. It communicates with both the Users and Games layers to fulfill API requests.
 
 - API <-> Core: The API layer may utilize Core utilities and settings for tasks like logging, error handling, or configuring API behavior.
+
+
+## Notes
+
+- Online status update

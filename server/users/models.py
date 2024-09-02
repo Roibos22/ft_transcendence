@@ -1,10 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as DjangoUser
 
 class User(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(DjangoUser, on_delete=models.CASCADE)
     #Online status
-    status = models.BooleanField()
+    online = models.BooleanField(default=False)
     #Avatar picture
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     #Friends list (symmetric?)
