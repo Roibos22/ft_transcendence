@@ -8,7 +8,7 @@ class User(models.Model):
     #Avatar picture
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     #Friends list (symmetric?)
-    friends = models.ManyToManyField('self', blank=True, symmetrical=True, related_name='friend_of')
+    friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='friend_of')
 
     def __str__(self):
         return f"{self.user.username}'s profile"
