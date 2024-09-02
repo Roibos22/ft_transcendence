@@ -17,7 +17,7 @@ Layers:
 
 ## Layers cross-relation
 
-### The cross-relations between your layers in the online minigame app can be summarized as follows:
+### The cross-relations between your layers in the online minigame app can be summarized as follows
 
 - Users <-> Core: The Core layer provides global utilities and settings that are used for user authentication and profile management. It may also handle settings related to user sessions.
 
@@ -28,7 +28,6 @@ Layers:
 - API <-> Users/Games: The API layer exposes endpoints for external interactions, enabling clients to manage user profiles, authenticate, or interact with game data. It communicates with both the Users and Games layers to fulfill API requests.
 
 - API <-> Core: The API layer may utilize Core utilities and settings for tasks like logging, error handling, or configuring API behavior.
-
 
 ## Notes
 
