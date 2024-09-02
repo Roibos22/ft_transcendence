@@ -12,13 +12,13 @@ Authentication, score tracking, session management.
 *Method:* POST
 *Description:* Creates a new user in the system.
 
-### Request Headers
+#### Request Headers
 
 *Content-Type:* application/json
-*Authorization:* Bearer <token> (if authentication is required) - not implemented yet
-*Request Body*
 
-The request body should be in JSON format with the following structure:
+*Authorization:* Bearer ***token*** (if authentication is required) - not implemented yet
+
+*Request Body:* The request body should be in JSON format with the structure below
 
 ```json
 {
@@ -35,7 +35,7 @@ The request body should be in JSON format with the following structure:
 }
 ```
 
-### Response
+#### Response
 
 Success Response
 Status Code: 201 Created
@@ -56,7 +56,53 @@ Response Body:
 }
 ```
 
-### Error Response
+### Update User
+
+*Endpoint:* /api/user/update/
+*Method:* PATCH
+*Description:* Updates an existing user's data in the system.
+
+Request Body
+The request body should be in JSON format with the following structure:
+
+```json
+{
+    "user": {
+        "username": "string",   // Not allowed: Username is read-only
+        "email": "string",      // Optional: The user's email address
+        "first_name": "string", // Optional: The user's first name
+        "last_name": "string",  // Optional: The user's last name
+        "password": "string"    // Optional: The user's password. Subject to validate
+    },
+    "status": "boolean",        // Optional: User's online status
+    "avatar": "string (URL)",   // Optional: URL of the user's avatar image
+    "friends": ["string"]       // Optional: List of friend usernames
+}
+```
+
+#### Update response
+
+Success Response Status Code: 200 OK
+
+Response Body:
+
+```json
+{
+    "user": {
+        "username": "string",
+        "email": "string",
+        "first_name": "string",
+        "last_name": "string"
+    },
+    "status": "boolean",
+    "avatar": "string (URL)",
+    "friends": ["string"]
+}
+```
+
+### Aplicable for all requests
+
+#### Error Response
 
 Status Code: 400 Bad Request
 
@@ -79,7 +125,7 @@ Response Body:
 }
 ```
 
-### Examples
+#### Examples
 
 Example Request
 
@@ -104,7 +150,7 @@ Authorization: Bearer <token>
 
 ```
 
-### Example Response
+#### Example Response
 
 Success:
 
@@ -122,7 +168,7 @@ Success:
 }
 ```
 
-### Error:
+#### Error
 
 ```json
 {

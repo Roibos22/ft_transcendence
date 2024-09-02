@@ -10,7 +10,7 @@ def get_users(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
-@api_view(['POST'])
+@api_view(['PATCH'])
 def update_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
