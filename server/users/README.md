@@ -8,14 +8,14 @@ Authentication, score tracking, session management.
 
 ### Create User
 
-*Endpoint:* /api/users/
+*Endpoint:* /api/users/create/
 *Method:* POST
 *Description:* Creates a new user in the system.
 
 ### Request Headers
 
 *Content-Type:* application/json
-*Authorization:* Bearer <token> (if authentication is required)
+*Authorization:* Bearer <token> (if authentication is required) - not implemented yet
 *Request Body*
 
 The request body should be in JSON format with the following structure:
@@ -23,29 +23,17 @@ The request body should be in JSON format with the following structure:
 ```json
 {
     "user": {
-        "username": "string",
-        "email": "string",
-        "first_name": "string",
-        "last_name": "string",
-        "password": "string"
+        "username": "string",   // Required: User's basic information
+        "email": "string",      // Required: The user's email address
+        "first_name": "string", // Optional: The user's first name
+        "last_name": "string",  // Optional: The user's last name
+        "password": "string"    // Required: The user's password. Subject to validate
     },
-    "status": "boolean",          // Optional: User's online status
-    "avatar": "string (URL)",    // Optional: URL of the user's avatar image
-    "friends": ["string"]        // Optional: List of friend usernames
+    "status": "boolean",        // Optional: User's online status (???)
+    "avatar": "string (URL)",   // Optional: URL of the user's avatar image (empty)
+    "friends": ["string"]       // Optional: List of friend usernames (empty)
 }
 ```
-
-#### Fields
-
-    user (object): User's basic information.
-        username (string): The user's username. Required.
-        email (string): The user's email address. Required.
-        first_name (string): The user's first name. Optional.
-        last_name (string): The user's last name. Optional.
-        password (string): The user's password. Required.
-    status (boolean): User's online status. Optional.
-    avatar (string): URL to the user's avatar image. Optional.
-    friends (array of strings): List of usernames for friends. Optional.
 
 ### Response
 
