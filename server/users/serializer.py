@@ -1,20 +1,25 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User as DjangoUser
 from .models import User
+from game.models import Game
+from game.serializer import GameSerializer
 
 class DjangoUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = DjangoUser
         fields = '__all__'
-        extra_kwargs = {
-            'username': {'read_only': True},  # Make username read-only
-        }
+        # extra_kwargs = {
+        #     "username": {'read_only': True},
+        # }
     def create(self, validated_data):
         user = DjangoUser.objects.create_user(**validated_data)
         return user
 
 class UserSerializer(serializers.ModelSerializer):
     user = DjangoUserSerializer()
+    friends = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
+    games = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = '__all__'
@@ -22,12 +27,13 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Extract DjangoUser data from validated_data
         django_user_data = validated_data.pop('user')
-
+        print("Debugging django_user_data:", django_user_data)
         # Create DjangoUser instance
-        django_user_serializer = DjangoUserSerializer.create(DjangoUserSerializer(), validated_data=django_user_data)
-
+        django_user_serializer = DjangoUserSerializer(data=django_user_data)
+        django_user_serializer.is_valid(raise_exception=True)
+        django_user_instance = django_user_serializer.save()
         # Create User instance, assuming `User` model has a `OneToOneField` or similar relation to `DjangoUser`
-        user = User.objects.create(django_user=django_user_serializer, **validated_data)
+        user = User.objects.create(user=django_user_instance, **validated_data)
 
         return user
 
@@ -48,3 +54,8 @@ class UserSerializer(serializers.ModelSerializer):
         # Update User instance
         instance.save()
         return instance
+    def get_games(self, user):
+        # Retrieve games for this user
+        games = Game.objects.filter(player1=user) | Game.objects.filter(player2=user)
+        serializer = GameSerializer(games, many=True)
+        return serializer.data

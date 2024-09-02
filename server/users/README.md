@@ -4,6 +4,24 @@
 
 Authentication, score tracking, session management.
 
+## Structure
+
+```json
+{
+    "user": {
+        "username": "string",
+        "email": "string",
+        "first_name": "string",
+        "last_name": "string",
+        "password": "string"
+    },
+    "online": "boolean",
+    "avatar": "string (URL)",
+    "friends": ["int: id"],
+    "games": ["int: id"]
+}
+```
+
 ## API Documentation
 
 ### Create User
@@ -29,9 +47,7 @@ Authentication, score tracking, session management.
         "last_name": "string",  // Optional: The user's last name
         "password": "string"    // Required: The user's password. Subject to validate
     },
-    "status": "boolean",        // Optional: User's online status (???)
     "avatar": "string (URL)",   // Optional: URL of the user's avatar image (empty)
-    "friends": ["string"]       // Optional: List of friend usernames (empty)
 }
 ```
 
@@ -50,9 +66,7 @@ Response Body:
         "first_name": "string",
         "last_name": "string"
     },
-    "status": "boolean",
-    "avatar": "string (URL)",
-    "friends": ["string"]
+    "avatar": "string (URL)"
 }
 ```
 
@@ -142,10 +156,7 @@ Authorization: Bearer <token>
         "first_name": "John",
         "last_name": "Doe",
         "password": "securepassword123"
-    },
-    "status": true,
-    "avatar": "http://example.com/avatar.jpg",
-    "friends": ["janedoe"]
+    }
 }
 
 ```
