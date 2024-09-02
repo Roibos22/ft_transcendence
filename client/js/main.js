@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
 	const loginView = document.getElementById('loginView');
+	const registrationView = document.getElementById('registrationView');
+	const showRegistrationLink = document.getElementById('showRegistration');
+	const showLoginLink = document.getElementById('showLogin');
 	const gameSetupView = document.getElementById('gameSetupView');
 	const loginForm = document.getElementById('loginForm');
 
@@ -16,6 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		loginView.style.display = 'none';
 		gameSetupView.style.display = 'block';
 		initGame(username)
+	});
+
+	showRegistrationLink.addEventListener('click', function(e) {
+		e.preventDefault();
+		loginView.style.display = 'none';
+		registrationView.style.display = 'block';
+	});
+
+	showLoginLink.addEventListener('click', function(e) {
+		e.preventDefault();
+		registrationView.style.display = 'none';
+		loginView.style.display = 'block';
 	});
 
 	updateUIForGameMode();
