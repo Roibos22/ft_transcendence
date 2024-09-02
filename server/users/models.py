@@ -15,17 +15,17 @@ class User(models.Model):
     def __str__(self):
         return f"username: {self.username}\nfull name:{self.score}"
 
-class Score(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    score = models.IntegerField(
-        validators=[
-            MinValueValidator(MIN_SCORE),
-            MaxValueValidator(MAX_SCORE)
-        ],
-        default = 0
-    )
-    date_awarded = models.DateTimeField(auto_now_add=True)
+# class Score(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     score = models.IntegerField(
+#         validators=[
+#             MinValueValidator(MIN_SCORE),
+#             MaxValueValidator(MAX_SCORE)
+#         ],
+#         default = 0
+#     )
+#     date_awarded = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"username: {self.user.username} score: {self.score}"
+#     def __str__(self):
+#         return f"username: {self.user.username} score: {self.score}"
 
