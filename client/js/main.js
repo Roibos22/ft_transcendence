@@ -110,14 +110,57 @@ function addPlayer() {
 	}
 	const playerCount = playerInputs.children.length + 1;
 	const newPlayerDiv = document.createElement('div');
-	newPlayerDiv.innerHTML = `<div class="mb-3"> <input type="text" class="form-control" id="player${playerCount}" placeholder="Player ${playerCount}"> </div>`;
+	newPlayerDiv.className = 'player-input-group mb-3';
+	newPlayerDiv.innerHTML = `
+		<div class="input-group">
+			<input type="text" class="form-control" id="player${playerCount}" placeholder="Player ${playerCount}">
+			<button type="button" class="btn btn-danger" onclick="deletePlayer(this)">X</button>
+		</div>
+	`;
 	playerInputs.appendChild(newPlayerDiv);
 }
 
 function deleteAllPlayersButOne() {
 	const playerInputs = document.getElementById('playerInputs');
-	const inputDivs = Array.from(playerInputs.children);
-	for (let i = inputDivs.length - 1; i > 0; i--) {
-		playerInputs.removeChild(inputDivs[i]);
+	while (playerInputs.children.length > 1) {
+		playerInputs.removeChild(playerInputs.lastChild);
 	}
+}
+
+function deletePlayer(button) {
+	const playerInputGroup = button.closest('.player-input-group');
+	if (playerInputGroup) {
+		playerInputGroup.remove();
+		renumberPlayers();
+	} else {
+		console.error('Could not find parent .player-input-group');
+	}
+}
+
+function renumberPlayers() {
+	const playerInputs = document.getElementById('playerInputs');
+	const inputGroups = playerInputs.querySelectorAll('.player-input-group');
+	inputGroups.forEach((group, index) => {
+		const input = group.querySelector('input');
+		input.id = `player${index + 1}`;
+		input.placeholder = `Player ${index + 1}`;
+	});
+}
+
+function updateUIForGameMode() {
+    const singlePlayerBtn = document.getElementById('btn_singleplayer');
+    const addPlayerButton = document.getElementById('addPlayer');
+    const playerInputs = document.getElementById('playerInputs');
+
+    if (singlePlayerBtn.checked) {
+        deleteAllPlayersButOne();
+        addPlayerButton.style.display = 'none';
+        settings.mode = GameModes.SINGLE;
+    } else {
+        if (playerInputs.children.length === 1) {
+            addPlayer(); // Add a second player for multiplayer mode
+        }
+        addPlayerButton.style.display = 'block';
+        settings.mode = GameModes.MULTI;
+    }
 }
