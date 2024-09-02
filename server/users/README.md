@@ -4,23 +4,23 @@
 
 Authentication, score tracking, session management.
 
-
 ## API Documentation
 
 ### Create User
+
 *Endpoint:* /api/users/
 *Method:* POST
 *Description:* Creates a new user in the system.
 
 ### Request Headers
+
 *Content-Type:* application/json
 *Authorization:* Bearer <token> (if authentication is required)
 *Request Body*
 
 The request body should be in JSON format with the following structure:
 
-**json:**
-```
+```json
 {
     "user": {
         "username": "string",
@@ -35,7 +35,7 @@ The request body should be in JSON format with the following structure:
 }
 ```
 
-### Fields
+#### Fields
 
     user (object): User's basic information.
         username (string): The user's username. Required.
@@ -48,13 +48,13 @@ The request body should be in JSON format with the following structure:
     friends (array of strings): List of usernames for friends. Optional.
 
 ### Response
+
 Success Response
 Status Code: 201 Created
 
 Response Body:
 
-**json:**
-```
+```json:
 {
     "user": {
         "username": "string",
@@ -67,13 +67,14 @@ Response Body:
     "friends": ["string"]
 }
 ```
+
 ### Error Response
+
 Status Code: 400 Bad Request
 
 Response Body:
 
-**json:**
-```
+```json
 {
     "non_field_errors": [
         "Error message describing the issue"
@@ -94,8 +95,7 @@ Response Body:
 
 Example Request
 
-http
-```
+```http
 POST /api/users/ HTTP/1.1
 Host: example.com
 Content-Type: application/json
@@ -113,12 +113,14 @@ Authorization: Bearer <token>
     "avatar": "http://example.com/avatar.jpg",
     "friends": ["janedoe"]
 }
+
 ```
-Example Response
+
+### Example Response
+
 Success:
 
-json
-```
+```json
 {
     "user": {
         "username": "johndoe",
@@ -131,10 +133,10 @@ json
     "friends": ["janedoe"]
 }
 ```
-Error:
 
-json
-```
+### Error:
+
+```json
 {
     "username": [
         "This username is already taken."
@@ -144,6 +146,8 @@ json
     ]
 }
 ```
+
 ### Notes
+
 Ensure that sensitive data, like passwords, are properly encrypted and not exposed in the response.
 Follow any additional constraints or limitations, such as password policies or username uniqueness requirements.
