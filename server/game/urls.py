@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import get_games, create_game
+from .views import *
 
 urlpatterns = [
     path('', get_games, name='get_games'),
