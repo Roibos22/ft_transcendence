@@ -1,22 +1,22 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User as DjangoUser
-from .models import User
+# from django.contrib.auth.models import User as CustomUser
+from .models import User, CustomUser
 from game.models import Game
 from game.serializer import GameSerializer
 
-class DjangoUserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DjangoUser
+        model = CustomUser
         fields = '__all__'
         # extra_kwargs = {
         #     "username": {'read_only': True},
         # }
     def create(self, validated_data):
-        user = DjangoUser.objects.create_user(**validated_data)
+        user = CustomUser.objects.create_user(**validated_data)
         return user
 
 class UserSerializer(serializers.ModelSerializer):
-    user = DjangoUserSerializer()
+    user = CustomUserSerializer()
     friends = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
     games = serializers.SerializerMethodField()
 
@@ -25,27 +25,27 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        # Extract DjangoUser data from validated_data
-        django_user_data = validated_data.pop('user')
-        print("Debugging django_user_data:", django_user_data)
-        # Create DjangoUser instance
-        django_user_serializer = DjangoUserSerializer(data=django_user_data)
-        django_user_serializer.is_valid(raise_exception=True)
-        django_user_instance = django_user_serializer.save()
-        # Create User instance, assuming `User` model has a `OneToOneField` or similar relation to `DjangoUser`
-        user = User.objects.create(user=django_user_instance, **validated_data)
+        # Extract CustomUser data from validated_data
+        custom_user_data = validated_data.pop('user')
+        print("Debugging custom_user_data:", custom_user_data)
+        # Create CustomUser instance
+        custom_user_serializer = CustomUserSerializer(data=custom_user_data)
+        custom_user_serializer.is_valid(raise_exception=True)
+        custom_user_instance = custom_user_serializer.save()
+        # Create User instance, assuming `User` model has a `OneToOneField` or similar relation to `CustomUser`
+        user = User.objects.create(user=custom_user_instance, **validated_data)
 
         return user
 
     def update(self, instance, validated_data):
-        # Extract DjangoUser data from validated_data
-        django_user_data = validated_data.pop('user')
+        # Extract CustomUser data from validated_data
+        custom_user_data = validated_data.pop('user')
 
-        # Update DjangoUser instance
-        if django_user_data:
-            django_user_serializer = DjangoUserSerializer(instance=instance.user, data=django_user_data, partial=True)
-            if django_user_serializer.is_valid(raise_exception=True):
-                django_user_serializer.save()
+        # Update CustomUser instance
+        if custom_user_data:
+            custom_user_serializer = CustomUserSerializer(instance=instance.user, data=custom_user_data, partial=True)
+            if custom_user_serializer.is_valid(raise_exception=True):
+                custom_user_serializer.save()
 
         # Update User instance fields
         for attr, value in validated_data.items():
@@ -56,6 +56,6 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
     def get_games(self, user):
         # Retrieve games for this user
-        games = Game.objects.filter(player1=user) | Game.objects.filter(player2=user)
+        games = user.games_as_player1.all() | user.games_as_player2.all()
         serializer = GameSerializer(games, many=True)
         return serializer.data

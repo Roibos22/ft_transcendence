@@ -1,8 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth.models import AbstractUser
+
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
 
 class User(models.Model):
-    user = models.OneToOneField(DjangoUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     #Online status
     online = models.BooleanField(default=False)
     #Avatar picture
