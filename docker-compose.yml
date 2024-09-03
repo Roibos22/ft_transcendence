@@ -1,6 +1,7 @@
 services:
 
   postgres_db:
+    container_name: postgres
     image: postgres
     hostname: localhost
     ports:
@@ -8,12 +9,13 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: trans_db 
+      POSTGRES_DB: trans_db
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
-  
+
   server:
+    container_name: server
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -22,6 +24,7 @@ services:
       - "8000:8000"
 
   client:
+    container_name: client
     image: nginx:alpine
     ports:
       - "3000:80"
@@ -29,6 +32,7 @@ services:
       - ./client:/usr/share/nginx/html/
 
   pgadmin:
+    container_name: pgadmin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
