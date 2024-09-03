@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User
-from .serializer import UserSerializer
+from .serializer import UserSerializer, CustomUserSerializer
 
 @api_view(['GET'])
 def get_users(request):
@@ -48,3 +48,10 @@ def user_profile(request, user_id):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = UserSerializer(user)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def user_login(request):
+    serializer = CustomUserSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+

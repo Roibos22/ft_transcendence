@@ -1,16 +1,13 @@
 from rest_framework import serializers
 # from django.contrib.auth.models import User as CustomUser
 from .models import User, CustomUser
-from game.models import Game
+# from game.models import Game
 from game.serializer import GameSerializer
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = '__all__'
-        # extra_kwargs = {
-        #     "username": {'read_only': True},
-        # }
     def create(self, validated_data):
         user = CustomUser.objects.create_user(**validated_data)
         return user
@@ -59,3 +56,14 @@ class UserSerializer(serializers.ModelSerializer):
         games = user.games_as_player1.all() | user.games_as_player2.all()
         serializer = GameSerializer(games, many=True)
         return serializer.data
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Invalid credentials")
