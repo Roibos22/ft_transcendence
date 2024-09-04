@@ -13,17 +13,17 @@ API Endpoints
 
 ### 1\. **Create User**
 
--   **Endpoint:** ```/users/create/```
--   **Method:** ```POST```
--   **Description:** Creates a new user in the system.
+- **Endpoint:** ```/users/create/```
+- **Method:** ```POST```
+- **Description:** Creates a new user in the system.
 
 #### Request
 
--   **Headers:**
+- **Headers:**
 
-    -   ```Content-Type: application/json```
-    -   ```Authorization: Bearer <token>```
--   **Body:**
+  - ```Content-Type: application/json```
+  - ```Authorization: Bearer <token>```
+- **Body:**
 
     ```json
     {
@@ -39,8 +39,8 @@ API Endpoints
 
 #### Success Response
 
--   **Status:** ```201 Created```
--   **Body:**
+- **Status:** ```201 Created```
+- **Body:**
 
     ```json
     {
@@ -56,13 +56,13 @@ API Endpoints
 
 ### 2\. **Update User**
 
--   **Endpoint:** ```/user/profile/<user_id>/update/```
--   **Method:** ```PATCH```
--   **Description:** Updates an existing user's information.
+- **Endpoint:** ```/user/profile/<user_id>/update/```
+- **Method:** ```PATCH```
+- **Description:** Updates an existing user's information.
 
 #### Request
 
--   **Body:**
+- **Body:**
 
     ```json
     {
@@ -78,12 +78,8 @@ API Endpoints
 
 #### Success Response
 
--   **Status:** ```200 OK```
--   **Body:**
-
-    json
-
-    Copy code
+- **Status:** ```200 OK```
+- **Body:**
 
     ```json
     {
@@ -101,13 +97,13 @@ API Endpoints
 
 ### 3\. **Login**
 
--   **Endpoint:** ```/user/login/```
--   **Method:** ```POST```
--   **Description:** User login.
+- **Endpoint:** ```/user/login/```
+- **Method:** ```POST```
+- **Description:** User login.
 
 #### Request
 
--   **Body:**
+- **Body:**
 
     ```json
     {
@@ -137,8 +133,8 @@ Common Error Responses
 
 For all requests:
 
--   **Status:** ```400 Bad Request```
--   **Body:**
+- **Status:** ```400 Bad Request```
+- **Body:**
 
     ```json
     {
@@ -159,6 +155,6 @@ For all requests:
 Notes
 -----
 
--   Passwords should be securely encrypted.
--   Ensure unique constraints on usernames and emails.
--   Maintain proper validation for fields like email and passwords.
+- Passwords should be securely encrypted.
+- Ensure unique constraints on usernames and emails.
+- Maintain proper validation for fields like email and passwords.
