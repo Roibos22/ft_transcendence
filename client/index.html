@@ -31,7 +31,35 @@
 							<a href="#" class="text-white-50">Forgot password?</a>
 						</div>
 						<div class="mt-4 text-center">
-							<p class="mb-0">Don't have an account? <a href="#" class="text-white-50">Sign Up</a></p>
+							<p class="mb-0">Don't have an account? <a href="#" id="showRegistration" class="text-white-50">Sign Up</a></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		 <!-- REGISTRATION VIEW -->
+		 <div id="registrationView" class="registration-container" style="display: none;">
+			<div class="registration-card">
+				<div class="card bg-dark text-white">
+					<div class="card-body">
+						<h2 class="text-center mb-4">Sign Up</h2>
+						<form id="registrationForm">
+							<div class="mb-4">
+								<input type="text" class="form-control" id="newUsername" placeholder="Username">
+							</div>
+							<div class="mb-4">
+								<input type="email" class="form-control" id="email" placeholder="Email">
+							</div>
+							<div class="mb-4">
+								<input type="password" class="form-control" id="newPassword" placeholder="Password">
+							</div>
+							<div class="text-center">
+								<button type="submit" class="btn btn-light">Sign Up</button>
+							</div>
+						</form>
+						<div class="mt-4 text-center">
+							<p class="mb-0">Already have an account? <a href="#" id="showLogin" class="text-white-50">Login</a></p>
 						</div>
 					</div>
 				</div>
@@ -58,8 +86,11 @@
 			<!-- PLAYER INOUT FIELDS -->
 			<form id="playerForm">
 				<div id="playerInputs" class="player-input-fields">
-					<div class="mb-3">
-						<input type="text" class="form-control" id="player1" placeholder="Player 1">
+					<div class="player-input-group mb-3">
+						<div class="input-group">
+							<input type="text" class="form-control player-name-input" id="player1" placeholder="Player 1">
+							<!-- No delete button for the first player -->
+						</div>
 					</div>
 				</div>
 			</form>
