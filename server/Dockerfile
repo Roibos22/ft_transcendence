@@ -12,10 +12,14 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
+RUN mkdir /app/avatars
+
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/
+
+COPY ./assets/default_avatar.png /app/avatars/
 
 EXPOSE 8000
 

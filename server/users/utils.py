@@ -14,3 +14,20 @@ def clean_response_data(data, keys_to_remove=["password"]):
         for key in keys_to_remove:
             data.pop(key, None)
     return data
+
+# Debugging tools
+import functools
+import logging
+
+logger = logging.getLogger(__name__)
+
+def debug_request(func):
+    """Decorator to debug print request data and method."""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        request = args[0]  # The first argument is always the request
+        logger.debug(f"Request Method: {request.method}")
+        if hasattr(request, 'data') and request.data:
+            logger.debug(f"Request Data: {request.data}")
+        return func(*args, **kwargs)
+    return wrapper

@@ -13,7 +13,7 @@ API Endpoints
 
 ### 1\. **Create User**
 
--   **Endpoint:** ```/api/users/create/```
+-   **Endpoint:** ```/users/create/```
 -   **Method:** ```POST```
 -   **Description:** Creates a new user in the system.
 
@@ -22,7 +22,7 @@ API Endpoints
 -   **Headers:**
 
     -   ```Content-Type: application/json```
-    -   ```Authorization: Bearer <token>``` *(Not yet implemented)*
+    -   ```Authorization: Bearer <token>```
 -   **Body:**
 
     ```json
@@ -56,7 +56,7 @@ API Endpoints
 
 ### 2\. **Update User**
 
--   **Endpoint:** ```/api/user/profile/<user_id>/update/```
+-   **Endpoint:** ```/user/profile/<user_id>/update/```
 -   **Method:** ```PATCH```
 -   **Description:** Updates an existing user's information.
 
@@ -101,7 +101,7 @@ API Endpoints
 
 ### 3\. **Login**
 
--   **Endpoint:** ```/api/user/login/```
+-   **Endpoint:** ```/user/login/```
 -   **Method:** ```POST```
 -   **Description:** User login.
 
@@ -119,7 +119,7 @@ API Endpoints
 #### Example Request
 
 ```http
-POST /api/users/login HTTP/1.1
+POST /users/login HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Authorization: Bearer <token>
@@ -147,9 +147,6 @@ For all requests:
       ],
       "username": [
         "Error message if username is invalid or already taken"
-      ],
-      "email": [
-        "Error message if email is invalid or already in use"
       ],
       "password": [
         "Error message if password is missing or too weak"

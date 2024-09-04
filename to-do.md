@@ -2,9 +2,7 @@
 
 ## To-do
 
-1. Game has modules that repeat users module? Where do we save scores and etc?
-2. Check middlewares
-3. Add read-only to User and Game fields
+1. Implement adding friends
 
 ## Basic information
 

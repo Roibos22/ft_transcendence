@@ -5,10 +5,11 @@ from rest_framework import status
 from django.shortcuts import redirect
 from .models import User
 from .serializer import *
-from .utils import clean_response_data
+from .utils import clean_response_data, debug_request
 
 # No authentication required
 
+@debug_request
 @api_view(['GET'])
 def get_users(request):
     users = User.objects.all()
@@ -18,6 +19,7 @@ def get_users(request):
     data = clean_response_data(serializer.data)
     return Response(data)
 
+@debug_request
 @api_view(['POST'])
 def create_user(request):
     serializer = UserSerializer(data=request.data)
@@ -27,6 +29,7 @@ def create_user(request):
         return Response(data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@debug_request
 @api_view(['POST'])
 def custom_token_obtain_pair(request):
     serializer = CustomTokenObtainPairSerializer(data=request.data)
@@ -39,6 +42,7 @@ def custom_token_obtain_pair(request):
 
 # Authentication required
 
+@debug_request
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_user(request, user_id):
@@ -57,6 +61,7 @@ def update_user(request, user_id):
         return Response(data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@debug_request
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_user(request, user_id):
@@ -72,6 +77,7 @@ def delete_user(request, user_id):
         return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@debug_request
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_profile(request, user_id):
