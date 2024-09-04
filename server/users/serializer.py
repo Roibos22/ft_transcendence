@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import User, CustomUser
 # from game.models import Game
 from game.serializer import GameSerializer
+from django.contrib.auth import authenticate
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,7 +64,9 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        user = authenticate(**data)
+        username = data.get('username')
+        password = data.get('password')
+        user = authenticate(username=username, password=password)
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Invalid credentials")

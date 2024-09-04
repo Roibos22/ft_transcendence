@@ -114,6 +114,40 @@ Response Body:
 }
 ```
 
+### Login
+
+*Endpoint:* /api/user/update/
+*Method:* POST
+*Description:* Login to user's profile in the system.
+
+Request Body
+The request body should be in JSON format with the following structure:
+
+```json
+{
+    "username": "string",
+    "password": "string"
+}
+```
+
+#### Login Response
+
+*redirection to users profile* - in development
+
+#### Example
+
+```http
+POST /api/users/login HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+    "username": "johndoe",
+    "password": "securepassword123"
+}
+```
+
 ### Aplicable for all requests
 
 #### Error Response
@@ -144,7 +178,7 @@ Response Body:
 Example Request
 
 ```http
-POST /api/users/ HTTP/1.1
+POST /api/users/create HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Authorization: Bearer <token>

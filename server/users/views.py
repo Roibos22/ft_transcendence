@@ -1,8 +1,9 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import redirect
 from .models import User
-from .serializer import UserSerializer, CustomUserSerializer
+from .serializer import *
 
 @api_view(['GET'])
 def get_users(request):
@@ -51,7 +52,10 @@ def user_profile(request, user_id):
 
 @api_view(['POST'])
 def user_login(request):
-    serializer = CustomUserSerializer(data=request.data)
-    if not serializer.is_valid():
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    custom_user_serializer = LoginSerializer(data=request.data)
 
+    if custom_user_serializer.is_valid():
+        user = custom_user_serializer.validated_data  # This is the user instance returned by `validate`
+        return redirect(f'/users/profile/{user.id}')  # Use the user's ID for redirection
+
+    return Response({'error': 'Invalid credentials'}, status=status.HTTP_404_NOT_FOUND)
