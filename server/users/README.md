@@ -1,140 +1,122 @@
-# Users app
+Users App
+=========
 
-## Functions
+Overview
+--------
 
-Authentication, score tracking, session management.
+The Users App handles user authentication, score tracking, session management, and related functionalities.
 
-## Structure
+* * * * *
 
-```json
-{
-    "user": {
-        "username": "string",
-        "email": "string",
-        "first_name": "string",
-        "last_name": "string",
-        "password": "string"
-    },
-    "online": "boolean",
-    "avatar": "string (URL)",
-    "friends": ["int: id"],
-    "games": ["int: id"]
-}
-```
+API Endpoints
+-------------
 
-## API Documentation
+### 1\. **Create User**
 
-### Create User
+-   **Endpoint:** ```/api/users/create/```
+-   **Method:** ```POST```
+-   **Description:** Creates a new user in the system.
 
-*Endpoint:* /api/users/create/
-*Method:* POST
-*Description:* Creates a new user in the system.
+#### Request
 
-#### Request Headers
+-   **Headers:**
 
-*Content-Type:* application/json
+    -   ```Content-Type: application/json```
+    -   ```Authorization: Bearer <token>``` *(Not yet implemented)*
+-   **Body:**
 
-*Authorization:* Bearer ***token*** (if authentication is required) - not implemented yet
+    ```json
+    {
+      "username": "string",      // Required: Username (unique)
+      "email": "string",         // Required: Email address
+      "first_name": "string",    // Optional: First name
+      "last_name": "string",     // Optional: Last name
+      "password": "string",      // Required: User password
+      "avatar": "string (URL)",  // Optional: Avatar URL
+      "active": "boolean"        // Optional: User active
+    }
+    ```
 
-*Request Body:* The request body should be in JSON format with the structure below
+#### Success Response
 
-```json
-{
-    "user": {
-        "username": "string",   // Required: User's basic information
-        "email": "string",      // Required: The user's email address
-        "first_name": "string", // Optional: The user's first name
-        "last_name": "string",  // Optional: The user's last name
-        "password": "string"    // Required: The user's password. Subject to validate
-    },
-    "avatar": "string (URL)",   // Optional: URL of the user's avatar image (empty)
-}
-```
+-   **Status:** ```201 Created```
+-   **Body:**
 
-#### Response
+    ```json
+    {
+      "username": "string",
+      "email": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "avatar": "string (URL)"
+    }
+    ```
 
-Success Response
-Status Code: 201 Created
+* * * * *
 
-Response Body:
+### 2\. **Update User**
 
-```json:
-{
-    "user": {
-        "username": "string",
-        "email": "string",
-        "first_name": "string",
-        "last_name": "string"
-    },
-    "avatar": "string (URL)"
-}
-```
+-   **Endpoint:** ```/api/user/profile/<user_id>/update/```
+-   **Method:** ```PATCH```
+-   **Description:** Updates an existing user's information.
 
-### Update User
+#### Request
 
-*Endpoint:* /api/user/update/
-*Method:* PATCH
-*Description:* Updates an existing user's data in the system.
+-   **Body:**
 
-Request Body
-The request body should be in JSON format with the following structure:
+    ```json
+    {
+      "email": "string",        // Optional
+      "first_name": "string",   // Optional
+      "last_name": "string",    // Optional
+      "password": "string",     // Optional
+      "status": "boolean",      // Optional: Online status
+      "avatar": "string (URL)", // Optional: Avatar URL
+      "friends": ["string"]     // Optional: Friend usernames
+    }
+    ```
 
-```json
-{
-    "user": {
-        "username": "string",   // Not allowed: Username is read-only
-        "email": "string",      // Optional: The user's email address
-        "first_name": "string", // Optional: The user's first name
-        "last_name": "string",  // Optional: The user's last name
-        "password": "string"    // Optional: The user's password. Subject to validate
-    },
-    "status": "boolean",        // Optional: User's online status
-    "avatar": "string (URL)",   // Optional: URL of the user's avatar image
-    "friends": ["string"]       // Optional: List of friend usernames
-}
-```
+#### Success Response
 
-#### Update response
+-   **Status:** ```200 OK```
+-   **Body:**
 
-Success Response Status Code: 200 OK
+    json
 
-Response Body:
+    Copy code
 
-```json
-{
-    "user": {
-        "username": "string",
-        "email": "string",
-        "first_name": "string",
-        "last_name": "string"
-    },
-    "status": "boolean",
-    "avatar": "string (URL)",
-    "friends": ["string"]
-}
-```
+    ```json
+    {
+      "username": "string",     // Read-only
+      "email": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "status": "boolean",
+      "avatar": "string (URL)",
+      "friends": ["string"]
+    }
+    ```
 
-### Login
+* * * * *
 
-*Endpoint:* /api/user/update/
-*Method:* POST
-*Description:* Login to user's profile in the system.
+### 3\. **Login**
 
-Request Body
-The request body should be in JSON format with the following structure:
+-   **Endpoint:** ```/api/user/login/```
+-   **Method:** ```POST```
+-   **Description:** User login.
 
-```json
-{
-    "username": "string",
-    "password": "string"
-}
-```
+#### Request
 
-#### Login Response
+-   **Body:**
 
-*redirection to users profile* - in development
+    ```json
+    {
+      "username": "string",
+      "password": "string"
+    }
+    ```
 
-#### Example
+#### Example Request
 
 ```http
 POST /api/users/login HTTP/1.1
@@ -148,85 +130,38 @@ Authorization: Bearer <token>
 }
 ```
 
-### Aplicable for all requests
+* * * * *
 
-#### Error Response
+Common Error Responses
+----------------------
 
-Status Code: 400 Bad Request
+For all requests:
 
-Response Body:
+-   **Status:** ```400 Bad Request```
+-   **Body:**
 
-```json
-{
-    "non_field_errors": [
+    ```json
+    {
+      "non_field_errors": [
         "Error message describing the issue"
-    ],
-    "username": [
+      ],
+      "username": [
         "Error message if username is invalid or already taken"
-    ],
-    "email": [
+      ],
+      "email": [
         "Error message if email is invalid or already in use"
-    ],
-    "password": [
+      ],
+      "password": [
         "Error message if password is missing or too weak"
-    ]
-}
-```
-
-#### Examples
-
-Example Request
-
-```http
-POST /api/users/create HTTP/1.1
-Host: example.com
-Content-Type: application/json
-Authorization: Bearer <token>
-
-{
-    "user": {
-        "username": "johndoe",
-        "email": "john.doe@example.com",
-        "first_name": "John",
-        "last_name": "Doe",
-        "password": "securepassword123"
+      ]
     }
-}
+    ```
 
-```
+* * * * *
 
-#### Example Response
+Notes
+-----
 
-Success:
-
-```json
-{
-    "user": {
-        "username": "johndoe",
-        "email": "john.doe@example.com",
-        "first_name": "John",
-        "last_name": "Doe"
-    },
-    "status": true,
-    "avatar": "http://example.com/avatar.jpg",
-    "friends": ["janedoe"]
-}
-```
-
-#### Error
-
-```json
-{
-    "username": [
-        "This username is already taken."
-    ],
-    "email": [
-        "Enter a valid email address."
-    ]
-}
-```
-
-### Notes
-
-Ensure that sensitive data, like passwords, are properly encrypted and not exposed in the response.
-Follow any additional constraints or limitations, such as password policies or username uniqueness requirements.
+-   Passwords should be securely encrypted.
+-   Ensure unique constraints on usernames and emails.
+-   Maintain proper validation for fields like email and passwords.

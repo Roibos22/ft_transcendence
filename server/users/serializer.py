@@ -1,20 +1,10 @@
 from rest_framework import serializers
-# from django.contrib.auth.models import User as CustomUser
-from .models import User, CustomUser
-# from game.models import Game
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .models import User
 from game.serializer import GameSerializer
-from django.contrib.auth import authenticate
-
-class CustomUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = '__all__'
-    def create(self, validated_data):
-        user = CustomUser.objects.create_user(**validated_data)
-        return user
 
 class UserSerializer(serializers.ModelSerializer):
-    user = CustomUserSerializer()
     friends = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
     games = serializers.SerializerMethodField()
 
@@ -23,29 +13,30 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        # Extract CustomUser data from validated_data
-        custom_user_data = validated_data.pop('user')
-        print("Debugging custom_user_data:", custom_user_data)
-        # Create CustomUser instance
-        custom_user_serializer = CustomUserSerializer(data=custom_user_data)
-        custom_user_serializer.is_valid(raise_exception=True)
-        custom_user_instance = custom_user_serializer.save()
-        # Create User instance, assuming `User` model has a `OneToOneField` or similar relation to `CustomUser`
-        user = User.objects.create(user=custom_user_instance, **validated_data)
-
+        user = User.objects.create_user(**validated_data)
+        user.is_staff = False
         return user
 
     def update(self, instance, validated_data):
         # Extract CustomUser data from validated_data
-        custom_user_data = validated_data.pop('user')
+        # if not instance.active:
+        #     raise serializers.ValidationError("User is inactive and cannot be updated.")
+        try:
+            # change password
+            password = validated_data.pop('password', None)
+            if password:
+                instance.set_password(password)
+            # change avatar
+            avatar = validated_data.get('avatar', None)
+            if avatar:
+                # Delete the old avatar
+                if instance.avatar:
+                    instance.avatar.delete(save=False)
+                instance.avatar = avatar
+        except KeyError:
+            pass
 
-        # Update CustomUser instance
-        if custom_user_data:
-            custom_user_serializer = CustomUserSerializer(instance=instance.user, data=custom_user_data, partial=True)
-            if custom_user_serializer.is_valid(raise_exception=True):
-                custom_user_serializer.save()
-
-        # Update User instance fields
+        # Update other User instance fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
@@ -58,15 +49,14 @@ class UserSerializer(serializers.ModelSerializer):
         serializer = GameSerializer(games, many=True)
         return serializer.data
 
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+    def validate(self, attrs):
+        # Check if the user is active
+        # if not self.user.active:
+        #     raise serializers.ValidationError({"error": "User account is inactive."})
 
-    def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
-        user = authenticate(username=username, password=password)
-        if user and user.is_active:
-            return user
-        raise serializers.ValidationError("Invalid credentials")
+        # Call the base class's validate method
+        data = super().validate(attrs)
+
+        return data
