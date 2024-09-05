@@ -33,8 +33,74 @@ document.addEventListener('DOMContentLoaded', function() {
 		loginView.style.display = 'block';
 	});
 
+	document.getElementById('registrationForm').addEventListener('submit', function(e) {
+		e.preventDefault();
+		registerUser();
+	});
+
+	// Add event listener for showLogin link
+	document.getElementById('showLogin').addEventListener('click', function(e) {
+		e.preventDefault();
+		showLoginView();
+	});
+
 	updateUIForGameMode();
 });
+
+
+async function registerUser() {
+	const firstName = document.getElementById('first_name_registration').value;
+	const lastName = document.getElementById('last_name_registration').value;
+	const username = document.getElementById('username_registration').value;
+	const email = document.getElementById('email_registration').value;
+	const password = document.getElementById('password_registration').value;
+
+	const userData = {
+		username: username,
+		email: email,
+		password: password,
+		first_name: firstName,
+		last_name: lastName,
+		// You can add other optional fields here if needed
+		// avatar: "",
+		// active: true
+	};
+
+	try {
+        const response = await fetch('http://localhost:8000/users/create/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				// 'Authorization': 'Bearer <token>' // Uncomment and replace <token> if needed
+			},
+			body: JSON.stringify(userData)
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			console.log('User registered successfully:', data);
+			alert('Registration successful! Please log in.');
+			showLoginView();
+		} else {
+			const errorData = await response.json();
+			console.error('Registration failed:', errorData);
+			alert('Registration failed. Please try again.');
+		}
+	} catch (error) {
+		console.error('Error during registration:', error);
+		alert('An error occurred during registration. Please try again later.');
+	}
+}
+
+function showLoginView() {
+	document.getElementById('registrationView').style.display = 'none';
+	document.getElementById('loginView').style.display = 'block';
+}
+
+function showRegistrationView() {
+	document.getElementById('loginView').style.display = 'none';
+	document.getElementById('registrationView').style.display = 'block';
+}
 
 function updateUIForGameMode() {
 	const singlePlayerBtn = document.getElementById('btn_singleplayer');
@@ -163,19 +229,19 @@ function renumberPlayers() {
 }
 
 function updateUIForGameMode() {
-    const singlePlayerBtn = document.getElementById('btn_singleplayer');
-    const addPlayerButton = document.getElementById('addPlayer');
-    const playerInputs = document.getElementById('playerInputs');
+	const singlePlayerBtn = document.getElementById('btn_singleplayer');
+	const addPlayerButton = document.getElementById('addPlayer');
+	const playerInputs = document.getElementById('playerInputs');
 
-    if (singlePlayerBtn.checked) {
-        deleteAllPlayersButOne();
-        addPlayerButton.style.display = 'none';
-        settings.mode = GameModes.SINGLE;
-    } else {
-        if (playerInputs.children.length === 1) {
-            addPlayer(); // Add a second player for multiplayer mode
-        }
-        addPlayerButton.style.display = 'block';
-        settings.mode = GameModes.MULTI;
-    }
+	if (singlePlayerBtn.checked) {
+		deleteAllPlayersButOne();
+		addPlayerButton.style.display = 'none';
+		settings.mode = GameModes.SINGLE;
+	} else {
+		if (playerInputs.children.length === 1) {
+			addPlayer(); // Add a second player for multiplayer mode
+		}
+		addPlayerButton.style.display = 'block';
+		settings.mode = GameModes.MULTI;
+	}
 }
