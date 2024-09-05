@@ -17,3 +17,12 @@ def create_game(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def game_profile(requst, game_id):
+    try:
+        game = Game.objects.get(id=game_id)
+    except Game.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    serilizer = GameSerializer(game)
+    return Response(serilizer.data)

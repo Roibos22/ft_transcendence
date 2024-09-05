@@ -1,22 +1,10 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User as DjangoUser
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import User
-from game.models import Game
 from game.serializer import GameSerializer
 
-class DjangoUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DjangoUser
-        fields = '__all__'
-        # extra_kwargs = {
-        #     "username": {'read_only': True},
-        # }
-    def create(self, validated_data):
-        user = DjangoUser.objects.create_user(**validated_data)
-        return user
-
 class UserSerializer(serializers.ModelSerializer):
-    user = DjangoUserSerializer()
     friends = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
     games = serializers.SerializerMethodField()
 
@@ -25,29 +13,31 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        # Extract DjangoUser data from validated_data
-        django_user_data = validated_data.pop('user')
-        print("Debugging django_user_data:", django_user_data)
-        # Create DjangoUser instance
-        django_user_serializer = DjangoUserSerializer(data=django_user_data)
-        django_user_serializer.is_valid(raise_exception=True)
-        django_user_instance = django_user_serializer.save()
-        # Create User instance, assuming `User` model has a `OneToOneField` or similar relation to `DjangoUser`
-        user = User.objects.create(user=django_user_instance, **validated_data)
-
+        user = User.objects.create_user(**validated_data)
+        user.is_staff = False
+        user.avatar = '/avatars/default_avatar.png'
         return user
 
     def update(self, instance, validated_data):
-        # Extract DjangoUser data from validated_data
-        django_user_data = validated_data.pop('user')
+        # Extract CustomUser data from validated_data
+        # if not instance.active:
+        #     raise serializers.ValidationError("User is inactive and cannot be updated.")
+        try:
+            # change password
+            password = validated_data.pop('password', None)
+            if password:
+                instance.set_password(password)
+            # change avatar
+            avatar = validated_data.get('avatar', None)
+            if avatar:
+                # Delete the old avatar
+                if instance.avatar:
+                    instance.avatar.delete(save=False)
+                instance.avatar = avatar
+        except KeyError:
+            pass
 
-        # Update DjangoUser instance
-        if django_user_data:
-            django_user_serializer = DjangoUserSerializer(instance=instance.user, data=django_user_data, partial=True)
-            if django_user_serializer.is_valid(raise_exception=True):
-                django_user_serializer.save()
-
-        # Update User instance fields
+        # Update other User instance fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
@@ -56,6 +46,18 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
     def get_games(self, user):
         # Retrieve games for this user
-        games = Game.objects.filter(player1=user) | Game.objects.filter(player2=user)
+        games = user.games_as_player1.all() | user.games_as_player2.all()
         serializer = GameSerializer(games, many=True)
         return serializer.data
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    def validate(self, attrs):
+        # Check if the user is active
+        # if not self.user.active:
+        #     raise serializers.ValidationError({"error": "User account is inactive."})
+
+        # Call the base class's validate method
+        data = super().validate(attrs)
+
+        return data
