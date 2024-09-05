@@ -1,11 +1,45 @@
 import { createRouter } from './router.js';
 import { PongGame, GameModes, settings } from './index.js';
 
-const { initRouter: initRouterFunction } = createRouter(initGame);
+let router;
+let game;
 
-document.addEventListener('DOMContentLoaded', function() {
-	initRouterFunction();
+function initGame(username) {
+	console.log('Initializing game for user:', username);
+	initSettingsUI();
+	setFirstPlayerName(username);
 
+	// Create the game instance but don't initialize it yet
+	game = new PongGame(settings);
+	window.game = game;
+
+	const addPlayerButton = document.getElementById('addPlayer');
+	if (addPlayerButton) {
+		addPlayerButton.addEventListener('click', addPlayer);
+	}
+}
+
+function onViewLoaded() {
+	console.log('onViewLoaded called');
+	setupEventListeners();
+	updateUIForGameMode();
+
+	// Check if we're on the game view
+	if (window.location.hash === '#/game') {
+		console.log('On game view, initializing PongGame');
+		if (game) {
+			game.init().then(() => {
+				console.log('PongGame initialized successfully');
+			}).catch(error => {
+				console.error('Failed to initialize PongGame:', error);
+			});
+		} else {
+			console.error('Game instance not created');
+		}
+	}
+}
+function setupEventListeners() {
+	console.log('Setting up event listeners');
 	const loginForm = document.getElementById('loginForm');
 	const showRegistrationLink = document.getElementById('showRegistration');
 	const showLoginLink = document.getElementById('showLogin');
@@ -14,17 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	const singlePlayerBtn = document.getElementById('btn_singleplayer');
 	const multiPlayerBtn = document.getElementById('btn_multiplayer');
 
-	singlePlayerBtn.addEventListener('change', updateUIForGameMode);
-	multiPlayerBtn.addEventListener('change', updateUIForGameMode);
-
-	// loginForm.addEventListener('submit', function(e) {
-	// 	e.preventDefault();
-	// 	const username = document.getElementById('username').value;
-	// 	//const password = document.getElementById('password').value;
-	// 	loginView.style.display = 'none';
-	// 	gameSetupView.style.display = 'block';
-	// 	initGame(username)
-	// });
+	if (singlePlayerBtn && multiPlayerBtn) {
+		singlePlayerBtn.addEventListener('change', updateUIForGameMode);
+		multiPlayerBtn.addEventListener('change', updateUIForGameMode);
+		// Only call updateUIForGameMode if we're on the game setup view
+		updateUIForGameMode();
+	}
 
 	document.querySelectorAll('.decrease-points, .increase-points, .decrease-games, .increase-games').forEach(button => {
 		button.addEventListener('click', function() {
@@ -34,63 +63,55 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	});
 
-	loginForm.addEventListener('submit', function(e) {
-		e.preventDefault();
-		const username = document.getElementById('username').value;
-		localStorage.setItem('username', username);
-		window.location.hash = '#/setup';
-
-		const response = fetch('http://localhost:8000/users/', {
-			method: 'GET',
-			mode: 'no-cors',
-			headers: {
-				'Content-Type': 'application/json',
-				// 'Authorization': 'Bearer <token>' // Uncomment and replace <token> if needed
-			},
-			//body: JSON.stringify(userData)
+	if (startGameButton) {
+		startGameButton.addEventListener('click', function() {
+			console.log('Start Game button clicked');
+			window.location.hash = '#/game';
 		});
+	}
 
-		console.log(response);
+	if (loginForm) {
+		loginForm.addEventListener('submit', function(e) {
+			e.preventDefault();
+			const username = document.getElementById('username').value;
+			localStorage.setItem('username', username);
+			console.log('Login form submitted, navigating to setup');
+			window.location.hash = '#/setup';
+		});
+	}
 
-	});
+	if (showRegistrationLink) {
+		showRegistrationLink.addEventListener('click', function(e) {
+			e.preventDefault();
+			console.log('Navigating to registration');
+			window.location.hash = '#/register';
+		});
+	}
 
-	showRegistrationLink.addEventListener('click', function(e) {
-		e.preventDefault();
-		// loginView.style.display = 'none';
-		// registrationView.style.display = 'block';
-		window.location.hash = '#/register';
-	});
+	if (showLoginLink) {
+		showLoginLink.addEventListener('click', function(e) {
+			e.preventDefault();
+			console.log('Navigating to login');
+			window.location.hash = '#/';
+		});
+	}
 
-	showLoginLink.addEventListener('click', function(e) {
-		e.preventDefault();
-		// registrationView.style.display = 'none';
-		// loginView.style.display = 'block';
-		window.location.hash = '#/';
-	});
+	if (registrationForm) {
+		registrationForm.addEventListener('submit', function(e) {
+			e.preventDefault();
+			registerUser();
+		});
+	}
 
-	registrationForm.addEventListener('submit', function(e) {
-		e.preventDefault();
-		registerUser();
-	});
-
-	startGameButton.addEventListener('click', function() {
-		window.location.hash = '#/game';
-	});
-
-	// document.getElementById('registrationForm').addEventListener('submit', function(e) {
-	// 	e.preventDefault();
-	// 	registerUser();
-	// });
-
-	// // Add event listener for showLogin link
-	// document.getElementById('showLogin').addEventListener('click', function(e) {
-	// 	e.preventDefault();
-	// 	showLoginView();
-	// });
+	if (startGameButton) {
+		startGameButton.addEventListener('click', function() {
+			console.log('Navigating to game');
+			window.location.hash = '#/game';
+		});
+	}
 
 	updateUIForGameMode();
-});
-
+}
 
 async function registerUser() {
 	const firstName = document.getElementById('first_name_registration').value;
@@ -113,24 +134,7 @@ async function registerUser() {
 	try {
 		const response = await fetch('http://localhost:8000/users/create/', {
 			method: 'POST',
-			mode: 'no-cors',
-			body: JSON.stringify(userData)
-		});
-	
-		// With no-cors, we can't check response.ok or parse JSON
-		console.log('Request sent:', response);
-		alert('Registration request sent. Please try logging in.');
-		showLoginView();
-	} catch (error) {
-		console.error('Error during registration:', error);
-		alert('An error occurred during registration. Please try again later.');
-	}
-	window.location.hash = '#/';
-
-	try {
-		const response = await fetch('http://localhost:8000/users/create/', {
-			method: 'POST',
-			mode: 'no-cors',
+			//mode: 'no-cors',
 			headers: {
 				'Content-Type': 'application/json',
 				// 'Authorization': 'Bearer <token>' // Uncomment and replace <token> if needed
@@ -142,7 +146,7 @@ async function registerUser() {
 			const data = await response.json();
 			console.log('User registered successfully:', data);
 			alert('Registration successful! Please log in.');
-			showLoginView();
+			//showLoginView();
 		} else {
 			const errorData = await response.json();
 			console.error('Registration failed:', errorData);
@@ -181,18 +185,8 @@ function showRegistrationView() {
 // 	}
 // }
 
-function initGame(username) {
-	initSettingsUI();
 
-	const addPlayerButton = document.getElementById('addPlayer');
-	addPlayerButton.addEventListener('click', addPlayer);
 
-	setFirstPlayerName(username);
-
-	const game = new PongGame(settings);
-	window.game = game;
-	game.init();
-}
 
 function setFirstPlayerName(username) {
 	const playerInputs = document.getElementById('playerInputs');
@@ -292,15 +286,24 @@ function renumberPlayers() {
 }
 
 function updateUIForGameMode() {
+	console.log('Updating UI for game mode');
 	const singlePlayerBtn = document.getElementById('btn_singleplayer');
 	const addPlayerButton = document.getElementById('addPlayer');
 	const playerInputs = document.getElementById('playerInputs');
 
+	// Check if we're on a view that has these elements
+	if (!singlePlayerBtn || !addPlayerButton || !playerInputs) {
+		console.log('Not on game setup view, skipping UI update');
+		return;
+	}
+
 	if (singlePlayerBtn.checked) {
+		console.log('Single player mode selected');
 		deleteAllPlayersButOne();
 		addPlayerButton.style.display = 'none';
 		settings.mode = GameModes.SINGLE;
 	} else {
+		console.log('Multiplayer mode selected');
 		if (playerInputs.children.length === 1) {
 			addPlayer(); // Add a second player for multiplayer mode
 		}
@@ -308,3 +311,24 @@ function updateUIForGameMode() {
 		settings.mode = GameModes.MULTI;
 	}
 }
+
+function onDOMContentLoaded() {
+    console.log('DOM fully loaded and parsed');
+    router = createRouter(initGame);
+    router.initRouter();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', onDOMContentLoaded);
+} else {
+    onDOMContentLoaded();
+}
+
+
+// Expose necessary functions to the global scope
+window.onViewLoaded = onViewLoaded;
+window.initGame = initGame;
+window.deletePlayer = deletePlayer;  // Make sure this function is defined
+
+console.log('main.js executed');
+
