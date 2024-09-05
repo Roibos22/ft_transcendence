@@ -234,7 +234,7 @@ function updateValue(setting, change) {
 	value = Math.max(1, value);
 	display.textContent = value;
 	settings[setting] = value;
-	
+
 	if (window.game && window.game.tournamentSettings) {
 		window.game.tournamentSettings[setting] = value;
 	}
