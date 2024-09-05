@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		const response = fetch('http://localhost:8000/users/', {
 			method: 'GET',
-			mode: 'no-cors',
 			headers: {
 				'Content-Type': 'application/json',
 				// 'Authorization': 'Bearer <token>' // Uncomment and replace <token> if needed
@@ -113,10 +112,9 @@ async function registerUser() {
 	try {
 		const response = await fetch('http://localhost:8000/users/create/', {
 			method: 'POST',
-			mode: 'no-cors',
 			body: JSON.stringify(userData)
 		});
-	
+
 		// With no-cors, we can't check response.ok or parse JSON
 		console.log('Request sent:', response);
 		alert('Registration request sent. Please try logging in.');
@@ -130,7 +128,6 @@ async function registerUser() {
 	try {
 		const response = await fetch('http://localhost:8000/users/create/', {
 			method: 'POST',
-			mode: 'no-cors',
 			headers: {
 				'Content-Type': 'application/json',
 				// 'Authorization': 'Bearer <token>' // Uncomment and replace <token> if needed
@@ -240,7 +237,7 @@ function updateValue(setting, change) {
 	value = Math.max(1, value);
 	display.textContent = value;
 	settings[setting] = value;
-	
+
 	if (window.game && window.game.tournamentSettings) {
 		window.game.tournamentSettings[setting] = value;
 	}
