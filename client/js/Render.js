@@ -1,3 +1,5 @@
+import { GameStates } from './gameConstants.js';
+
 class Render {
 	constructor(game) {
 		this.game = game;
@@ -69,3 +71,5 @@ class Render {
 		});
 	}
 }
+
+export default Render;

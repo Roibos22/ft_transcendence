@@ -1,3 +1,6 @@
+import { GameModes } from './index.js';
+import { GameStates } from './gameConstants.js';
+
 class Input {
 	constructor(game) {
 		this.game = game;
@@ -105,3 +108,5 @@ class Input {
 		}
 	}
 }
+
+export default Input;

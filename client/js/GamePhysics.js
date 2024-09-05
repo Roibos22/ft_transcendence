@@ -62,3 +62,5 @@ class GamePhysics {
 		}
 	}
 }
+
+export default GamePhysics;

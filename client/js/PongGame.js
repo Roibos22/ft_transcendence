@@ -1,3 +1,6 @@
+import { GameModes, GameStates } from './gameConstants.js';
+import { Render, InputHandler, GamePhysics, GameState, UIManager, AIPlayer, Tournament } from './index.js';
+
 class PongGame {
 	constructor(settings) {
 		this.tournamentSettings = settings;
@@ -16,7 +19,7 @@ class PongGame {
 
 	initModules() {
 		this.render = new Render(this);
-		this.input = new Input(this);
+		this.input = new InputHandler(this);
 		this.physics = new GamePhysics(this);
 		this.state = new GameState(this);
 		this.uiManager = new UIManager(this);
@@ -92,3 +95,5 @@ class PongGame {
 		this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
 	}
 }
+
+export default PongGame;

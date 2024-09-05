@@ -1,3 +1,5 @@
+import { GameStates } from './gameConstants.js';
+
 class Tournament {
 	constructor(game, players, settings) {
 		this.game = game;
@@ -71,3 +73,5 @@ class Tournament {
 			}));
 	}
 }
+
+export default Tournament;

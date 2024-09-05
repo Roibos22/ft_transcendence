@@ -1,48 +1,92 @@
+import { createRouter } from './router.js';
+import { PongGame, GameModes, settings } from './index.js';
+
+const { initRouter: initRouterFunction } = createRouter(initGame);
+
 document.addEventListener('DOMContentLoaded', function() {
-	const loginView = document.getElementById('loginView');
-	const registrationView = document.getElementById('registrationView');
+	initRouterFunction();
+
+	const loginForm = document.getElementById('loginForm');
 	const showRegistrationLink = document.getElementById('showRegistration');
 	const showLoginLink = document.getElementById('showLogin');
-	const gameSetupView = document.getElementById('gameSetupView');
-	const loginForm = document.getElementById('loginForm');
-
+	const registrationForm = document.getElementById('registrationForm');
+	const startGameButton = document.getElementById('startGame');
 	const singlePlayerBtn = document.getElementById('btn_singleplayer');
 	const multiPlayerBtn = document.getElementById('btn_multiplayer');
 
 	singlePlayerBtn.addEventListener('change', updateUIForGameMode);
 	multiPlayerBtn.addEventListener('change', updateUIForGameMode);
 
+	// loginForm.addEventListener('submit', function(e) {
+	// 	e.preventDefault();
+	// 	const username = document.getElementById('username').value;
+	// 	//const password = document.getElementById('password').value;
+	// 	loginView.style.display = 'none';
+	// 	gameSetupView.style.display = 'block';
+	// 	initGame(username)
+	// });
+
+	document.querySelectorAll('.decrease-points, .increase-points, .decrease-games, .increase-games').forEach(button => {
+		button.addEventListener('click', function() {
+			const setting = this.dataset.setting;
+			const change = this.classList.contains('increase-points') || this.classList.contains('increase-games') ? 1 : -1;
+			updateValue(setting, change);
+		});
+	});
+
 	loginForm.addEventListener('submit', function(e) {
 		e.preventDefault();
 		const username = document.getElementById('username').value;
-		//const password = document.getElementById('password').value;
-		loginView.style.display = 'none';
-		gameSetupView.style.display = 'block';
-		initGame(username)
+		localStorage.setItem('username', username);
+		window.location.hash = '#/setup';
+
+		const response = fetch('http://localhost:8000/users/', {
+			method: 'GET',
+			mode: 'no-cors',
+			headers: {
+				'Content-Type': 'application/json',
+				// 'Authorization': 'Bearer <token>' // Uncomment and replace <token> if needed
+			},
+			//body: JSON.stringify(userData)
+		});
+
+		console.log(response);
+
 	});
 
 	showRegistrationLink.addEventListener('click', function(e) {
 		e.preventDefault();
-		loginView.style.display = 'none';
-		registrationView.style.display = 'block';
+		// loginView.style.display = 'none';
+		// registrationView.style.display = 'block';
+		window.location.hash = '#/register';
 	});
 
 	showLoginLink.addEventListener('click', function(e) {
 		e.preventDefault();
-		registrationView.style.display = 'none';
-		loginView.style.display = 'block';
+		// registrationView.style.display = 'none';
+		// loginView.style.display = 'block';
+		window.location.hash = '#/';
 	});
 
-	document.getElementById('registrationForm').addEventListener('submit', function(e) {
+	registrationForm.addEventListener('submit', function(e) {
 		e.preventDefault();
 		registerUser();
 	});
 
-	// Add event listener for showLogin link
-	document.getElementById('showLogin').addEventListener('click', function(e) {
-		e.preventDefault();
-		showLoginView();
+	startGameButton.addEventListener('click', function() {
+		window.location.hash = '#/game';
 	});
+
+	// document.getElementById('registrationForm').addEventListener('submit', function(e) {
+	// 	e.preventDefault();
+	// 	registerUser();
+	// });
+
+	// // Add event listener for showLogin link
+	// document.getElementById('showLogin').addEventListener('click', function(e) {
+	// 	e.preventDefault();
+	// 	showLoginView();
+	// });
 
 	updateUIForGameMode();
 });
@@ -67,8 +111,26 @@ async function registerUser() {
 	};
 
 	try {
-        const response = await fetch('http://localhost:8000/users/create/', {
+		const response = await fetch('http://localhost:8000/users/create/', {
 			method: 'POST',
+			mode: 'no-cors',
+			body: JSON.stringify(userData)
+		});
+	
+		// With no-cors, we can't check response.ok or parse JSON
+		console.log('Request sent:', response);
+		alert('Registration request sent. Please try logging in.');
+		showLoginView();
+	} catch (error) {
+		console.error('Error during registration:', error);
+		alert('An error occurred during registration. Please try again later.');
+	}
+	window.location.hash = '#/';
+
+	try {
+		const response = await fetch('http://localhost:8000/users/create/', {
+			method: 'POST',
+			mode: 'no-cors',
 			headers: {
 				'Content-Type': 'application/json',
 				// 'Authorization': 'Bearer <token>' // Uncomment and replace <token> if needed
@@ -90,6 +152,7 @@ async function registerUser() {
 		console.error('Error during registration:', error);
 		alert('An error occurred during registration. Please try again later.');
 	}
+	window.location.hash = '#/';
 }
 
 function showLoginView() {
@@ -102,21 +165,21 @@ function showRegistrationView() {
 	document.getElementById('registrationView').style.display = 'block';
 }
 
-function updateUIForGameMode() {
-	const singlePlayerBtn = document.getElementById('btn_singleplayer');
-	const multiPlayerBtn = document.getElementById('btn_multiplayer');
-	const addPlayerButton = document.getElementById('addPlayer');
+// function updateUIForGameMode() {
+// 	const singlePlayerBtn = document.getElementById('btn_singleplayer');
+// 	const multiPlayerBtn = document.getElementById('btn_multiplayer');
+// 	const addPlayerButton = document.getElementById('addPlayer');
 
-	if (singlePlayerBtn.checked) {
-		deleteAllPlayersButOne();
-		addPlayerButton.style.display = 'none';
-		settings.mode = GameModes.SINGLE;
-	} else if (multiPlayerBtn.checked) {
-		addPlayer()
-		addPlayerButton.style.display = 'block';
-		settings.mode = GameModes.MULTI;
-	}
-}
+// 	if (singlePlayerBtn.checked) {
+// 		deleteAllPlayersButOne();
+// 		addPlayerButton.style.display = 'none';
+// 		settings.mode = GameModes.SINGLE;
+// 	} else if (multiPlayerBtn.checked) {
+// 		addPlayer()
+// 		addPlayerButton.style.display = 'block';
+// 		settings.mode = GameModes.MULTI;
+// 	}
+// }
 
 function initGame(username) {
 	initSettingsUI();
@@ -139,17 +202,17 @@ function setFirstPlayerName(username) {
 	}
 }
 
-const GameModes = {
-	SINGLE: 'single',
-	MULTI: 'multi',
-};
+// const GameModes = {
+// 	SINGLE: 'single',
+// 	MULTI: 'multi',
+// };
 
-const settings = {
-	pointsToWin: 5,
-	numberOfGames: 1,
-	username: "",
-	mode: GameModes.SINGLE
-};
+// const settings = {
+// 	pointsToWin: 5,
+// 	numberOfGames: 1,
+// 	username: "",
+// 	mode: GameModes.SINGLE
+// };
 
 function initSettingsUI() {
 	const settingsElements = {

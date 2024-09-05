@@ -56,3 +56,5 @@ class AIPlayer {
 		return finalY;
 	}
 }
+
+export default AIPlayer;

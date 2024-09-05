@@ -1,10 +1,4 @@
-const GameStates = {
-	WAITING_TO_START: 'waitingToStart',
-	COUNTDOWN: 'countdown',
-	RUNNING: 'running',
-	FINISHED: 'finished',
-	MATCH_ENDED: 'matchEnded'
-};
+import { GameStates } from './gameConstants.js';
 
 class GameState {
 	constructor(game) {
@@ -74,3 +68,5 @@ class GameState {
 	}
 
 }
+
+export default GameState;
