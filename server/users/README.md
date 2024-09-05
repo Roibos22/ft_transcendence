@@ -20,9 +20,7 @@ API Endpoints
 #### Request
 
 - **Headers:**
-
   - ```Content-Type: application/json```
-  - ```Authorization: Bearer <token>```
 - **Body:**
 
     ```json
@@ -61,6 +59,10 @@ API Endpoints
 - **Description:** Updates an existing user's information.
 
 #### Request
+
+- **Headers:**
+  - ```Content-Type: application/json```
+  - ```Authorization: Bearer <token>```
 
 - **Body:**
 
@@ -102,6 +104,9 @@ API Endpoints
 - **Description:** User login.
 
 #### Request
+
+- **Headers:**
+  - ```Content-Type: application/json```
 
 - **Body:**
 

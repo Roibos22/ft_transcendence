@@ -8,6 +8,7 @@ urlpatterns = [
     path('', get_users, name='get_users'),
     path('create/', create_user, name='create_user'),
     path('login/', custom_token_obtain_pair, name='login'),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     # Urls for logged in user
     path('login/refresh/', TokenRefreshView.as_view(), name='login_refresh'),
     path('profile/<int:user_id>/', user_profile, name='profile'),
