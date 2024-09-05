@@ -40,15 +40,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'oauth2_provider'
+    # OAuth 2.0
+    'oauth2_provider',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication'
     ),
 }
 
+LOGIN_URL = '/users/login/'
 
 # development temp
 # adjust lifetime
