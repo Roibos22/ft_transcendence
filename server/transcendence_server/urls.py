@@ -23,5 +23,5 @@ urlpatterns = [
     path("users/", include("users.urls")),
 	path('games/', include("game.urls")),
     path('admin/', admin.site.urls),
-    path('o/', include(oauth2_urls, namespace='oauth2_provider')),
+    path('o/', include(oauth2_urls, namespace='oauth2_provider'))
 ]

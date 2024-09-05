@@ -54,7 +54,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
         # Check if the user is active
-        # if not self.user.active:
+        # if not self.user.is_active:
         #     raise serializers.ValidationError({"error": "User account is inactive."})
 
         # Call the base class's validate method

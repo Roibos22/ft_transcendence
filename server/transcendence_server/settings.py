@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'rest_framework',
     # OAuth 2.0
     'oauth2_provider',
+    # 2FA
+    'django_otp',  # Core OTP support
+    'django_otp.plugins.otp_totp',  # Time-based OTP support (Google Authenticator, etc.)
+    'two_factor',  # Main two-factor auth app
 ]
 
 REST_FRAMEWORK = {
@@ -70,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_otp.middleware.OTPMiddleware',
 ]
 
 ROOT_URLCONF = 'transcendence_server.urls'

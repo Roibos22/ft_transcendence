@@ -5,3 +5,5 @@ Pillow>=10.4.0
 djangorestframework-simplejwt
 django-oauth-toolkit>=2.4.0
 oauth2_provider
+django-otp
+django-two-factor-auth[phonenumbers]

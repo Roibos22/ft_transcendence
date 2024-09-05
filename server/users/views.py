@@ -2,10 +2,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from django.shortcuts import redirect
 from .models import User
 from .serializer import *
 from .utils import clean_response_data, debug_request
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # No authentication required
 
@@ -31,14 +32,38 @@ def create_user(request):
 
 @debug_request
 @api_view(['POST'])
-def custom_token_obtain_pair(request):
-    serializer = CustomTokenObtainPairSerializer(data=request.data)
+def user_login(request):
     try:
-        if serializer.is_valid():
-            return Response(serializer.validated_data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = CustomTokenObtainPairSerializer(data=request.data)
     except serializers.ValidationError as e:
         return Response({'error': str(e)}, status=status.HTTP_403_FORBIDDEN)
+    if serializer.is_valid():
+        # Define user
+        user = serializer.user
+        # JWT tokens
+        tokens = serializer.validated_data
+        refresh = RefreshToken.for_user(user)
+        # 2FA is not yet complete
+        refresh['2fa_complete'] = False
+
+        # 2FA
+        # Check if the user has a confirmed TOTP device (2FA enabled)
+        totp_device = TOTPDevice.objects.filter(user=user, confirmed=True).first()
+
+        # 2FA activated
+        if totp_device:
+            return Response({
+            'detail': '2FA required',
+            '2fa_required': True,
+            'tokens': tokens  # Temporary JWT token
+        }, status=status.HTTP_200_OK)
+        # No 2FA activated
+        refresh['2fa_complete'] = True
+        return Response({
+            'detail': 'Login successful',
+            'tokens': tokens
+        }, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Authentication required
 

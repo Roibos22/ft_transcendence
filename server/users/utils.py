@@ -15,6 +15,14 @@ def clean_response_data(data, keys_to_remove=["password"]):
             data.pop(key, None)
     return data
 
+# def get_tokens_for_user(user, two_factor_complete=False):
+#     refresh = RefreshToken.for_user(user)
+#     refresh['2fa_complete'] = two_factor_complete  # Add custom claim for 2FA status
+#     return {
+#         'refresh': str(refresh),
+#         'access': str(refresh.access_token),
+# }
+
 # Debugging tools
 import functools
 import logging
@@ -31,3 +39,4 @@ def debug_request(func):
             logger.debug(f"Request Data: {request.data}")
         return func(*args, **kwargs)
     return wrapper
+

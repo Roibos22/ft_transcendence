@@ -6,7 +6,7 @@ urlpatterns = [
     # Urls with no logged in user
     path('', get_users, name='get_users'),
     path('create/', create_user, name='create_user'),
-    path('login/', custom_token_obtain_pair, name='login'),
+    path('login/', user_login, name='login'),
     # Urls for logged in user
     path('login/refresh/', TokenRefreshView.as_view(), name='login_refresh'),
     path('profile/<int:user_id>/', user_profile, name='profile'),
