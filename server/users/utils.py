@@ -1,4 +1,7 @@
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import TwoFactorCode
+from django.core.mail import send_mail
+import random
 
 def clean_response_data(data, keys_to_remove=["password"]):
     """
@@ -24,6 +27,37 @@ def get_tokens_for_user(user, two_factor_complete=False):
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
+
+def generate_otp(user):
+    # Create a random 6-digit code
+    otp_code = random.randint(100000, 999999)
+
+    # Store the OTP in the database
+    TwoFactorCode.objects.create(user=user, code=str(otp_code))
+
+    return otp_code
+
+# def send_sms_code(user):
+
+#     otp_code = TwoFactorCode.objects.filter(user=user).first().code
+#     # Twilio setup
+#     client = Client('TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN')
+#     message = client.messages.create(
+#         body=f'Your verification code is {otp_code}',
+#         from_='+1234567890',  # Twilio phone number
+#         to=user.phone_number
+#     )
+
+def send_email_code(user):
+    two_factor = TwoFactorCode.objects.filter(user=user).first()
+    otp_code = two_factor.code
+    send_mail(
+        'Your Verification Code',
+        f'Your verification code is {otp_code}',
+        'from@example.com',
+        [user.email],
+        fail_silently=False,
+    )
 
 # Debugging tools
 import functools

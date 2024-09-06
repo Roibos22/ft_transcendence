@@ -55,6 +55,19 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Dev mode
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/tmp/app-emails'  # Directory to save email files
+
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'  # Your email provider's SMTP server
+EMAIL_PORT = 587  # Common port for SMTP over TLS (secure)
+EMAIL_USE_TLS = True  # Use TLS (True) or SSL (False)
+EMAIL_HOST_USER = 'your-email@example.com'  # Your email address (for sending emails)
+EMAIL_HOST_PASSWORD = 'your-email-password'  # Your email password
+DEFAULT_FROM_EMAIL = 'your-email@example.com'  # The default "from" email address
+
 LOGIN_URL = '/users/login/'
 
 # development temp
