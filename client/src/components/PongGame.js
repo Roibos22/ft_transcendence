@@ -1,5 +1,13 @@
-class PongGame {
-	constructor(settings, players) {
+import { Input } from './InputHandler.js';
+import { Render } from './Render.js';
+import { GamePhysics } from './GamePhysics.js';
+import { GameState } from './GameState.js';
+import { UIManager } from './UIManager.js';
+import { AIPlayer } from './AIPlayer.js';
+import { GameModes, GameStates } from '../utils/shared.js';
+
+export class PongGame {
+	constructor(settings) {
 		this.tournamentSettings = settings;
 
 		this.initElements()

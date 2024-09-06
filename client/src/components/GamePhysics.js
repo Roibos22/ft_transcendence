@@ -1,4 +1,4 @@
-class GamePhysics {
+export class GamePhysics {
 	constructor(game) {
 		this.game = game;
 

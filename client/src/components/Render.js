@@ -1,4 +1,6 @@
-class Render {
+import { GameStates } from '../utils/shared.js';
+
+export class Render {
 	constructor(game) {
 		this.game = game;
 	}
