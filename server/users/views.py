@@ -4,9 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import User
 from .serializer import *
-from .utils import clean_response_data, debug_request
+from .utils import clean_response_data, get_tokens_for_user, debug_request
 from django_otp.plugins.otp_totp.models import TOTPDevice
-from rest_framework_simplejwt.tokens import RefreshToken
+
+from .permissions import Is2FAComplete
 
 # No authentication required
 
@@ -42,11 +43,7 @@ def user_login(request):
         user = serializer.user
         # JWT tokens
         tokens = serializer.validated_data
-        refresh = RefreshToken.for_user(user)
-        # 2FA is not yet complete
-        refresh['2fa_complete'] = False
 
-        # 2FA
         # Check if the user has a confirmed TOTP device (2FA enabled)
         totp_device = TOTPDevice.objects.filter(user=user, confirmed=True).first()
 
@@ -57,8 +54,8 @@ def user_login(request):
             '2fa_required': True,
             'tokens': tokens  # Temporary JWT token
         }, status=status.HTTP_200_OK)
-        # No 2FA activated
-        refresh['2fa_complete'] = True
+        # 2FA NOT activated
+        tokens = get_tokens_for_user(user=user, two_factor_complete=True)
         return Response({
             'detail': 'Login successful',
             'tokens': tokens
@@ -68,8 +65,69 @@ def user_login(request):
 # Authentication required
 
 @debug_request
-@api_view(['PATCH'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
+def verify_2fa(request):
+    user = request.user
+    otp_token = request.data.get('otp')
+
+    # Retrieve the user's confirmed TOTP device
+    totp_device = TOTPDevice.objects.filter(user=user).first()
+
+    if not totp_device:
+        return Response({'detail': '2FA not set up for this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if totp_device.verify_token(otp_token):
+        # Mark the device as confirmed
+        totp_device.confirmed = True
+        totp_device.save()
+        return Response({'detail': '2FA successful'}, status=status.HTTP_200_OK)
+
+    return Response({'detail': '2FA wrong OTP'}, status=status.HTTP_400_BAD_REQUEST)
+
+@debug_request
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def confirm_2fa(request):
+    user = request.user
+    otp_token = request.data.get('otp')
+
+    # Retrieve the user's confirmed TOTP device
+    totp_device = TOTPDevice.objects.filter(user=user).first()
+
+    if not totp_device:
+        return Response({'detail': '2FA not set up for this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if totp_device.verify_token(otp_token):
+        tokens = get_tokens_for_user(user=user, two_factor_complete=True)
+        return Response({
+        'detail': 'Login successful',
+        'tokens': tokens
+        }, status=status.HTTP_200_OK)
+
+# 2FA required
+
+@debug_request
+@api_view(['GET'])
+@permission_classes([Is2FAComplete])
+def setup_2fa(request):
+    user = request.user
+
+    # Create a new TOTP device if one doesn't already exist
+    totp_device, created = TOTPDevice.objects.get_or_create(user=user, confirmed=False)
+
+    # Generate a QR code URL for the user to scan in their TOTP app
+    qr_url = totp_device.config_url
+
+    # Optionally, generate a QR Code image and serve it
+    # img = qrcode.make(qr_url)
+    # img.save('/path/to/qr_code.png')  # Save the QR code somewhere
+
+    return Response({'qr_code_url': qr_url}, status=status.HTTP_200_OK)
+
+@debug_request
+@api_view(['PATCH'])
+@permission_classes([Is2FAComplete])
 def update_user(request, user_id):
     try:
         user = User.objects.get(id=user_id)
@@ -88,7 +146,7 @@ def update_user(request, user_id):
 
 @debug_request
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
+@permission_classes([Is2FAComplete])
 def delete_user(request, user_id):
     try:
         user = User.objects.get(id=user_id)
@@ -104,7 +162,7 @@ def delete_user(request, user_id):
 
 @debug_request
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([Is2FAComplete])
 def user_profile(request, user_id):
     try:
         user = User.objects.get(id=user_id)
@@ -116,4 +174,3 @@ def user_profile(request, user_id):
     else:
         data = clean_response_data(serializer.data)
     return Response(data)
-

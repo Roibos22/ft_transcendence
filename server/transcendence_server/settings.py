@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication'
+        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication'
     ),
 }
 
@@ -61,7 +61,7 @@ LOGIN_URL = '/users/login/'
 # adjust lifetime
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Adjust access token lifetime
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # Adjust access token lifetime
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Adjust refresh token lifetime
     'ROTATE_REFRESH_TOKENS': True,
 }

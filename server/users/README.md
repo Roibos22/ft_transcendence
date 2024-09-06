@@ -163,3 +163,17 @@ Notes
 - Passwords should be securely encrypted.
 - Ensure unique constraints on usernames and emails.
 - Maintain proper validation for fields like email and passwords.
+
+
+
+### Authentication flow
+
+#### if 2FA is NOT set
+
+```login -> obtain tocken -> use token in Authentication Bearer header```
+
+#### if 2FA is set:
+
+```login -> obtain temporary token -> use token in Authentication Bearer header to verify (confirm) 2FA code -> obtain token -> use token in Authentication Bearer header```
+
+once you have the final tocken, you can use it for other parts of the API

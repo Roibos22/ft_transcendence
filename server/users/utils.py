@@ -1,3 +1,5 @@
+from rest_framework_simplejwt.tokens import RefreshToken
+
 def clean_response_data(data, keys_to_remove=["password"]):
     """
     Removes specified keys from the serialized data.
@@ -15,13 +17,13 @@ def clean_response_data(data, keys_to_remove=["password"]):
             data.pop(key, None)
     return data
 
-# def get_tokens_for_user(user, two_factor_complete=False):
-#     refresh = RefreshToken.for_user(user)
-#     refresh['2fa_complete'] = two_factor_complete  # Add custom claim for 2FA status
-#     return {
-#         'refresh': str(refresh),
-#         'access': str(refresh.access_token),
-# }
+def get_tokens_for_user(user, two_factor_complete=False):
+    refresh = RefreshToken.for_user(user)
+    refresh['2fa_complete'] = two_factor_complete  # Add custom claim for 2FA status
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
 
 # Debugging tools
 import functools

@@ -1,8 +1,12 @@
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import User
 from game.serializer import GameSerializer
+from typing import Dict, Any
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import update_last_login
+from rest_framework_simplejwt.settings import api_settings
 
 class UserSerializer(serializers.ModelSerializer):
     friends = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), required=False)
@@ -50,14 +54,22 @@ class UserSerializer(serializers.ModelSerializer):
         serializer = GameSerializer(games, many=True)
         return serializer.data
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+class CustomTokenObtainPairSerializer(TokenObtainSerializer):
 
-    def validate(self, attrs):
-        # Check if the user is active
-        # if not self.user.is_active:
-        #     raise serializers.ValidationError({"error": "User account is inactive."})
+    token_class = RefreshToken
+
+    def validate(self, attrs: Dict[str, Any]) -> Dict[str, str]:
+        data = super().validate(attrs)
+
+        refresh = self.get_token(self.user)
+        # 2FA is not yet complete
+        refresh['2fa_complete'] = False
+
+        data["refresh"] = str(refresh)
+        data["access"] = str(refresh.access_token)
 
         # Call the base class's validate method
-        data = super().validate(attrs)
+        if api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, self.user)
 
         return data
