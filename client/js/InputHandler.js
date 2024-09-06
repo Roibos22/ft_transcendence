@@ -13,6 +13,7 @@ class Input {
 		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
 		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
 		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
+        console.log("init input");
 	}
 
 	preventDefaultScroll(e) {
@@ -22,6 +23,7 @@ class Input {
 	}
 
 	handleKeyDown(e) {
+        console.log("keystroke registered");
 		if (e.key in this.keys) {
 			this.keys[e.key] = true;
 		} else if (e.key === 'Enter') {

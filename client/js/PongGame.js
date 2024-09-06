@@ -1,22 +1,23 @@
 class PongGame {
-	constructor(settings) {
+	constructor(settings, players) {
 		this.tournamentSettings = settings;
 
 		this.initElements()
 		this.initModules()
 
-		this.players = [];
+		//this.players = [];
 		this.tournament = null;
 	}
 
-	init() {
-		document.getElementById('startGame').addEventListener('click', (e) => this.handleFormSubmit(e));
-		this.input.init();
-	}
+	// init() {
+	// 	document.getElementById('startGame').addEventListener('click', (e) => this.handleFormSubmit(e));
+	// 	this.input.init();
+	// }
 
 	initModules() {
+        this.input = new Input(this);
+        this.input.init();
 		this.render = new Render(this);
-		this.input = new Input(this);
 		this.physics = new GamePhysics(this);
 		this.state = new GameState(this);
 		this.uiManager = new UIManager(this);
@@ -40,34 +41,34 @@ class PongGame {
 
 	handleFormSubmit(e) {
 		e.preventDefault();
-		this.collectPlayerData();
+		//this.collectPlayerData();
 		this.setupGameView();
 		this.tournament = new Tournament(this, this.players, this.tournamentSettings);
 		this.startGame()
 	}
 
-	collectPlayerData() {
-		const playerInputs = document.querySelectorAll('#playerInputs input');
-		playerInputs.forEach((input, index) => {
-			const playerName = input.value.trim() || `Player ${index + 1}`;
-			this.players.push({
-				name: playerName,
-				score: 0
-			});
-		});
-		if (this.tournamentSettings.mode === GameModes.SINGLE) {
-			this.players.push({
-				name: "AI Player",
-				score: 0
-			});
-		}
-	}
+	// collectPlayerData() {
+	// 	const playerInputs = document.querySelectorAll('#playerInputs input');
+	// 	playerInputs.forEach((input, index) => {
+	// 		const playerName = input.value.trim() || `Player ${index + 1}`;
+	// 		this.players.push({
+	// 			name: playerName,
+	// 			score: 0
+	// 		});
+	// 	});
+	// 	if (this.tournamentSettings.mode === GameModes.SINGLE) {
+	// 		this.players.push({
+	// 			name: "AI Player",
+	// 			score: 0
+	// 		});
+	// 	}
+	// }
 
-	setupGameView() {
-		this.gameSetupView.style.display = 'none';
-		this.settingsView.style.display = 'none';
-		this.gameView.style.display = 'block';
-	}
+	// setupGameView() {
+	// 	this.gameSetupView.style.display = 'none';
+	// 	this.settingsView.style.display = 'none';
+	// 	this.gameView.style.display = 'block';
+	// }
 
 	startGame() {
 		if (this.animationFrameId) {
