@@ -23,9 +23,6 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        # Extract CustomUser data from validated_data
-        # if not instance.active:
-        #     raise serializers.ValidationError("User is inactive and cannot be updated.")
         try:
             # change password
             password = validated_data.pop('password', None)

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import User, TwoFactorCode
 from .serializer import *
-from .utils import clean_response_data, get_tokens_for_user, debug_request, send_email_code, generate_otp
+from .utils import *
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from .permissions import Is2FAComplete
@@ -26,8 +26,10 @@ def get_users(request):
 def create_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        user = serializer.save()
         data = clean_response_data(serializer.data)
+        generate_otp(user=user)
+        send_email_confirmation(user=user)
         return Response(data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -64,6 +66,36 @@ def user_login(request):
         }, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@debug_request
+@api_view(['GET'])
+def verify_email(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    otp_token = request.GET.get('token', None)
+    if not otp_token:
+        return Response({'error': 'Token is not provided'}, status=status.HTTP_400_NOT_FOUND)
+
+    sys_otp_codes = TwoFactorCode.objects.filter(user=user)
+    if not sys_otp_codes:
+        return Response({'detail': '2FA not set up for this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+    for sys_otp_code in sys_otp_codes:
+        if sys_otp_code.verify_code(otp_token):
+            # If verification succeeds, delete the used sys_otp_code
+            sys_otp_code.delete()
+            user.email_isverified = True
+            user.save()
+            return Response({
+                'detail': 'Email confirmed',
+            }, status=status.HTTP_200_OK)
+    sys_otp_codes.delete()
+    return Response({'detail': 'Login failed'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 # Authentication required
 
 @debug_request
@@ -75,6 +107,8 @@ def verify_2fa(request):
 
     # Retrieve the user's confirmed TOTP device
     totp_device = TOTPDevice.objects.filter(user=user).first()
+    # Retrieve the user's confirmed email
+    # sys_otp_code = TwoFactorCode.objects.filter(user=user).first()
 
     if not totp_device:
         return Response({'detail': '2FA not set up for this user'}, status=status.HTTP_400_BAD_REQUEST)
@@ -83,7 +117,7 @@ def verify_2fa(request):
         # Mark the device as confirmed
         totp_device.confirmed = True
         totp_device.save()
-        return Response({'detail': '2FA successful'}, status=status.HTTP_200_OK)
+        return Response({'detail': '2FA device successful'}, status=status.HTTP_200_OK)
     # Delete totp_device?
     return Response({'detail': '2FA wrong OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -96,19 +130,29 @@ def confirm_2fa(request):
 
     # Retrieve the user's confirmed TOTP device
     totp_device = TOTPDevice.objects.filter(user=user).first()
-    sys_otp_code = TwoFactorCode.objects.filter(user=user).first()
+    # Retrieve the user's confirmed email
+    sys_otp_codes = TwoFactorCode.objects.filter(user=user)
 
-    if not totp_device and not sys_otp_code:
+    if not totp_device and not sys_otp_codes:
         return Response({'detail': '2FA not set up for this user'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if totp_device.verify_token(otp_token) or sys_otp_code.verify_code(otp_token):
-        sys_otp_code.delete()
+    if totp_device and totp_device.verify_token(otp_token):
+        # If TOTP verification succeeds
         tokens = get_tokens_for_user(user=user, two_factor_complete=True)
         return Response({
-        'detail': 'Login successful',
-        'tokens': tokens
+            'detail': 'Login successful',
+            'tokens': tokens
         }, status=status.HTTP_200_OK)
-    sys_otp_code.delete()
+    for sys_otp_code in sys_otp_codes:
+        if sys_otp_code.verify_code(otp_token):
+            # If verification succeeds, delete the used sys_otp_code
+            sys_otp_code.delete()
+            tokens = get_tokens_for_user(user=user, two_factor_complete=True)
+            return Response({
+                'detail': 'Login successful',
+                'tokens': tokens
+            }, status=status.HTTP_200_OK)
+    sys_otp_codes.delete()
     return Response({'detail': 'Login failed'}, status=status.HTTP_400_BAD_REQUEST)
 
 # 2FA required
@@ -176,7 +220,7 @@ def user_profile(request, user_id):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = UserSerializer(user)
     if request.user != user:
-        data = clean_response_data(serializer.data, ['password', 'user_permissions', 'email', 'username'])
+        data = clean_response_data(serializer.data, ['password', 'user_permissions', 'email', 'username', 'phone_number'])
     else:
         data = clean_response_data(serializer.data)
     return Response(data)

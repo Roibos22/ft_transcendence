@@ -14,15 +14,17 @@ class User(AbstractUser):
             'unique': "A user with that username already exists.",
         }
     )
-    #Phone number for authentication
+    # Email verification flag
+    email_isverified = models.BooleanField(default=False)
+    # Phone number for authentication
     phone_number = models.CharField(blank=True, null=True)
     # Changable display name
     display_name = models.CharField(max_length=15, blank=True)
-    #Online status
+    # Online status
     online = models.BooleanField(default=False)
-    #Avatar picture
+    # Avatar picture
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    #Friends list (symmetric?)
+    # Friends list (symmetric?)
     friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='friend_of')
     def save(self, *args, **kwargs):
         if not self.display_name:

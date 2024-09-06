@@ -7,6 +7,7 @@ urlpatterns = [
     path('', get_users, name='get_users'),
     path('create/', create_user, name='create_user'),
     path('login/', user_login, name='login'),
+    path('emailverification/<int:user_id>/', verify_email, name='verify_email'),
     # Urls pre-2FA login
     path('2fa/verify/', verify_2fa, name='verify_2fa'),
     path('login/2fa/', confirm_2fa, name='confirm_2fa'),

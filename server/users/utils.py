@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import TwoFactorCode
 from django.core.mail import send_mail
+from .constants import VERIFICATION_LINK
 import random
 
 def clean_response_data(data, keys_to_remove=["password"]):
@@ -49,11 +50,24 @@ def generate_otp(user):
 #     )
 
 def send_email_code(user):
+    if not user.email_isverified:
+        return
     two_factor = TwoFactorCode.objects.filter(user=user).first()
     otp_code = two_factor.code
     send_mail(
         'Your Verification Code',
         f'Your verification code is {otp_code}',
+        'from@example.com',
+        [user.email],
+        fail_silently=False,
+    )
+
+def send_email_confirmation(user):
+    two_factor = TwoFactorCode.objects.filter(user=user).first()
+    otp_code = two_factor.code
+    send_mail(
+        'Email Verification',
+        f'Press here to verify your email: {VERIFICATION_LINK}{user.id}/?token={otp_code}',
         'from@example.com',
         [user.email],
         fail_silently=False,
