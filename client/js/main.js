@@ -332,3 +332,4 @@ window.deletePlayer = deletePlayer;  // Make sure this function is defined
 
 console.log('main.js executed');
 
+

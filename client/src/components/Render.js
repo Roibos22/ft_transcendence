@@ -1,6 +1,6 @@
-import { GameStates } from './gameConstants.js';
+import { GameStates } from '../utils/shared.js';
 
-class Render {
+export class Render {
 	constructor(game) {
 		this.game = game;
 	}

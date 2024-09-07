@@ -1,6 +1,6 @@
-import { GameStates } from './gameConstants.js';
+import { GameStates } from '../utils/shared.js';
 
-class GameState {
+export class GameState {
 	constructor(game) {
 		this.game = game;
 		this.currentState = GameStates.WAITING_TO_START;

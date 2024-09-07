@@ -1,4 +1,4 @@
-class AIPlayer {
+export class AIPlayer {
 	constructor(game) {
 		this.game = game;
 		this.lastDecisionTime = 0;
