@@ -1,0 +1,62 @@
+<div class="container" id="gameSetupView">
+
+	<!-- HEADING -->
+	<h1 class="text-center">Welcome to Pong!</h1>
+
+	<!-- SEGMENTED PICKER GAME MODE -->
+	<div class="d-flex flex-column align-items-center mt-3 mb-3">
+		<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+			<input type="radio" class="btn-check" name="btnradio" id="btn_singleplayer" autocomplete="off" checked>
+			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_singleplayer">Single Player</label>
+			<input type="radio" class="btn-check" name="btnradio" id="btn_multiplayer" autocomplete="off">
+			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_multiplayer">Multi Player</label>
+		</div>
+	</div>
+
+	<!-- PLAYER INPUT FIELDS -->
+	<form id="playerForm">
+		<div id="playerInputs" class="player-input-fields">
+			<div class="player-input-group mb-3">
+				<div class="input-group">
+					<input type="text" class="form-control player-name-input" id="player1" placeholder="Player 1">
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- BUTTONS -->
+	<div class="d-flex flex-column align-items-center">
+		<button type="button" id="addPlayer" class="btn btn-primary mb-2" style="width: 150px;">Add Player</button>
+		<div class="mt-4 text-center">
+			<p class="mb-0">
+				<a href="/game" class="btn btn-success">Start Game</a>
+			</p>
+		</div>
+	</div>
+
+	<!-- TOURNAMENT SETTINGS -->
+	<div id="settingsView" class="container-md settings-input-fields mt-4">
+		<h5 class="text-center mt-4 mb-4"">Tournament Settings</h5>
+
+		<!-- POINTS TO WIN -->
+		<div class="mb-3">
+			<label for="pointsToWin" class="form-label">Points to win:</label>
+			<div class="input-group">
+				<button class="btn btn-outline-secondary" type="button">-</button>
+				<span id="pointsToWinDisplay" class="form-control text-center">5</span>
+				<button class="btn btn-outline-secondary" type="button">+</button>
+			</div>
+		</div>
+		
+		<!-- NUMBER OF GAMES -->
+		<div class="mb-3">
+			<label for="numberOfGames" class="form-label">Number of games:</label>
+			<div class="input-group">
+				<button class="btn btn-outline-secondary" type="button">-</button>
+				<span id="numberOfGamesDisplay" class="form-control text-center">1</span>
+				<button class="btn btn-outline-secondary" type="button">+</button>
+			</div>
+		</div>
+	</div>
+
+</div>

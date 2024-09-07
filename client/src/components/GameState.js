@@ -1,12 +1,6 @@
-const GameStates = {
-	WAITING_TO_START: 'waitingToStart',
-	COUNTDOWN: 'countdown',
-	RUNNING: 'running',
-	FINISHED: 'finished',
-	MATCH_ENDED: 'matchEnded'
-};
+import { GameStates } from '../utils/shared.js';
 
-class GameState {
+export class GameState {
 	constructor(game) {
 		this.game = game;
 		this.currentState = GameStates.WAITING_TO_START;

@@ -1,4 +1,6 @@
-class Input {
+import { GameModes, GameStates } from '../utils/shared.js';
+
+export class Input {
 	constructor(game) {
 		this.game = game;
 		this.keys = {

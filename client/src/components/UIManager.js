@@ -1,4 +1,4 @@
-class UIManager {
+export class UIManager {
 	constructor(game) {
 		this.game = game;
 	}
@@ -10,7 +10,19 @@ class UIManager {
 	}
 
 	updateScoreHeader() {
-		const currentMatch = this.game.tournament.getCurrentMatch();
+
+        if (!this.game.tournament) {
+            console.error("Tournament not initialized");
+            return;
+        }
+
+        const currentMatch = this.game.tournament.getCurrentMatch();
+        if (!currentMatch || !currentMatch.players || currentMatch.players.length < 2) {
+            console.error("Invalid current match data");
+            return;
+        }
+
+		//const currentMatch = this.game.tournament.getCurrentMatch();
 		const player1 = currentMatch.players[0];
 		const player2 = currentMatch.players[1];
 	
