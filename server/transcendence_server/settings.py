@@ -46,8 +46,8 @@ INSTALLED_APPS = [
     'django_otp',  # Core OTP support
     'django_otp.plugins.otp_totp',  # Time-based OTP support (Google Authenticator, etc.)
     'two_factor',  # Main two-factor auth app
-    'corsheaders'
-    'oauth2_provider'
+    # CORS
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
