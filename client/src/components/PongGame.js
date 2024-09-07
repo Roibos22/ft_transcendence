@@ -38,16 +38,34 @@ export class PongGame {
 		this.numberOfGamesDisplay = document.getElementById('numberOfGamesDisplay');
 	}
 
-	startGame() {
+	startGame(players) {
+		console.log('Starting game with players:', players);
+		this.players = players;
+		
+		if (this.tournamentSettings.mode === GameModes.SINGLE && this.players.length === 1) {
+			this.players.push({ name: "AI Player", score: 0 });
+		}
+
 		if (this.animationFrameId) {
 			cancelAnimationFrame(this.animationFrameId);
 			this.animationFrameId = null;
 		}
-		this.state.startNextMatch();
-		this.gameLoop();
+
+		if (this.state && this.modulesInitialized) {
+			this.tournament = new Tournament(this, this.players, this.tournamentSettings);
+			this.state.startNextMatch();
+			this.gameLoop();
+		} else {
+			console.error('Game not fully initialized');
+		}
 	}
 
 	gameLoop() {
+		if (!this.modulesInitialized) {
+			console.error('Game modules not initialized');
+			return;
+		}
+
 		this.input.update();
 		if (this.state.currentState === GameStates.RUNNING) {
 			this.physics.moveBall();
@@ -61,3 +79,5 @@ export class PongGame {
 		this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
 	}
 }
+
+export default PongGame;

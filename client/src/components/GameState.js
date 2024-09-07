@@ -68,3 +68,5 @@ export class GameState {
 	}
 
 }
+
+export default GameState;
