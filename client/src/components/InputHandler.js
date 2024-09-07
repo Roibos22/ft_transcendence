@@ -107,5 +107,3 @@ export class Input {
 		}
 	}
 }
-
-export default Input;

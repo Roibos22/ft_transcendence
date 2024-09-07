@@ -71,5 +71,3 @@ export class Render {
 		});
 	}
 }
-
-export default Render;

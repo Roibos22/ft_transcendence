@@ -130,6 +130,3 @@ export class UIManager {
 	}
 
 }
-
-
-export default UIManager;
