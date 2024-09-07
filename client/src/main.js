@@ -7,7 +7,3 @@ function initMain() {
 }
 
 initMain();
-
-if (typeof window.urlLocationHandler === 'undefined') {
-	window.urlLocationHandler = urlLocationHandler;
-}

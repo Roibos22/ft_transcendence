@@ -7,7 +7,6 @@ export async function initGameView() {
 	const content = await loadTemplate('game');
 	document.getElementById('app').innerHTML = content;
 
-	console.log("Initializing Game View");
 	const game = new PongGame(settings);
 	game.tournament = new Tournament(game, players, settings);
 	game.startGame();

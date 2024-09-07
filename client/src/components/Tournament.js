@@ -1,3 +1,5 @@
+import { GameStates } from '../utils/shared.js';
+
 export class Tournament {
 	constructor(game, players, settings) {
 		this.game = game;
