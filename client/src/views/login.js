@@ -1,4 +1,5 @@
 import { urlLocationHandler, loadTemplate } from '../router.js';
+import * as Cookie from '../utils/cookies.js';
 
 export async function initLoginView() {
 	const content = await loadTemplate('login');
