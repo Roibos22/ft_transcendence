@@ -62,6 +62,7 @@ def user_login(request):
         tokens = get_tokens_for_user(user=user, two_factor_complete=True)
         return Response({
             'detail': 'Login successful',
+            '2fa_required': False,
             'tokens': tokens
         }, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -213,9 +214,9 @@ def delete_user(request, user_id):
 @debug_request
 @api_view(['GET'])
 @permission_classes([Is2FAComplete])
-def user_profile(request, user_id):
+def user_profile(request, username):
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = UserSerializer(user)
