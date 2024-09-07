@@ -1,4 +1,6 @@
-class Tournament {
+import { GameStates } from '../utils/shared.js';
+
+export class Tournament {
 	constructor(game, players, settings) {
 		this.game = game;
 		this.players = players.map(player => ({ ...player, wins: 0, losses: 0, points: 0 }));

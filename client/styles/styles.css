@@ -16,6 +16,12 @@
 	margin-right: auto;
 }
 
+.registration-card {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .background-gradient {
 	min-height: 100vh;
 	width: 100%;

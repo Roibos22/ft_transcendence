@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django_otp',  # Core OTP support
     'django_otp.plugins.otp_totp',  # Time-based OTP support (Google Authenticator, etc.)
     'two_factor',  # Main two-factor auth app
+    'corsheaders'
+    'oauth2_provider'
 ]
 
 REST_FRAMEWORK = {
@@ -88,8 +90,21 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_otp.middleware.OTPMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000',
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'Authorization',
+    'Content-Type',
+]
 ROOT_URLCONF = 'transcendence_server.urls'
 
 TEMPLATES = [
