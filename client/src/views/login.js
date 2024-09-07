@@ -1,5 +1,5 @@
 import { urlLocationHandler, loadTemplate } from '../router.js';
-import * as Cookie from '../utils/cookies.js';
+import * as Cookies from '../utils/cookies.js';
 
 export async function initLoginView() {
 	const content = await loadTemplate('login');
@@ -51,9 +51,9 @@ async function loginUser(username, password) {
 		}
 
 		const data = await response.json();
-		//localStorage.setItem('authToken', data.token);
 		console.log("Login successful");
-		console.log(data);
+		Cookies.setCookie("accessToken", data.access, 24);
+		Cookies.setCookie("refreshToken", data.refresh, 24);
 		return true;
 	} catch (error) {
 		console.error('Login error:', error);
