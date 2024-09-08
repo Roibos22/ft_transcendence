@@ -5,24 +5,16 @@ import * as THREE from 'three';
 
 export class Game {
     constructor() {
-        this.audioListener = new THREE.AudioListener();
+        this.scene = this.createScene();
         this.camera = this.getCamera();
         this.renderer = this.setupRenderer()
         this.clock = new THREE.Clock();
-        
-        this.setupScene();
+        this.audioListener = new THREE.AudioListener();
 
-        this.elephant = new Elephant(this.scene);
-        this.player1 = new Mouse(this.scene, 1);
-        this.player2 = new Mouse(this.scene, 2);
+        this.setupCanvas();
 
-        this.animationMixers = [
-            this.elephant.animationMixer,
-            this.player1.animationMixer,
-            this.player2.animationMixer
-        ];
-
-        this.floor = this.getFloor();
+        this.gameElements = this.getGameElements();
+        this.animationMixers = this.getMixers();
 
         this.audio = new AudioManager(this.audioListener);
 
@@ -37,7 +29,7 @@ export class Game {
 
     getCamera() {
         const aspect = window.innerWidth / window.innerHeight;
-        const frustumSize = 600; 
+        const frustumSize = 700; 
         
         const camera = new THREE.OrthographicCamera(
             frustumSize * aspect / -2, // left
@@ -63,13 +55,10 @@ export class Game {
         return floor;
     }
 
-    setupScene() {
-        this.scene = this.createScene();
+    setupCanvas() {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
-
         this.scene.add(this.camera);
-        
     }
     
     setupRenderer() {
@@ -79,8 +68,25 @@ export class Game {
     }
     
     addSprites() {
-        this.scene.add(this.floor);
-        this.scene.add(this.player1.hitTriangle.shape);
-        this.scene.add(this.player2.hitTriangle.shape);
+        this.scene.add(this.gameElements.floor);
+        this.scene.add(this.gameElements.player1.hitTriangle.shape);
+        this.scene.add(this.gameElements.player2.hitTriangle.shape);
+    }
+
+    getGameElements() {
+        return {
+            elephant: new Elephant(this.scene),
+            player1: new Mouse(this.scene, 1),
+            player2: new Mouse(this.scene, 2),
+            floor: this.getFloor(),
+        };
+    }
+
+    getMixers() {
+        return {
+            elephant: this.gameElements.elephant.mixer,
+            player1: this.gameElements.player1.mixer,
+            player2: this.gameElements.player2.mixer,
+        };
     }
 }

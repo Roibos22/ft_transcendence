@@ -1,22 +1,22 @@
-import Window from './Window';
+import { Canvas3D } from './Canvas3D';
 
-const _window = new Window();
+const canvas = new Canvas3D();
 
 function animate() {
     requestAnimationFrame(animate);
 
-    const delta = _window.game.clock.getDelta();
-    if (_window.game.elephant.mixer) _window.game.elephant.mixer.update(delta);
-    if (_window.game.player1.mixer) _window.game.player1.mixer.update(delta);
-    if (_window.game.player2.mixer) _window.game.player2.mixer.update(delta);
+    const delta = canvas.game.clock.getDelta();
+    if (canvas.game.gameElements.elephant.mixer) canvas.game.gameElements.elephant.mixer.update(delta);
+    if (canvas.game.gameElements.player1.mixer) canvas.game.gameElements.player1.mixer.update(delta);
+    if (canvas.game.gameElements.player2.mixer) canvas.game.gameElements.player2.mixer.update(delta);
 
-    _window.game.renderer.render(_window.game.scene, _window.game.camera);
+    canvas.game.renderer.render(canvas.game.scene, canvas.game.camera);
 }
 
 animate();
 
 window.addEventListener('resize', () => {
-  _window.game.camera.aspect = window.innerWidth / window.innerHeight;
-  _window.game.camera.updateProjectionMatrix();
-  _window.game.renderer.setSize(window.innerWidth, window.innerHeight);
+  canvas.game.camera.aspect = window.innerWidth / window.innerHeight;
+  canvas.game.camera.updateProjectionMatrix();
+  canvas.game.renderer.setSize(window.innerWidth, window.innerHeight);
 });

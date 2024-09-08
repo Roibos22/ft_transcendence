@@ -6,7 +6,7 @@ export class Triangle {
         this.vertices = new Float32Array([
             0.0, .5, 0.0,  // Vertex 1
             -1.0, -1.0, 0.0, // Vertex 2
-            1.0, -1.0, 0.0   // Vertex 3
+            1.0, -1.0, 0.0  // Vertex 3
         ]);
         this.geometry.setAttribute('position', new THREE.BufferAttribute(this.vertices, 3));
         this.material = new THREE.MeshBasicMaterial({ color: 0xC3E5D4, side: THREE.DoubleSide });

@@ -1,7 +1,11 @@
 body {
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
 }
+
+* {
+  font-family: "Baskerville", "Brush Script MT", cursive;
+}
+
 score-card {
   background-color: #ffffff;
   padding: 20px;
@@ -18,4 +22,22 @@ score-card {
   font-size: 24px;
   color: #6c757d;
   margin-bottom: 10px;
+}
+
+#player2ScoreValue {
+  text-align: right;
+}
+
+.title {
+  /* make a cursive font */
+  font-family: "Baskerville", "Brush Script MT", cursive;
+  font-size: 72px;
+  font-style: italic;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: #6c757d;
+  margin-top: 20px;
+  font-style: italic;
 }
