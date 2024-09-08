@@ -37,7 +37,22 @@ score-card {
 
 .subtitle {
   font-size: 20px;
+  font-family: "arial";
+  font-style: normal;
   color: #6c757d;
   margin-top: 20px;
-  font-style: italic;
+  margin-bottom: 20px;
 }
+
+.controls {
+  margin-top: 10px;
+  font-family: "arial";
+  font-style: normal;
+  font-size: 16px;
+  color: #6c757d;
+}
+
+.spacer {
+  width: 20px
+}
+

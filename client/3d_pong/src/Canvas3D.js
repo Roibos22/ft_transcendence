@@ -16,8 +16,13 @@ export class Canvas3D {
         title.style.position = "absolute";
         title.style.color = "#33CB99";
 
+        // use unicode symbol for up and down arrow and have space between the arrows
         title.innerHTML = `<div class="title">elepong<div>
-        <div class="subtitle">a game by joseph, dilshod, leon, barra and louis</div>`;
+        <div class="subtitle">a game by joseph, dilshod, leon, barra and louis</div>
+        <div class="controls">player 1: W, S</div>
+        <div class="controls">player 2: ▲, ▼</div>
+        `;
+
         title.style.top = "0px";
         title.style.left = "20px";
         return title;
