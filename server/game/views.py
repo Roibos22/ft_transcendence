@@ -37,3 +37,12 @@ def join_game(request):
     else:
         return Response({'status': 'error', 'message': 'Invalid credentials'}, status=401)
 
+
+@api_view(['GET'])
+def game_profile(requst, game_id):
+    try:
+        game = Game.objects.get(id=game_id)
+    except Game.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    serilizer = GameSerializer(game)
+    return Response(serilizer.data)

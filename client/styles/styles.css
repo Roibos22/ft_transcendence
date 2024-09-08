@@ -16,6 +16,12 @@
 	margin-right: auto;
 }
 
+.registration-card {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .background-gradient {
 	min-height: 100vh;
 	width: 100%;
@@ -23,6 +29,20 @@
 	background: linear-gradient(to right, rgba(215, 184, 243, 1), rgba(187, 217, 255, 1));
 	background-attachment: fixed;
 	background-size: cover;
+}
+
+.btn-check:checked + .btn-outline-primary {
+	background-color: #0d6efd;
+	color: #fff;
+}
+.btn-check:not(:checked) + .btn-outline-primary {
+	background-color: #fff;
+	color: #0d6efd;
+}
+
+.btn-outline-secondary {
+	background-color: #fff;
+	color: #000000;
 }
 
 

@@ -2,4 +2,7 @@ Django>=4.0,<5.0
 djangorestframework>=3.14.0,<4.0
 psycopg>=3.1.8
 Pillow>=10.4.0
+djangorestframework-simplejwt
+django-cors-headers
+# django-oauth-toolkit>=2.4.0
 channels

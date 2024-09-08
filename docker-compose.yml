@@ -19,9 +19,12 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
+    image: server
     restart: unless-stopped
     ports:
       - "8000:8000"
+    volumes:
+      - content:/app/avatars
     networks:
       - backend
 
@@ -35,6 +38,9 @@ services:
 
 volumes:
   postgres-data:
+  content:
+
+
 
 networks:
   backend:

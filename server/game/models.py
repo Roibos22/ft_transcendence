@@ -21,6 +21,8 @@ class Game(models.Model):
         default=0
 	)
     game_date = models.DateTimeField(auto_now_add=True)
+    # boolean ?
+    winner = models.BooleanField()
 
     def __str__(self):
         return self
