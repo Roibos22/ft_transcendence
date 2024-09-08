@@ -176,4 +176,4 @@ Notes
 
 ```login -> obtain temporary token -> use token in Authentication Bearer header to verify (confirm) 2FA code -> obtain token -> use token in Authentication Bearer header```
 
-once you have the final tocken, you can use it for other parts of the API
+Once you have the final tocken, you can use it for other parts of the API
