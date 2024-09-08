@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+score-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.score {
+  font-size: 64px;
+  font-weight: bold;
+  color: #33CB99;
+}
+.score-label {
+  font-size: 24px;
+  color: #6c757d;
+  margin-bottom: 10px;
+}
