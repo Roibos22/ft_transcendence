@@ -90,7 +90,7 @@ def verify_email(request, user_id):
         if sys_otp_code.verify_code(otp_token):
             # If verification succeeds, delete the used sys_otp_code
             sys_otp_code.delete()
-            user.email_isverified = True
+            user.email_verified = True
             user.save()
             return Response({
                 'detail': 'Email confirmed',
