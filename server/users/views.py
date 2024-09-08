@@ -204,8 +204,6 @@ def update_user(request, user_id):
 @permission_classes([Is2FAComplete])
 def delete_user(request):
     user = request.user
-    if request.user != user:
-        return Response({'error': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
     serializer = UserSerializer(user, data={'is_active': False}, partial=True)
     if serializer.is_valid():
         serializer.save()

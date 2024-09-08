@@ -37,11 +37,14 @@ class Pages():
             inquirer.List(
                 'User profile',
                 message='Choose to continue',
-                choices=['Update profile', 'Setup 2FA', 'Delete', 'Back'],
+                choices=['Update profile', 'Upload profile picture', 'Setup 2FA', 'Delete', 'Back'],
             )
         ]
         return profile_page
 
+    def verify_2fa(user: User):
+        verify_page = [inquirer.Text('token', message='Enter OTP token', validate=lambda _, c: c.isdigit() and 100000 <= int(c) <= 999999)]
+        return verify_page
     def play():
         pass
 
@@ -63,8 +66,11 @@ class ProfilePages():
         else:
             return ""
     def update(user: User):
-        update_page = [inquirer.Editor("form", "Fill out the form", default=ProfilePages.fetch_data(user))]
+        update_page = [inquirer.Editor("form", message="Fill out the form", default=ProfilePages.fetch_data(user))]
         return update_page
+    def update_avatar(user: User):
+        avatar_page = [inquirer.Path('avatar_path', message='Enter the path to file', path_type=inquirer.Path.FILE, exists=True)]
+        return avatar_page
     def setup2FA(user: User):
         setup_page = [inquirer.Confirm('setup2FA', message='Setup 2FA for your user?', default=False)]
         return setup_page

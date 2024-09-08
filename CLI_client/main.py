@@ -2,27 +2,31 @@ import inquirer
 from modules import *
 from pages import *
 
-def profile(answer, user: User):
+def profile(command, user: User):
     print('---------------------')
-    if answer == 'Update profile':
+    if command == 'Update profile':
         page = ProfilePages.update(user)
         answer = inquirer.prompt(page)
         user.update(answer['form'])
-    elif answer == 'Setup 2FA':
+    elif command == 'Upload profile picture':
+        page = ProfilePages.update_avatar(user)
+        answer = inquirer.prompt(page)
+        user.upload_avatar(answer['avatar_path'])
+    elif command == 'Setup 2FA':
         page = ProfilePages.setup2FA(user)
         answer = inquirer.prompt(page)
-        if answer:
+        if answer['setup2FA']:
             user.setup2FA()
         else:
             print('Canceled')
-    elif answer == 'Delete':
+    elif command == 'Delete':
         page = ProfilePages.delete(user)
         answer = inquirer.prompt(page)
-        if answer:
+        if answer['delete']:
             user.delete()
         else:
             print('Canceled')
-    elif answer == 'Back':
+    elif command == 'Back':
         pass
 
 def main():
@@ -35,6 +39,15 @@ def main():
             if page:
                 answer = inquirer.prompt(page)
                 user.login(answer)
+                i = 0
+                while not user.auth_2fa and user.state:
+                    i+=1
+                    page = Pages.verify_2fa(user)
+                    answer = inquirer.prompt(page)
+                    user.verify(answer['token'])
+                    if i > 3:
+                        user.logout()
+                        break
         elif answer == 'Play':
             page = Pages.play()
         elif answer == 'Profile':

@@ -10,6 +10,7 @@ class User():
     state:bool=False
     access_tocken:str=None
     refresh_tocken:str=None
+    auth_2fa:bool=False
 
     def auth_header(self):
         headers = {
@@ -45,14 +46,15 @@ class User():
             data = response.json()
             with open("tokens.json", "w") as file:
                 json.dump(data['tokens'], file, indent=4)
-
-            print("Logged in successfully")
             # print(data)
             self.state=True
             self.username=data['username']
             self.access_tocken=data['tokens']['access']
             self.refresh_tocken=data['tokens']['refresh']
-            self.fetch_data()
+            if not response.json()['2fa_required']:
+                print("Logged in successfully")
+                self.auth_2fa=True
+                self.fetch_data()
             return True
         else:
             print(f"Error: {response.status_code}")
@@ -94,6 +96,17 @@ class User():
             print('Your data updated')
         else:
             print(f'Error code: {response.status_code}')
+    def upload_avatar(self, path):
+        headers = self.auth_header()
+        headers.pop('Content-Type')
+        file_data = {
+            'avatar': open(path, 'rb')
+        }
+        response = requests.patch(f'{url}profile/{self.id}/update/', headers=headers, files=file_data)
+        if response.status_code == 200:
+            print('Your avatar updated')
+        else:
+            print(f'Error code: {response.status_code}')
     def delete(self):
         headers = self.auth_header()
         response = requests.delete(f'{url}profile/delete/', headers=headers)
@@ -107,6 +120,7 @@ class User():
         self.state=False
         self.access_tocken=None
         self.refresh_tocken=None
+        self.auth_2fa=False
 
     def setup2FA(self):
         headers = self.auth_header()
@@ -116,4 +130,22 @@ class User():
         else:
             print(f'Error: {response.status_code}')
 
-
+    def verify(self, token):
+        headers = self.auth_header()
+        response = requests.post(f'{url}2fa/verify/', headers=headers, json={'otp':token})
+        if response.status_code == 200:
+            print('You are logged in')
+            self.auth_2fa=True
+            self.fetch_data()
+            return True
+        else:
+            print(f'Error: {response.status_code}')
+            return False
+    def logout(self):
+        self.id=None
+        self.username=None
+        self.public_name=None
+        self.state=False
+        self.access_tocken=None
+        self.refresh_tocken=None
+        self.auth_2fa=False
