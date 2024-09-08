@@ -2,3 +2,4 @@ to-do.md
 to-do.*
 .venv
 .idea
+__pycache__
