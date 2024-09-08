@@ -16,7 +16,6 @@ class User():
         headers = {
             'Accept': 'application/json',
             'User-Agent': 'my-app/1.0',
-            'Content-Type': 'application/json',
             'Authorization': f'Bearer {self.access_tocken}',
         }
         return headers
@@ -98,7 +97,6 @@ class User():
             print(f'Error code: {response.status_code}')
     def upload_avatar(self, path):
         headers = self.auth_header()
-        headers.pop('Content-Type')
         file_data = {
             'avatar': open(path, 'rb')
         }
