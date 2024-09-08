@@ -54,7 +54,7 @@ export default class Window {
                 action.stop();
                 const action2 = this.game.elephant.mixer.clipAction(this.game.elephant.animations[5]);
                 action2.play();
-                this.game.elephant.model.rotation.y += Math.PI/2;
+                this.game.elephant.model.rotation.y += Math.PI;
             }, 1500);
         }
         document.body.appendChild(elephantSoundButton);
