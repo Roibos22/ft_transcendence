@@ -1,5 +1,6 @@
 import { loadTemplate } from '../router.js';
 import * as Cookies from '../utils/cookies.js';
+import * as Notification from '../utils/notification.js';
 
 export async function initProfileView() {
 	try {
@@ -146,7 +147,7 @@ async function updateUserData() {
 			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${Cookies.getCookie("accessToken")}`
+				'Authorization': `Bearer ${Cookies.getCookie("accesToken")}`
 			},
 			body: JSON.stringify(updatedData)
 		});
@@ -159,6 +160,10 @@ async function updateUserData() {
 		console.log('Profile updated successfully:', result);
 	} catch (error) {
 		console.error('Error updating profile:', error);
+		Notification.showErrorNotification([
+			"Something went wrong...",
+			"Please try again later.",
+		]);
 	}
 	
 	const userData = await fetchUserData();
