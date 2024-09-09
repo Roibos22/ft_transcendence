@@ -5,6 +5,9 @@
 1. Implement adding friends
 2. Add user active check on login
 
+3. limit CORS origins
+4. setup email
+
 ## Basic information
 
 Layers:

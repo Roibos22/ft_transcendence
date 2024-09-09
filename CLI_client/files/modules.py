@@ -2,6 +2,7 @@ import requests
 import json
 from constants import url
 import urllib.parse
+from colorama import Fore, Back, Style
 
 class User():
     id:int=None
@@ -34,6 +35,7 @@ class User():
             return True
         else:
             print(f"Error: {response.status_code}")
+            print(Fore.GREEN + '---------------------')
             return False
 
     def login(self, data):
@@ -52,29 +54,35 @@ class User():
             self.refresh_tocken=data['tokens']['refresh']
             if not response.json()['2fa_required']:
                 print("Logged in successfully")
+                print(Fore.GREEN + '---------------------')
                 self.auth_2fa=True
                 self.fetch_data()
             return True
         else:
             print(f"Error: {response.status_code}")
+            print(Fore.GREEN + '---------------------')
             return False
 
     def profile(self):
         if self.access_tocken == None:
             print('You are not logged in')
+            print(Fore.GREEN + '---------------------')
             return False
         response = self.authorized_request()
         if response.status_code == 200:
             data = response.json()
+            print("User data:")
             print(f"User: {data['display_name']}")
             print(f"First name: {data['first_name']}")
             print(f"Last name: {data['last_name']}")
             print(f"Email: {data['email']}")
             print(f"Games: {data['games']}")
             print(f"Friends: {data['friends']}")
+            print(Fore.GREEN + '---------------------')
             return True
         else:
             print(f"Error: {response.status_code}")
+            print(Fore.GREEN + '---------------------')
             return False
     def update(self, data: str):
         data_lines = data.strip().split("\n")
@@ -93,8 +101,10 @@ class User():
         response = requests.patch(f'{url}profile/{self.id}/update/', json=data_dict, headers=headers)
         if response.status_code == 200:
             print('Your data updated')
+            print(Fore.GREEN + '---------------------')
         else:
             print(f'Error code: {response.status_code}')
+            print(Fore.GREEN + '---------------------')
     def upload_avatar(self, path):
         headers = self.auth_header()
         file_data = {
@@ -103,15 +113,20 @@ class User():
         response = requests.patch(f'{url}profile/{self.id}/update/', headers=headers, files=file_data)
         if response.status_code == 200:
             print('Your avatar updated')
+            print(Fore.GREEN + '---------------------')
         else:
             print(f'Error code: {response.status_code}')
+            print(Fore.GREEN + '---------------------')
     def delete(self):
         headers = self.auth_header()
-        response = requests.delete(f'{url}profile/delete/', headers=headers)
+        response = requests.delete(f'{url}profile/{self.id}/delete/', headers=headers)
         if response.status_code == 204:
             print('Your profile deleted')
+            print(Fore.GREEN + '---------------------')
         else:
             print(f'Error code: {response.status_code}')
+            print(f'Error message: {response.text}')
+            print(Fore.GREEN + '---------------------')
         self.id=None
         self.username=None
         self.public_name=None
@@ -125,19 +140,23 @@ class User():
         response = requests.get(f'{url}2fa/setup/', headers=headers)
         if response.status_code == 200:
             print(f"link for 2FA OTP: {response.json()['qr_code_url']}")
+            print(Fore.GREEN + '---------------------')
         else:
             print(f'Error: {response.status_code}')
+            print(Fore.GREEN + '---------------------')
 
     def verify(self, token):
         headers = self.auth_header()
         response = requests.post(f'{url}2fa/verify/', headers=headers, json={'otp':token})
         if response.status_code == 200:
             print('You are logged in')
+            print(Fore.GREEN + '---------------------')
             self.auth_2fa=True
             self.fetch_data()
             return True
         else:
             print(f'Error: {response.status_code}')
+            print(Fore.GREEN + '---------------------')
             return False
     def logout(self):
         self.id=None
@@ -147,3 +166,15 @@ class User():
         self.access_tocken=None
         self.refresh_tocken=None
         self.auth_2fa=False
+        print('User logged out')
+        print(Fore.GREEN + '---------------------')
+    def sign_up(self, answers):
+        response = requests.post(f'{url}create/', json=answers)
+        if response.status_code == 201:
+            print('User created')
+            print(Fore.GREEN + '---------------------')
+        else:
+            print(f'Error: {response}')
+            print(Fore.GREEN + '---------------------')
+        # answers = answers['form']
+

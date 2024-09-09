@@ -202,8 +202,13 @@ def update_user(request, user_id):
 @debug_request
 @api_view(['DELETE'])
 @permission_classes([Is2FAComplete])
-def delete_user(request):
-    user = request.user
+def delete_user(request, user_id: int):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    if request.user != user:
+        return Response({'error': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
     serializer = UserSerializer(user, data={'is_active': False}, partial=True)
     if serializer.is_valid():
         serializer.save()
