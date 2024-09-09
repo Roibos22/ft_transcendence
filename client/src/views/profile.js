@@ -41,7 +41,6 @@ async function fetchUserData() {
 		}
 
 		const data = await response.json();
-		console.log(data);
 		return data;
 
 	} catch (error) {
@@ -122,29 +121,6 @@ function setupEditSave() {
 	});
 }
 
-// function setupDeleteUser() {
-// 	const deleteUserBtn = document.getElementById('deleteUserBtn');
-// 	const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-// 	const deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
-
-// 	deleteUserBtn.addEventListener('click', () => {
-// 		deleteUserModal.show();
-// 	});
-
-// 	confirmDeleteBtn.addEventListener('click', async () => {
-// 		try {
-// 			await deleteUser();
-// 			deleteUserModal.hide();
-// 			// Redirect to login page or show success message
-// 			window.history.pushState({}, "", "/login");
-// 			urlLocationHandler();
-// 		} catch (error) {
-// 			console.error('Error deleting user:', error);
-// 			// Show error message to user
-// 		}
-// 	});
-// }
-
 async function updateUserData() {
 	const updatedData = {
 		first_name: document.getElementById('firstNameInput').value,
@@ -169,9 +145,7 @@ async function updateUserData() {
 		}
 
 		const result = await response.json();
-		console.log('Profile updated successfully:', result);
 	} catch (error) {
-		console.error('Error updating profile:', error);
 		Notification.showErrorNotification([
 			"Something went wrong...",
 			"Please try again later.",
@@ -180,8 +154,32 @@ async function updateUserData() {
 	
 	const userData = await fetchUserData();
 	populateProfile(userData);
-	console.log('Updated data:', updatedData);
 }
+
+
+// function setupDeleteUser() {
+// 	const deleteUserBtn = document.getElementById('deleteUserBtn');
+// 	const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+// 	const deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
+// 	deleteUserBtn.addEventListener('click', () => {
+// 		deleteUserModal.show();
+// 	});
+
+// 	confirmDeleteBtn.addEventListener('click', async () => {
+// 		try {
+// 			await deleteUser();
+// 			deleteUserModal.hide();
+// 			// Redirect to login page or show success message
+// 			window.history.pushState({}, "", "/login");
+// 			urlLocationHandler();
+// 		} catch (error) {
+// 			console.error('Error deleting user:', error);
+// 			// Show error message to user
+// 		}
+// 	});
+// }
+
 
 
 // async function deleteUser() {
