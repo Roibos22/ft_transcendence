@@ -9,7 +9,6 @@ export async function initGameSetupView() {
 	const multiPlayerBtn = document.getElementById('btn_multiplayer');
 	const addPlayerButton = document.getElementById('addPlayer');
 	const playerInputsContainer = document.getElementById('playerInputs');
-	const decreasePointsToWin = document.getElementById('decreasePointsToWin');
 
 	if (singlePlayerBtn && multiPlayerBtn) {
 		singlePlayerBtn.addEventListener('change', updateUIForGameMode);

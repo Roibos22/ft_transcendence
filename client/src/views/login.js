@@ -35,7 +35,7 @@ export async function initLoginView() {
 
 async function loginUser(username, password) {
 	try {
-		const response = await fetch('http://localhost:8000//users/login/', {
+		const response = await fetch('http://localhost:8000/users/login/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ async function loginUser(username, password) {
 			return false;
 		}
 		const data = await response.json();
-		setupUserAfterLogin(username, password, data);
+		setupUserAfterLogin(data);
 		return true;
 
 	} catch (error) {
@@ -57,10 +57,35 @@ async function loginUser(username, password) {
 	}
 }
 
-function setupUserAfterLogin(username, password, data) {
-	Cookies.setCookie("accessToken", data.access, 24);
-	Cookies.setCookie("refreshToken", data.refresh, 24);
-	Cookies.setCookie("username", username, 24);
+async function setupUserAfterLogin(loginData) {
+	Cookies.setCookie("accessToken", loginData.tokens.access, 24);
+	Cookies.setCookie("refreshToken", loginData.tokens.refresh, 24);
+	Cookies.setCookie("username", loginData.username, 24);
+
+	try {
+		const response = await fetch(`http://localhost:8000/users/profile/${Cookies.getCookie("username")}/`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${Cookies.getCookie("accessToken")}`
+			}
+		});
+
+		if (!response.ok) {
+			console.log(response);
+			return false;
+		}
+		const data = await response.json();
+		console.log(data);
+		return true;
+
+	} catch (error) {
+		console.error('Setup error:', error);
+		return false;
+	}
+
+
+
 	console.log(data);
 }
 

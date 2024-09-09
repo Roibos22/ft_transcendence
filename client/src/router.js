@@ -2,6 +2,7 @@ import { initLoginView } from './views/login.js';
 import { initRegisterView } from './views/register.js';
 import { initGameSetupView } from './views/gameSetup.js';
 import { initGameView } from './views/game.js';
+import { initProfileView } from './views/profile.js';
 
 const urlRoutes = {
 	404: {
@@ -48,6 +49,8 @@ export function initCurrentView() {
 		initGameSetupView();
 	} else if (currentPath === '/game') {
 		initGameView();
+	} else if (currentPath === '/profile') {
+		initProfileView();
 	}
 }
 
