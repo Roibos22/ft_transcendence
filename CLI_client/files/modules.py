@@ -66,12 +66,12 @@ class User():
         response = self.authorized_request()
         if response.status_code == 200:
             data = response.json()
-            print(f'User: {data['display_name']}')
-            print(f'First name: {data['first_name']}')
-            print(f'Last name: {data['last_name']}')
-            print(f'Email: {data['email']}')
-            print(f'Games: {data['games']}')
-            print(f'Friends: {data['friends']}')
+            print(f"User: {data['display_name']}")
+            print(f"First name: {data['first_name']}")
+            print(f"Last name: {data['last_name']}")
+            print(f"Email: {data['email']}")
+            print(f"Games: {data['games']}")
+            print(f"Friends: {data['friends']}")
             return True
         else:
             print(f"Error: {response.status_code}")
@@ -124,7 +124,7 @@ class User():
         headers = self.auth_header()
         response = requests.get(f'{url}2fa/setup/', headers=headers)
         if response.status_code == 200:
-            print(f'link for 2FA OTP: {response.json()['qr_code_url']}')
+            print(f"link for 2FA OTP: {response.json()['qr_code_url']}")
         else:
             print(f'Error: {response.status_code}')
 
