@@ -22,6 +22,12 @@
 	margin-right: auto;
 }
 
+.twofa-card {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .background-gradient {
 	min-height: 100vh;
 	width: 100%;
@@ -45,4 +51,79 @@
 	color: #000000;
 }
 
+.profile-icon {
+	font-size: 2rem;
+	color: #007bff;
+	background-color: white;
+	border-radius: 50%;
+	padding: 5px;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
 
+
+.profile-card {
+	max-width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: rgba(255, 255, 255, 0.9);
+	border-radius: 15px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card .card-body {
+	padding: 2rem;
+}
+
+.profile-card h2, .profile-card h3, .profile-card h4, .profile-card h5 {
+	color: #0d6efd;
+}
+
+.profile-card .small {
+	font-size: 0.875em;
+}
+
+.account-status {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.status-item {
+	display: flex;
+	flex-direction: column;
+	font-size: 0.875rem;
+}
+
+.status-item strong {
+	margin-bottom: 0.25rem;
+}
+
+.notification {
+	position: fixed;
+	top: -100px;
+	left: 50%;
+	transform: translateX(-50%);
+	color: white;
+	padding: 16px;
+	border-radius: 12px;
+	background-color: #4CAF50;
+	transition: top 0.5s ease;
+	z-index: 1000;
+	width: 300px;
+	text-align: center;
+	max-width: 90%;
+	box-sizing: border-box;
+}
+
+.notification.show {
+	top: 10px;
+}
+
+.notification.error {
+	background-color: #f44336;
+}
+
+#notification-message {
+	margin: 0;
+	word-wrap: break-word;
+}

@@ -1,16 +1,25 @@
 import { urlLocationHandler, loadTemplate } from '../router.js';
+import * as Cookies from '../utils/cookies.js';
 
 export async function initLoginView() {
 	const content = await loadTemplate('login');
 	document.getElementById('app').innerHTML = content;
 
 	const loginForm = document.getElementById('loginForm');
+	const loginError = document.getElementById('loginError');
+
 	if (loginForm) {
-		loginForm.addEventListener('submit', function(e) {
+		loginForm.addEventListener('submit', async function(e) {
 			e.preventDefault();
 			const username = document.getElementById('username').value;
-			window.history.pushState({}, "", "/game-setup");
-			urlLocationHandler();
+			const password = document.getElementById('password').value;
+			
+			const loginSuccess = await loginUser(username, password);
+			
+			if (loginSuccess) {
+				window.history.pushState({}, "", "/game-setup");
+				urlLocationHandler();
+			}
 		});
 	}
 
@@ -22,4 +31,77 @@ export async function initLoginView() {
 			urlLocationHandler();
 		});
 	}
+}
+
+async function loginUser(username, password) {
+	try {
+		const response = await fetch('http://localhost:8000/users/login/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ username, password }),
+		});
+
+		if (!response.ok) {
+			await displayLoginError(response);
+			return false;
+		}
+		const data = await response.json();
+		setupUserAfterLogin(data);
+		return true;
+
+	} catch (error) {
+		console.error('Login error:', error);
+		return false;
+	}
+}
+
+async function setupUserAfterLogin(loginData) {
+	Cookies.setCookie("accessToken", loginData.tokens.access, 24);
+	Cookies.setCookie("refreshToken", loginData.tokens.refresh, 24);
+	Cookies.setCookie("username", loginData.username, 24);
+
+	try {
+		const response = await fetch(`http://localhost:8000/users/profile/${Cookies.getCookie("username")}/`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${Cookies.getCookie("accessToken")}`
+			}
+		});
+
+		if (!response.ok) {
+			console.log(response);
+			return false;
+		}
+		const data = await response.json();
+		console.log(data);
+		return true;
+
+	} catch (error) {
+		console.error('Setup error:', error);
+		return false;
+	}
+}
+
+async function displayLoginError(response) {
+	const loginError = document.getElementById('loginError');
+	loginError.style.display = 'block';
+	let errorMessages = [];
+
+	const errorData = await response.json();
+	console.log(errorData);
+	console.log(`Response status code: ${response.status}`);
+
+	if (response.status == 400) {
+		errorMessages.push(`Username and Password field may not be empty.`);
+	} else if (response.status == 401) {
+		errorMessages.push(`Username and Password do not match.`);
+	} else {
+		errorMessages.push(`Something went wrong.`);
+	}
+	errorMessages.push(`Please try again.`);
+	
+	loginError.innerHTML = errorMessages.join('<br>');
 }
