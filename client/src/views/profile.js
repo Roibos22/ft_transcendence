@@ -148,7 +148,7 @@ async function updateUserData() {
 	} catch (error) {
 		Notification.showErrorNotification([
 			"Something went wrong...",
-			"Please try again later.",
+			"Please try again.",
 		]);
 	}
 	
