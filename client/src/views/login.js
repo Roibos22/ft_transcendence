@@ -47,16 +47,21 @@ async function loginUser(username, password) {
 			await displayLoginError(response);
 			return false;
 		}
-
 		const data = await response.json();
-		Cookies.setCookie("accessToken", data.access, 24);
-		Cookies.setCookie("refreshToken", data.refresh, 24);
+		setupUserAfterLogin(username, password, data);
 		return true;
 
 	} catch (error) {
 		console.error('Login error:', error);
 		return false;
 	}
+}
+
+function setupUserAfterLogin(username, password, data) {
+	Cookies.setCookie("accessToken", data.access, 24);
+	Cookies.setCookie("refreshToken", data.refresh, 24);
+	Cookies.setCookie("username", username, 24);
+	console.log(data);
 }
 
 async function displayLoginError(response) {

@@ -19,6 +19,9 @@ const urlRoutes = {
 	"/game": {
 		template: "../templates/game.html",
 	},
+	"/profile": {
+		template: "../templates/profile.html",
+	}
 };
 
 export const urlLocationHandler = async () => {
