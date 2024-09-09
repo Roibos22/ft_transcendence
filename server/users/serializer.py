@@ -19,7 +19,6 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         user.is_staff = False
-        user.avatar = '/avatars/default_avatar.png'
         return user
 
     def update(self, instance, validated_data):

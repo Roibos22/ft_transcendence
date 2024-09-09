@@ -141,6 +141,7 @@ DATABASES = {
     }
 }
 
+ASSETS_ROOT = '/app/avatars/'
 
 AUTH_USER_MODEL = 'users.User'
 
