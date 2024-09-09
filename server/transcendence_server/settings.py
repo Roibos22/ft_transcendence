@@ -40,22 +40,43 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders'
-    # 'oauth2_provider',
+    # OAuth 2.0
+    'oauth2_provider',
+    # 2FA
+    'django_otp',  # Core OTP support
+    'django_otp.plugins.otp_totp',  # Time-based OTP support (Google Authenticator, etc.)
+    'two_factor',  # Main two-factor auth app
+    # CORS
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication'
     ),
 }
 
+# Dev mode
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/tmp/app-emails'  # Directory to save email files
+
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'  # Your email provider's SMTP server
+EMAIL_PORT = 587  # Common port for SMTP over TLS (secure)
+EMAIL_USE_TLS = True  # Use TLS (True) or SSL (False)
+EMAIL_HOST_USER = 'your-email@example.com'  # Your email address (for sending emails)
+EMAIL_HOST_PASSWORD = 'your-email-password'  # Your email password
+DEFAULT_FROM_EMAIL = 'your-email@example.com'  # The default "from" email address
+
+LOGIN_URL = '/users/login/'
 
 # development temp
 # adjust lifetime
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Adjust access token lifetime
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # Adjust access token lifetime
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Adjust refresh token lifetime
     'ROTATE_REFRESH_TOKENS': True,
 }
@@ -68,6 +89,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
 
