@@ -15,10 +15,10 @@ class User(AbstractUser):
         }
     )
     # Email verification flag
-    email_isverified = models.BooleanField(default=False)
+    email_verified = models.BooleanField(default=False)
     # Phone number for authentication
     phone_number = models.CharField(blank=True, null=True)
-    # Changable display name
+    # Changeable display name
     display_name = models.CharField(max_length=15, blank=True)
     # Online status
     online = models.BooleanField(default=False)

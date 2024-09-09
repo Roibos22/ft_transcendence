@@ -50,7 +50,7 @@ def generate_otp(user):
 #     )
 
 def send_email_code(user):
-    if not user.email_isverified:
+    if not user.email_verified:
         return
     two_factor = TwoFactorCode.objects.filter(user=user).first()
     otp_code = two_factor.code
