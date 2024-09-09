@@ -1,3 +1,9 @@
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import TwoFactorCode
+from django.core.mail import send_mail
+from .constants import VERIFICATION_LINK
+import random
+
 def clean_response_data(data, keys_to_remove=["password"]):
     """
     Removes specified keys from the serialized data.
@@ -15,6 +21,58 @@ def clean_response_data(data, keys_to_remove=["password"]):
             data.pop(key, None)
     return data
 
+def get_tokens_for_user(user, two_factor_complete=False):
+    refresh = RefreshToken.for_user(user)
+    refresh['2fa_complete'] = two_factor_complete  # Add custom claim for 2FA status
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
+def generate_otp(user):
+    # Create a random 6-digit code
+    otp_code = random.randint(100000, 999999)
+
+    # Store the OTP in the database
+    TwoFactorCode.objects.create(user=user, code=str(otp_code))
+
+    return otp_code
+
+# def send_sms_code(user):
+
+#     otp_code = TwoFactorCode.objects.filter(user=user).first().code
+#     # Twilio setup
+#     client = Client('TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN')
+#     message = client.messages.create(
+#         body=f'Your verification code is {otp_code}',
+#         from_='+1234567890',  # Twilio phone number
+#         to=user.phone_number
+#     )
+
+def send_email_code(user):
+    if not user.email_verified:
+        return
+    two_factor = TwoFactorCode.objects.filter(user=user).first()
+    otp_code = two_factor.code
+    send_mail(
+        'Your Verification Code',
+        f'Your verification code is {otp_code}',
+        'from@example.com',
+        [user.email],
+        fail_silently=False,
+    )
+
+def send_email_confirmation(user):
+    two_factor = TwoFactorCode.objects.filter(user=user).first()
+    otp_code = two_factor.code
+    send_mail(
+        'Email Verification',
+        f'Press here to verify your email: {VERIFICATION_LINK}{user.id}/?token={otp_code}',
+        'from@example.com',
+        [user.email],
+        fail_silently=False,
+    )
+
 # Debugging tools
 import functools
 import logging
@@ -31,3 +89,4 @@ def debug_request(func):
             logger.debug(f"Request Data: {request.data}")
         return func(*args, **kwargs)
     return wrapper
+
