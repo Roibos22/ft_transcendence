@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ['server', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',   # Channels is used for websocket communication
     'users.apps.UsersConfig',
     'game.apps.GameConfig',
     'django.contrib.admin',
@@ -42,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'channels',
     # OAuth 2.0
     'oauth2_provider',
     # 2FA
@@ -125,8 +126,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'transcendence_server.wsgi.application'
-# ASGI_APPLICATION = 'transcendence_server.asgi.application'
+# WSGI_APPLICATION = 'transcendence_server.wsgi.application'
+ASGI_APPLICATION = 'transcendence_server.asgi.application'
 
 
 # Database

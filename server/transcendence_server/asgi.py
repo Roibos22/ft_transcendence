@@ -22,8 +22,8 @@ application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter([
-            path('game/matchmaking/', MatchmakingConsumer.as_asgi()),
-            # path('ws/game/<game_id>/', GameConsumer.as_asgi()),
+            path('ws/matchmaking/', MatchmakingConsumer.as_asgi()),
         ])
     ),
 })
+
