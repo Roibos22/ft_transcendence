@@ -83,10 +83,6 @@ async function setupUserAfterLogin(loginData) {
 		console.error('Setup error:', error);
 		return false;
 	}
-
-
-
-	console.log(data);
 }
 
 async function displayLoginError(response) {

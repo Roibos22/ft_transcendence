@@ -1,61 +1,106 @@
 <div class="container background-gradient py-5">
-    <div class="card profile-card">
-        <div class="card-body">
-            <div class="row">
-                <!-- Profile Picture and Account Status -->
-                <div class="col-md-3 text-center">
-                    <img src="https://via.placeholder.com/100" alt="Profile Picture" class="rounded-circle mb-3">
-                    <h4 id="displayName" class="mb-0"></h4>
-                    <p class="text-muted mb-0" id="username"></p>
-                    <span class="badge bg-success mt-2" id="onlineStatus"></span>
-                    
-                    <!-- Account Status (Smaller) -->
-                    <div class="mt-3">
-                        <h5 class="text-primary">Account Status</h5>
-                        <p class="small mb-1"><strong>Email Verified:</strong> <span id="emailVerified"></span></p>
-                        <p class="small mb-1"><strong>Account Status:</strong> <span id="accountStatus"></span></p>
-                        <p class="small mb-1"><strong>Date Joined:</strong> <span id="dateJoined"></span></p>
-                        <p class="small mb-0"><strong>Last Login:</strong> <span id="lastLogin"></span></p>
-                    </div>
-                </div>
-                
-                <!-- Personal Information -->
-                <div class="col-md-9">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2>Personal Information</h2>
-                        <div>
-                            <button id="editBtn" class="btn btn-primary me-2">Edit</button>
-                            <button id="saveBtn" class="btn btn-success" style="display: none;">Save</button>
-                        </div>
-                    </div>
-                    <div>
-                        <p><strong>First Name:</strong> <span id="firstName"></span></p>
-                        <p><strong>Last Name:</strong> <span id="lastName"></span></p>
-                        <p><strong>Email:</strong> <span id="email"></span></p>
-                        <p><strong>Phone Number:</strong> <span id="phoneNumber"></span></p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Games and Friends Placeholders -->
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <h3>Games</h3>
-                    <div class="placeholder-glow">
-                        <p class="placeholder col-12"></p>
-                        <p class="placeholder col-12"></p>
-                        <p class="placeholder col-12"></p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h3>Friends</h3>
-                    <div class="placeholder-glow">
-                        <p class="placeholder col-12"></p>
-                        <p class="placeholder col-12"></p>
-                        <p class="placeholder col-12"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="card profile-card">
+		<div class="card-body">
+			<div class="row">
+				<!-- Profile Picture and Account Status -->
+				<div class="col-md-3 text-center">
+					<img id="avatarImg" src="https://via.placeholder.com/100" alt="Profile Picture" class="rounded-circle mb-3">
+					<h4 id="displayName" class="mb-0"></h4>
+					<p class="text-muted mb-0" id="username"></p>
+					<span class="badge bg-success mt-2" id="onlineStatus"></span>
+					
+					<!-- Account Status (Smaller) -->
+					<div class="mt-3">
+						<h5 class="text-primary">Account Status</h5>
+						<p class="small mb-1"><strong>Email Verified:</strong> <span id="emailVerified"></span></p>
+						<p class="small mb-1"><strong>Account Status:</strong> <span id="accountStatus"></span></p>
+						<p class="small mb-1"><strong>Date Joined:</strong> <span id="dateJoined"></span></p>
+						<p class="small mb-0"><strong>Last Login:</strong> <span id="lastLogin"></span></p>
+					</div>
+				</div>
+				
+				<!-- Personal Information -->
+				<div class="col-md-9">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<h2>Personal Information</h2>
+						<div>
+							<button id="editBtn" class="btn btn-primary me-2" style="width: 75px;">Edit</button>
+							<button id="saveBtn" class="btn btn-success me-2" style="width: 75px; display: none;">Save</button>
+							<button id="deleteUserBtn" class="btn btn-danger" title="Delete Account">
+								<i class="bi-trash-fill"></i>
+							</button>
+						</div>
+					</div>
+					<div id="personalInfo">
+						<div class="mb-3">
+							<label class="form-label"><strong>First Name:</strong></label>
+							<div class="bg-light p-2 rounded">
+								<span id="firstNameDisplay"></span>
+								<input type="text" id="firstNameInput" class="form-control d-none" />
+							</div>
+						</div>
+						<div class="mb-3">
+							<label class="form-label"><strong>Last Name:</strong></label>
+							<div class="bg-light p-2 rounded">
+								<span id="lastNameDisplay"></span>
+								<input type="text" id="lastNameInput" class="form-control d-none" />
+							</div>
+						</div>
+						<div class="mb-3">
+							<label class="form-label"><strong>Email:</strong></label>
+							<div class="bg-light p-2 rounded">
+								<span id="emailDisplay"></span>
+								<input type="email" id="emailInput" class="form-control d-none" />
+							</div>
+						</div>
+						<div class="mb-3">
+							<label class="form-label"><strong>Phone Number:</strong></label>
+							<div class="bg-light p-2 rounded">
+								<span id="phoneNumberDisplay"></span>
+								<input type="tel" id="phoneNumberInput" class="form-control d-none" />
+							</div>
+						</div>
+					</div>
+				</div>
+			
+			<!-- Games and Friends Placeholders -->
+			<div class="row mt-4">
+				<div class="col-md-6">
+					<h3>Games</h3>
+					<div class="placeholder-glow">
+						<p class="placeholder col-12"></p>
+						<p class="placeholder col-12"></p>
+						<p class="placeholder col-12"></p>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<h3>Friends</h3>
+					<div class="placeholder-glow">
+						<p class="placeholder col-12"></p>
+						<p class="placeholder col-12"></p>
+						<p class="placeholder col-12"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Delete User Confirmation Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="deleteUserModalLabel">Confirm Account Deletion</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Are you sure you want to delete your account? This action cannot be undone.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Account</button>
+			</div>
+		</div>
+	</div>
 </div>
