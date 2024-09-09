@@ -3,7 +3,7 @@ import string
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from game.models import Game
+# from game.models import Game
 from channels.db import database_sync_to_async
 
 
@@ -23,18 +23,27 @@ from channels.db import database_sync_to_async
 #         return False
 
 
-
-
 matchmaking_queue = []
 
 class MatchmakingConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        from users.models import User
+        from game.models import Game
 
+        user:User = self.scope['user']
+        if user is None or not user.is_authenticated:
+            await self.close()  # Close the connection if not authenticated
+            print("Matchmaking consumer: User not authenticated")
+            return
+        
         matchmaking_queue.append(self)
+
+        print("Matchmaking consumer: User Connected!")
 
         if len(matchmaking_queue) >= 2:
             player1 = matchmaking_queue.pop(0)
             player2 = matchmaking_queue.pop(0)
+
 
             game = await self.create_game(player1.scope['user'], player2.scope['user'])
 
@@ -52,6 +61,7 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def create_game(self, player1, player2):
+        from game.models import Game
         # Create a new game instance in the database
         game = Game.objects.create(
             player1=player1,  # Assuming `self.user` is the user associated with the WebSocket

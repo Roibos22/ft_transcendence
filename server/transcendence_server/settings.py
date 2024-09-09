@@ -33,8 +33,6 @@ ALLOWED_HOSTS = ['server', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
-    'channels',   # Channels is used for websocket communication
     'users.apps.UsersConfig',
     'game.apps.GameConfig',
     'django.contrib.admin',
@@ -52,6 +50,7 @@ INSTALLED_APPS = [
     'two_factor',  # Main two-factor auth app
     # CORS
     'corsheaders',
+    'channels',   # Channels is used for websocket communication
 ]
 
 REST_FRAMEWORK = {
