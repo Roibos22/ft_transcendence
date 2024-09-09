@@ -82,6 +82,22 @@
 	font-size: 0.875em;
 }
 
+.account-status {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.status-item {
+	display: flex;
+	flex-direction: column;
+	font-size: 0.875rem;
+}
+
+.status-item strong {
+	margin-bottom: 0.25rem;
+}
+
 .notification {
 	position: fixed;
 	top: -100px;
@@ -108,6 +124,6 @@
 }
 
 #notification-message {
-    margin: 0;
-    word-wrap: break-word;
+	margin: 0;
+	word-wrap: break-word;
 }
