@@ -44,43 +44,38 @@ async function loginUser(username, password) {
 		});
 
 		if (!response.ok) {
-			const errorData = await response.json();
-			displayLoginError(errorData);
-			console.log(errorData);
-			throw new Error('Login failed');
+			await displayLoginError(response);
+			return false;
 		}
 
 		const data = await response.json();
-		console.log("Login successful");
 		Cookies.setCookie("accessToken", data.access, 24);
 		Cookies.setCookie("refreshToken", data.refresh, 24);
 		return true;
+
 	} catch (error) {
 		console.error('Login error:', error);
 		return false;
 	}
 }
 
-function displayLoginError(errorData) {
+async function displayLoginError(response) {
 	const loginError = document.getElementById('loginError');
 	loginError.style.display = 'block';
 	let errorMessages = [];
 
-	if (errorData.username) {
-		// Username may not be blank
-		errorMessages.push(`Username: ${errorData.username[0]}`);
+	const errorData = await response.json();
+	console.log(errorData);
+	console.log(`Response status code: ${response.status}`);
+
+	if (response.status == 400) {
+		errorMessages.push(`Username and Password field may not be empty.`);
+	} else if (response.status == 401) {
+		errorMessages.push(`Username and Password do not match.`);
+	} else {
+		errorMessages.push(`Something went wrong.`);
 	}
-	if (errorData.password) {
-		// Password may not be blank
-		errorMessages.push(`Password: ${errorData.password[0]}`);
-	}
-	if (errorData.detail) {
-		// Password and Username do not match
-		errorMessages.push(errorData.detail);
-	}
-	if (errorMessages.length === 0) {
-		errorMessages.push('An error occurred during login. Please try again.');
-	}
+	errorMessages.push(`Please try again.`);
 	
 	loginError.innerHTML = errorMessages.join('<br>');
 }
