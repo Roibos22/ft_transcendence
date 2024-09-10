@@ -1,6 +1,20 @@
-import { API_BASE_URL, fetchWithAuth } from './api.js';
+import * as API from './api.js';
 import * as Cookies from '../cookies.js';
 import * as Notification from '../notification.js';
+
+export async function loginUser(username, password) {
+	try {
+		const data = await API.fetchWithoutAuth(`${API.API_BASE_URL}/users/login/`, {
+			method: 'POST',
+			body: JSON.stringify({ username, password }),
+		});
+	} catch (error) {
+		console.error('Login error:', error);
+		Notification.showErrorNotification(["Login failed"]);
+	}
+
+	return data;
+}
 
 export async function fetchUserData() {
 	try {
@@ -8,7 +22,7 @@ export async function fetchUserData() {
 		if (!username) {
 			throw new Error("Username not found in cookies");
 		}
-		return await fetchWithAuth(`${API_BASE_URL}/users/profile/${username}/`);
+		return await API.fetchWithAuth(`${API.API_BASE_URL}/users/profile/${username}/`);
 	} catch (error) {
 		console.error('Error fetching user data:', error);
 		throw error;
@@ -22,7 +36,7 @@ export async function updateUserData(updatedData) {
 		if (!username) {
 			throw new Error("User ID not found in cookies");
 		}
-		await fetchWithAuth(`${API_BASE_URL}/users/profile/${username}/update/`, {
+		await API.fetchWithAuth(`${API.API_BASE_URL}/users/profile/${username}/update/`, {
 			method: 'PATCH',
 			body: JSON.stringify(updatedData)
 		});
@@ -41,7 +55,7 @@ export async function updateUserData(updatedData) {
 // 		if (!username) {
 // 			throw new Error("Username not found in cookies");
 // 		}
-// 		await fetchWithAuth(`${API_BASE_URL}/users/delete/${username}/`, {
+// 		await API.fetchWithAuth(`${API.API_BASE_URL}/users/delete/${username}/`, {
 // 			method: 'DELETE'
 // 		});
 // 		Cookies.deleteCookie("username");

@@ -1,5 +1,7 @@
 import { urlLocationHandler, loadTemplate } from '../router.js';
 import * as Cookies from '../services/cookies.js';
+import * as UserService from '../services/api/userService.js';
+import * as Notification from '../services/notification.js';
 
 export async function initLoginView() {
 	const content = await loadTemplate('login');
@@ -11,15 +13,7 @@ export async function initLoginView() {
 	if (loginForm) {
 		loginForm.addEventListener('submit', async function(e) {
 			e.preventDefault();
-			const username = document.getElementById('username').value;
-			const password = document.getElementById('password').value;
-			
-			const loginSuccess = await loginUser(username, password);
-			
-			if (loginSuccess) {
-				window.history.pushState({}, "", "/game-setup");
-				urlLocationHandler();
-			}
+			loginUser();
 		});
 	}
 
@@ -33,70 +27,36 @@ export async function initLoginView() {
 	}
 }
 
-async function loginUser(username, password) {
+async function loginUser() {
+	const username = document.getElementById('username').value;
+	const password = document.getElementById('password').value;
+
 	try {
-		const response = await fetch('http://localhost:8000/users/login/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ username, password }),
-		});
+		const data = await UserService.loginUser(username, password);
 
-		if (!response.ok) {
-			await displayLoginError(response);
-			return false;
+		if (data.detail === "Login successful") {
+			Cookies.setCookie("accessToken", data.tokens.access, 24);
+			Cookies.setCookie("refreshToken", data.tokens.refresh, 24);
+			Cookies.setCookie("username", data.username, 24);
+			Notification.showNotification(["Login successful"]);
+			window.history.pushState({}, "", "/game-setup");
+			urlLocationHandler();
+		} else {
 		}
-		const data = await response.json();
-		setupUserAfterLogin(data);
-		return true;
-
-	} catch (error) {
-		console.error('Login error:', error);
-		return false;
+		
+	} catch(error) {
+		displayLoginError(error.message);
 	}
 }
 
-async function setupUserAfterLogin(loginData) {
-	Cookies.setCookie("accessToken", loginData.tokens.access, 24);
-	Cookies.setCookie("refreshToken", loginData.tokens.refresh, 24);
-	Cookies.setCookie("username", loginData.username, 24);
-
-	try {
-		const response = await fetch(`http://localhost:8000/users/profile/${Cookies.getCookie("username")}/`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${Cookies.getCookie("accessToken")}`
-			}
-		});
-
-		if (!response.ok) {
-			console.log(response);
-			return false;
-		}
-		const data = await response.json();
-		console.log(data);
-		return true;
-
-	} catch (error) {
-		console.error('Setup error:', error);
-		return false;
-	}
-}
-
-async function displayLoginError(response) {
+function displayLoginError(errorMessage) {
 	const loginError = document.getElementById('loginError');
 	loginError.style.display = 'block';
 	let errorMessages = [];
 
-	const errorData = await response.json();
-	console.log(errorData);
-	console.log(`Response status code: ${response.status}`);
-
-	if (response.status == 400) {
+	if (errorMessage.includes("400")) {
 		errorMessages.push(`Username and Password field may not be empty.`);
-	} else if (response.status == 401) {
+	} else if (errorMessage.includes("401")) {
 		errorMessages.push(`Username and Password do not match.`);
 	} else {
 		errorMessages.push(`Something went wrong.`);
