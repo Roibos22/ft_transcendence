@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        // Capture the original URL
+        var originalPath = window.location.pathname;
+        
+        // Load your main script
+        var script = document.createElement('script');
+        script.src = '/path/to/your/router.js';
+        script.type = 'module';
+        script.onload = function() {
+            // Once the script is loaded, navigate to the original path
+            if (window.urlLocationHandler) {
+                window.history.replaceState(null, '', originalPath);
+                window.urlLocationHandler();
+            }
+        };
+        document.body.appendChild(script);
+    </script>
+</body>
+</html>
