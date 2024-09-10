@@ -6,7 +6,6 @@ from .serializer import GameSerializer
 from django.views import View
 from django.http import JsonResponse
 from django.contrib.auth import authenticate
-from .src.matchmaking import matchmaker
 
 @api_view(['GET'])
 def get_games(request):

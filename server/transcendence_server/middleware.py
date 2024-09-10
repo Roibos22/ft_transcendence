@@ -10,8 +10,6 @@ from channels.db import database_sync_to_async
 from jwt import InvalidSignatureError, ExpiredSignatureError, DecodeError
 from jwt import decode as jwt_decode
 
-
-
 class JWTAuthMiddleware:
 
     """Middleware to authenticate user for channels"""
@@ -31,13 +29,10 @@ class JWTAuthMiddleware:
         close_old_connections()
 
         headers = dict(scope['headers'])
-        print("MIDDLEWARE headers: ", headers)
         auth_header = headers.get(b'authorization', b'').decode('utf8')
-        print("MIDDLEWARE token: ", auth_header)
         token = None
         if auth_header.startswith('Bearer '):
             token = auth_header[7:]
-        print("MIDDLEWARE token: ", token)
         if token:
             try:
                 data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
