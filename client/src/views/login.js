@@ -32,9 +32,10 @@ async function loginUser() {
 	const password = document.getElementById('password').value;
 
 	try {
-		const data = await UserService.loginUser(username, password);
+		const response = await UserService.loginUser(username, password);
 
-		if (data.detail === "Login successful") {
+		if (response.success) {
+			const data = response.data;
 			Cookies.setCookie("accessToken", data.tokens.access, 24);
 			Cookies.setCookie("refreshToken", data.tokens.refresh, 24);
 			Cookies.setCookie("username", data.username, 24);
@@ -42,21 +43,22 @@ async function loginUser() {
 			window.history.pushState({}, "", "/game-setup");
 			urlLocationHandler();
 		} else {
+			displayLoginError(response.error);
 		}
-		
-	} catch(error) {
-		displayLoginError(error.message);
+	} catch (error) {
+		console.error('Failed to login', error);
+		displayLoginError(error);
 	}
 }
 
-function displayLoginError(errorMessage) {
+function displayLoginError(error) {
 	const loginError = document.getElementById('loginError');
 	loginError.style.display = 'block';
 	let errorMessages = [];
 
-	if (errorMessage.includes("400")) {
-		errorMessages.push(`Username and Password field may not be empty.`);
-	} else if (errorMessage.includes("401")) {
+	if (error.message.includes("400")) {
+		errorMessages.push(`Username and Password field may not be blank.`);
+	} else if (error.message.includes("401")) {
 		errorMessages.push(`Username and Password do not match.`);
 	} else {
 		errorMessages.push(`Something went wrong.`);

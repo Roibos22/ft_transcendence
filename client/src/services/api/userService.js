@@ -4,16 +4,17 @@ import * as Notification from '../notification.js';
 
 export async function loginUser(username, password) {
 	try {
+		console.log('Attempting login...');
 		const data = await API.fetchWithoutAuth(`${API.API_BASE_URL}/users/login/`, {
 			method: 'POST',
 			body: JSON.stringify({ username, password }),
 		});
+		console.log('Response received:', data);
+		return { success: true, data };
 	} catch (error) {
 		console.error('Login error:', error);
-		Notification.showErrorNotification(["Login failed"]);
+		return { success: false, error };
 	}
-
-	return data;
 }
 
 export async function fetchUserData() {
