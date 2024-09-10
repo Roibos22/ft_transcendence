@@ -1,6 +1,7 @@
 import { loadTemplate } from '../router.js';
-import * as Cookies from '../utils/cookies.js';
-import * as Notification from '../utils/notification.js';
+import * as Cookies from '../services/cookies.js';
+import * as Notification from '../services/notification.js';
+import * as UserService from '../services/userService.js';
 
 export async function initProfileView() {
 	try {
@@ -11,8 +12,6 @@ export async function initProfileView() {
 		populateProfile(userData);
 		setupEditSave();
 		setupDeleteUser();
-
-		setupEditSave();
 	} catch (error) {
 		console.error('Error initializing profile view:', error);
 	}
