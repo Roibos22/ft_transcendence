@@ -1,59 +1,24 @@
 import { loadTemplate } from '../router.js';
-import * as Cookies from '../utils/cookies.js';
-import * as Notification from '../utils/notification.js';
+import * as Notification from '../services/notification.js';
+import * as UserService from '../services/api/userService.js';
 
 export async function initProfileView() {
 	try {
 		const content = await loadTemplate('profile');
 		document.getElementById('app').innerHTML = content;
 
-		const userData = await fetchUserData();
+		const userData = await UserService.fetchUserData();
 		populateProfile(userData);
 		setupEditSave();
-		setupDeleteUser();
-
-		setupEditSave();
+		//setupDeleteUser();
 	} catch (error) {
-		console.error('Error initializing profile view:', error);
+		Notification.showErrorNotification(["Failed to load profile", "Please try again later"]);
 	}
 }
-
-async function fetchUserData() {
-	try {
-		const username = Cookies.getCookie("username");
-		const accessToken = Cookies.getCookie("accessToken");
-
-		if (!username || !accessToken) {
-			throw new Error("Username or access token not found in cookies");
-		}
-
-		const response = await fetch(`http://localhost:8000/users/profile/${username}/`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${accessToken}`
-			}
-		});
-
-		if (!response.ok) {
-			const errorData = await response.json();
-			throw new Error(`HTTP error! status: ${response.status}, message: ${JSON.stringify(errorData)}`);
-		}
-
-		const data = await response.json();
-		return data;
-
-	} catch (error) {
-		console.error('Error fetching user data:', error);
-		throw error;
-	}
-}
-
 
 function populateProfile(data) {
 	document.getElementById('displayName').textContent = data.display_name;
 	document.getElementById('username').textContent = '@' + data.username;
-	document.getElementById('onlineStatus').textContent = data.online ? 'Online' : 'Offline';
 	document.getElementById('firstNameDisplay').textContent = data.first_name;
 	document.getElementById('lastNameDisplay').textContent = data.last_name;
 	document.getElementById('emailDisplay').textContent = data.email;
@@ -61,13 +26,18 @@ function populateProfile(data) {
 	document.getElementById('dateJoined').textContent = new Date(data.date_joined).toLocaleDateString();
 	document.getElementById('lastLogin').textContent = data.last_login ? new Date(data.last_login).toLocaleDateString() : 'Never';
 	document.getElementById('emailVerified').textContent = data.email_verified ? 'Yes' : 'No';
-	updateOnlineStatus()
+	updateOnlineStatus(data.online);
+	updateAvatar(data);
+}
+
+function updateAvatar(data) {
 	const avatarImg = document.getElementById('avatarImg');
+
 	if (data.avatar) {
 		avatarImg.src = data.avatar;
 	} 
 	// else {
-	// 	avatarImg.src = './default_avatar.png'; // Make sure to have a default avatar image
+	//     avatarImg.src = './default_avatar.png'; // Make sure to have a default avatar image
 	// }
 }
 
@@ -104,58 +74,33 @@ function setupEditSave() {
 		});
 	});
 	
-	saveBtn.addEventListener('click', function() {
+	saveBtn.addEventListener('click', async function() {
 		saveBtn.style.display = 'none';
 		editBtn.style.display = 'inline-block';
 		
-		// Switch to display mode and update values
-		personalInfo.querySelectorAll('.infoField').forEach(container => {
-			const span = container.querySelector('span');
-			const input = container.querySelector('input');
-			input.classList.add('d-none');
-			span.classList.remove('d-none');
-			span.textContent = input.value;
-		});
-		
-		updateUserData();
+		const updatedData = {
+			first_name: document.getElementById('firstNameInput').value,
+			last_name: document.getElementById('lastNameInput').value,
+			email: document.getElementById('emailInput').value,
+			phone_number: document.getElementById('phoneNumberInput').value
+		};
+
+		try {
+			const newUserData = await UserService.updateUserData(updatedData);
+			populateProfile(newUserData);
+			// Switch back to display mode
+			personalInfo.querySelectorAll('.infoField').forEach(container => {
+				const span = container.querySelector('span');
+				const input = container.querySelector('input');
+				input.classList.add('d-none');
+				span.classList.remove('d-none');
+			});
+		} catch (error) {
+			console.error('Failed to update profile:', error);
+			// Error notification is handled in UserService.updateUserData
+		}
 	});
 }
-
-async function updateUserData() {
-	const updatedData = {
-		first_name: document.getElementById('firstNameInput').value,
-		last_name: document.getElementById('lastNameInput').value,
-		email: document.getElementById('emailInput').value,
-		phone_number: document.getElementById('phoneNumberInput').value
-	};
-
-	try {
-		// TODO: change to user_name once available
-		const response = await fetch(`http://localhost:8000/users/profile/1/update/`, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${Cookies.getCookie("accessToken")}`
-			},
-			body: JSON.stringify(updatedData)
-		});
-
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-
-		const result = await response.json();
-	} catch (error) {
-		Notification.showErrorNotification([
-			"Something went wrong...",
-			"Please try again.",
-		]);
-	}
-	
-	const userData = await fetchUserData();
-	populateProfile(userData);
-}
-
 
 // function setupDeleteUser() {
 // 	const deleteUserBtn = document.getElementById('deleteUserBtn');
@@ -168,45 +113,13 @@ async function updateUserData() {
 
 // 	confirmDeleteBtn.addEventListener('click', async () => {
 // 		try {
-// 			await deleteUser();
+// 			await UserService.deleteUserAccount();
 // 			deleteUserModal.hide();
-// 			// Redirect to login page or show success message
-// 			window.history.pushState({}, "", "/login");
-// 			urlLocationHandler();
+// 			// Redirect to login page
+// 			window.location.href = '/login';
 // 		} catch (error) {
 // 			console.error('Error deleting user:', error);
-// 			// Show error message to user
+// 			// Error notification is handled in UserService.deleteUserAccount
 // 		}
 // 	});
-// }
-
-
-
-// async function deleteUser() {
-// 	const username = Cookies.getCookie("username");
-// 	const accessToken = Cookies.getCookie("accessToken");
-
-// 	if (!username || !accessToken) {
-// 		throw new Error("Username or access token not found in cookies");
-// 	}
-
-// 	const response = await fetch(`http://localhost:8000/users/delete/${username}/`, {
-// 		method: 'DELETE',
-// 		headers: {
-// 			'Content-Type': 'application/json',
-// 			'Authorization': `Bearer ${accessToken}`
-// 		}
-// 	});
-
-// 	if (!response.ok) {
-// 		const errorData = await response.json();
-// 		throw new Error(`HTTP error! status: ${response.status}, message: ${JSON.stringify(errorData)}`);
-// 	}
-
-// 	// Clear cookies and any stored user data
-// 	Cookies.deleteCookie("username");
-// 	Cookies.deleteCookie("accessToken");
-// 	Cookies.deleteCookie("refreshToken");
-
-// 	return true;
 // }
