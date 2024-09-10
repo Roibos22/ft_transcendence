@@ -3,6 +3,7 @@ import { initRegisterView } from './views/register.js';
 import { initGameSetupView } from './views/gameSetup.js';
 import { initGameView } from './views/game.js';
 import { initProfileView } from './views/profile.js';
+import { initGameOnlineView } from './views/onlineGame.js';
 
 const urlRoutes = {
 	"/": {
@@ -24,6 +25,10 @@ const urlRoutes = {
 	"/profile": {
 		template: "../templates/profile.html",
 		title: "Profile"
+	},
+	"/online-game": {
+		template: "../templates/online-game.html",
+		title: "Game"
 	}
 };
 
@@ -53,6 +58,8 @@ export function initCurrentView() {
 		initGameView();
 	} else if (currentPath === '/profile') {
 		initProfileView();
+	} else if (currentPath === '/online-game') {
+		initGameOnlineView();
 	}
 }
 
