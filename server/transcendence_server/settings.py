@@ -60,6 +60,12 @@ REST_FRAMEWORK = {
     ),
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # In-memory backend for development/testing
+    },
+}
+
 # Dev mode
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/tmp/app-emails'  # Directory to save email files
