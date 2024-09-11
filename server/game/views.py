@@ -2,7 +2,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Game
-from .serializer import GameSerializer
+from .serializer import GameSerializer 
+from django.views import View
+from django.http import JsonResponse
+from django.contrib.auth import authenticate
 
 @api_view(['GET'])
 def get_games(request):

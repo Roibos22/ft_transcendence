@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'two_factor',  # Main two-factor auth app
     # CORS
     'corsheaders',
+    'channels',   # Channels is used for websocket communication
 ]
 
 REST_FRAMEWORK = {
@@ -124,7 +125,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'transcendence_server.wsgi.application'
+# WSGI_APPLICATION = 'transcendence_server.wsgi.application'
+ASGI_APPLICATION = 'transcendence_server.asgi.application'
 
 
 # Database
