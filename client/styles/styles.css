@@ -1,32 +1,9 @@
-.player-input-fields {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-}
 
-.settings-input-fields {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-}
+/* GENERAL */
 
-.login-card {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.registration-card {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.twofa-card {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
+html, body {
+	height: 100%;
+	margin: 0;
 }
 
 .background-gradient {
@@ -34,10 +11,50 @@
 	width: 100%;
 	background: #d7b8f3;
 	background: linear-gradient(to right, rgba(215, 184, 243, 1), rgba(187, 217, 255, 1));
-	/* background: linear-gradient(to right, rgba(44, 30, 63, 1), rgba(28, 41, 56, 1)); Darker gradient */
 	background-attachment: fixed;
 	background-size: cover;
 }
+
+
+.main-card {
+	max-width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+/* LOGIN VIEW */
+
+
+.login-input {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* REGISTER VIEW */
+
+
+.register-input {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+/* TWOFA VIEW */
+
+
+.twofa-card {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+/* GAME SETUP VIEW */
+
 
 .btn-check:checked + .btn-outline-primary {
 	background-color: #0d6efd;
@@ -61,6 +78,21 @@
 	padding: 5px;
 	box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
+
+.player-input-fields {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.settings-input-fields {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+/* PROFILE VIEW */
 
 
 .profile-card {
@@ -99,6 +131,13 @@
 .status-item strong {
 	margin-bottom: 0.25rem;
 }
+
+
+/* GAME VIEW */
+
+
+/* NOTIFICATIONS */
+
 
 .notification {
 	position: fixed;
