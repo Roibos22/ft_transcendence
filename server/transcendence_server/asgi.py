@@ -14,20 +14,19 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
 from game.consumers.matchmaking import MatchmakingConsumer
+from live_games.consumers.live_game import LiveGameConsumer
 from .middleware import JWTAuthMiddlewareStack
+from django.urls import re_path
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcendence_server.settings')
 django.setup() 
-
-# asgi_app = get_asgi_application()
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": JWTAuthMiddlewareStack(
         URLRouter([
             path('ws/matchmaking/', MatchmakingConsumer.as_asgi()),
-            path('ws/live_game/', MatchmakingConsumer.as_asgi()),
-            # path('ws/game/<game_id>/', GameConsumer.as_asgi()),
+            re_path(r'ws/live_game/(?P<game_id>\w+)/$', LiveGameConsumer.as_asgi()),
         ])
     ),
 })

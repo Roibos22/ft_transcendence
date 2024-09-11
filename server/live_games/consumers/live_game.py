@@ -6,31 +6,39 @@ import json
 
 matchmaking_queue = {}
 
-class LiveGame(AsyncWebsocketConsumer):
+class LiveGameConsumer(AsyncWebsocketConsumer):
 
     def __init__(self):
-        self.ball_x = 0
+        self.ball_pos = {'x': 0, 'y': 0}
+        self.ball_direction = {'x': 1, 'y': 1}
+        self.player1_pos = 0
+        self.player2_pos = 0
 
     async def connect(self):
         from users.models import User
-        from game.models import Game
 
         user:User = self.scope['user']
         if user is None or not user.is_authenticated:
-            await self.close()  # Close the connection if not authenticated
+            await self.close()
             print("LiveGame consumer: User not authenticated")
             return
         
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        self.game_group_name = f'game_{self.game_id}'
+
+        await self.channel_layer.group_add(
+            self.game_group_name,
+            self.channel_name
+        )
+
         print("LiveGame consumer: User Connected!")
         await self.accept()
 
     async def disconnect(self, close_code):
-        user = self.scope['user']
-        if user.id in matchmaking_queue:
-            matchmaking_queue[user.id].remove(self)
-            if len(matchmaking_queue[user.id]) == 0:
-                del matchmaking_queue[user.id]
-            print("Player removed form matchmaking queue.")
+        await self.channel_layer.group_discard(
+            self.game_group_name,
+            self.channel_name
+        )
         await self.close()
 
     @database_sync_to_async
