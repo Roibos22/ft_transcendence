@@ -4,13 +4,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 import json
 
-live_games = {
-    1: new live_game()
-    5: new live_game()
-}
-
-live_games[1] 
-
 class LiveGameConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
