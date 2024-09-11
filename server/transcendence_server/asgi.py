@@ -26,6 +26,7 @@ application = ProtocolTypeRouter({
     "websocket": JWTAuthMiddlewareStack(
         URLRouter([
             path('ws/matchmaking/', MatchmakingConsumer.as_asgi()),
+            # path('ws/live_game/', LiveGameConsumer.as_asgi()),
             re_path(r'ws/live_game/(?P<game_id>\w+)/$', LiveGameConsumer.as_asgi()),
         ])
     ),
