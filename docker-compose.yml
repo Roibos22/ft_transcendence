@@ -34,16 +34,13 @@ services:
     volumes:
       - ./client:/usr/share/nginx/html/
 
-  # pgadmin:
-  #   container_name: pgadmin
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@example.com
-  #     PGADMIN_DEFAULT_PASSWORD: admin
-  #   ports:
-  #     - "8080:80"
-  #   depends_on:
-  #     - postgres_db
+  # cli_client:
+  #   container_name: cli_client
+  #   build:
+  #     context: ./CLI_client
+  #     dockerfile: Dockerfile
+  #   image: cli_client
+  #   restart: on-failure:3
 
 volumes:
   postgres-data:

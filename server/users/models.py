@@ -15,15 +15,15 @@ class User(AbstractUser):
         }
     )
     # Email verification flag
-    email_isverified = models.BooleanField(default=False)
+    email_verified = models.BooleanField(default=False)
     # Phone number for authentication
     phone_number = models.CharField(blank=True, null=True)
-    # Changable display name
+    # Changeable display name
     display_name = models.CharField(max_length=15, blank=True)
     # Online status
     online = models.BooleanField(default=False)
     # Avatar picture
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, default='avatars/default_avatar.png')
     # Friends list (symmetric?)
     friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='friend_of')
     def save(self, *args, **kwargs):

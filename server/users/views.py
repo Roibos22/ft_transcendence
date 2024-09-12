@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.http import FileResponse
 from rest_framework import status
 from .models import User, TwoFactorCode
 from .serializer import *
@@ -54,14 +55,17 @@ def user_login(request):
             generate_otp(user=user)
             send_email_code(user=user)
             return Response({
-            'detail': '2FA required',
-            '2fa_required': True,
-            'tokens': tokens  # Temporary JWT token
+                'username': user.username,
+                'detail': '2FA required',
+                '2fa_required': True,
+                'tokens': tokens  # Temporary JWT token
             }, status=status.HTTP_200_OK)
         # 2FA NOT activated
         tokens = get_tokens_for_user(user=user, two_factor_complete=True)
         return Response({
+            'username': user.username,
             'detail': 'Login successful',
+            '2fa_required': False,
             'tokens': tokens
         }, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -87,7 +91,7 @@ def verify_email(request, user_id):
         if sys_otp_code.verify_code(otp_token):
             # If verification succeeds, delete the used sys_otp_code
             sys_otp_code.delete()
-            user.email_isverified = True
+            user.email_verified = True
             user.save()
             return Response({
                 'detail': 'Email confirmed',
@@ -125,7 +129,7 @@ def verify_2fa(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def confirm_2fa(request):
-    user = request.user
+    user: User = request.user
     otp_token = request.data.get('otp')
 
     # Retrieve the user's confirmed TOTP device
@@ -140,6 +144,7 @@ def confirm_2fa(request):
         # If TOTP verification succeeds
         tokens = get_tokens_for_user(user=user, two_factor_complete=True)
         return Response({
+            'username': user.username,
             'detail': 'Login successful',
             'tokens': tokens
         }, status=status.HTTP_200_OK)
@@ -149,6 +154,7 @@ def confirm_2fa(request):
             sys_otp_code.delete()
             tokens = get_tokens_for_user(user=user, two_factor_complete=True)
             return Response({
+                'username': user.username,
                 'detail': 'Login successful',
                 'tokens': tokens
             }, status=status.HTTP_200_OK)
@@ -197,7 +203,7 @@ def update_user(request, user_id):
 @debug_request
 @api_view(['DELETE'])
 @permission_classes([Is2FAComplete])
-def delete_user(request, user_id):
+def delete_user(request, user_id: int):
     try:
         user = User.objects.get(id=user_id)
     except User.DoesNotExist:
@@ -213,9 +219,9 @@ def delete_user(request, user_id):
 @debug_request
 @api_view(['GET'])
 @permission_classes([Is2FAComplete])
-def user_profile(request, user_id):
+def user_profile(request, username):
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = UserSerializer(user)
@@ -224,3 +230,17 @@ def user_profile(request, user_id):
     else:
         data = clean_response_data(serializer.data)
     return Response(data)
+
+@debug_request
+@api_view(['GET'])
+@permission_classes([Is2FAComplete])
+def user_avatar(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    if user.avatar:
+        image_url = user.avatar.url
+        image_extension = image_url.rsplit('.', 1)[-1]
+    return FileResponse(open(ASSETS_ROOT + image_path, 'rb'), content_type=f'image/{image_extension}')
+
