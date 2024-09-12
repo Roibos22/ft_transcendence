@@ -3,6 +3,13 @@
 	<!-- HEADING -->
 	<h1 class="text-center">Welcome to Pong!</h1>
 
+	<!-- Profile Icon -->
+	<div class="position-absolute top-0 start-0 m-3">
+		<a href="/profile" class="text-decoration-none">
+			<span class="profile-link">Profile</span>
+		</a>
+	</div>
+
 	<!-- SEGMENTED PICKER GAME MODE -->
 	<div class="d-flex flex-column align-items-center mt-3 mb-3">
 		<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
@@ -10,6 +17,8 @@
 			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_singleplayer">Single Player</label>
 			<input type="radio" class="btn-check" name="btnradio" id="btn_multiplayer" autocomplete="off">
 			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_multiplayer">Multi Player</label>
+			<input type="radio" class="btn-check" name="btnradio" id="btn_online" autocomplete="off">
+			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_online">Online</label>
 		</div>
 	</div>
 

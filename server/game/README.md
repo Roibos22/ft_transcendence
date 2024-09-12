@@ -1,4 +1,4 @@
-# Users app
+# Game App
 
 ## Functions
 

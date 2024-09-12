@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'two_factor',  # Main two-factor auth app
     # CORS
     'corsheaders',
+    'channels',   # Channels is used for websocket communication
 ]
 
 REST_FRAMEWORK = {
@@ -57,6 +58,12 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication'
     ),
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # In-memory backend for development/testing
+    },
 }
 
 # Dev mode
@@ -124,7 +131,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'transcendence_server.wsgi.application'
+# WSGI_APPLICATION = 'transcendence_server.wsgi.application'
+ASGI_APPLICATION = 'transcendence_server.asgi.application'
 
 
 # Database

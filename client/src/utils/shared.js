@@ -1,6 +1,7 @@
 export const GameModes = {
 	SINGLE: 'single',
 	MULTI: 'multi',
+	ONLINE: 'online',
 };
 
 export const settings = {

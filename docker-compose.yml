@@ -4,8 +4,6 @@ services:
     container_name: postgres
     image: postgres
     hostname: localhost
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: root
@@ -13,6 +11,8 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - backend
 
   server:
     container_name: server
@@ -25,12 +25,17 @@ services:
       - "8000:8000"
     volumes:
       - content:/app/avatars
+    networks:
+      - backend
 
   client:
     container_name: client
-    image: nginx:alpine
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: nginx_client
     ports:
-      - "3000:80"
+      - "3000:3000"
     volumes:
       - ./client:/usr/share/nginx/html/
 
@@ -47,3 +52,6 @@ volumes:
   content:
 
 
+
+networks:
+  backend:
