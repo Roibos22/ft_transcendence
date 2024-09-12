@@ -7,12 +7,8 @@ export async function initGameOnlineView() {
 	document.getElementById('app').innerHTML = content;
 	const game = new PongGame();
 
-	const authToken = Cookies.getCookie("accessToken");
-	console.log('Auth Token:', authToken);
-
-	
-	const socketWithUrlToken = connectWebSocketWithUrlToken();
-	const socketWithMessageToken = connectWebSocketWithMessageToken();
+	//const socketWithUrlToken = connectWebSocketWithUrlToken();
+	//const socketWithMessageToken = connectWebSocketWithMessageToken();
 }
 
 function connectWebSocketWithUrlToken() {
