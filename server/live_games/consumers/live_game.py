@@ -4,20 +4,9 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 import json
 from asgiref.sync import sync_to_async
+from live_games.game_logic.game_logic import GameLogic
 
-# live_games = {
-#     1: new live_game()
-#     5: new live_game()
-# }
-
-# live_games[1] 
-
-# self.ball_pos = {'x': 0, 'y': 0}
-# self.ball_direction = {'x': 1, 'y': 1}
-# self.player1_pos = 0
-# self.player2_pos = 0
-# self.player1_ready = False
-# self.player2_ready = False
+game_sessions = {}
 
 class LiveGameConsumer(AsyncWebsocketConsumer):
 
@@ -25,22 +14,29 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         from users.models import User
         from game.models import Game
 
-        user:User = self.scope['user']
-        if user is None or not user.is_authenticated:
+        self.user:User = self.scope['user']
+        if self.user is None or not self.user.is_authenticated:
             await self.close()
             print("LiveGame consumer: User not authenticated")
             return
 
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game_group_name = f'game_{self.game_id}'
-        # self.game = await sync_to_async(Game.objects.get)(id=self.game_id)
+        game = await sync_to_async(Game.objects.get)(id=self.game_id)
+        player1_username = await database_sync_to_async(lambda: game.player1.username)()
+        player2_username = await database_sync_to_async(lambda: game.player2.username)()
+
+        # remove player if not part of game...
 
         await self.channel_layer.group_add(
             self.game_group_name,
             self.channel_name
         )
 
-        print("LiveGame consumer: User Connected!")
+        if (self.game_id not in game_sessions):
+            game_sessions[self.game_id] = GameLogic(player1_username, player2_username)
+
+        print("LiveGame consumer: User Connected! Username: ", self.user.username)
 
         await self.accept()
 
@@ -54,12 +50,16 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
 
         if data.get('action') == 'message':
             await self.handle_receive_message(data)
+        elif data.get('action') == 'get_state':
+            await self.handle_get_state()
+        elif data.get('action') == 'move':
+            await self.handle_move(data)
 
-        # if data.get('action') == 'ready':
-        #     await self.handle_ready()
+    async def handle_get_state(self):
+        await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state_dict()}))
 
-        # elif data.get('action') == 'move':
-        #     await self.handle_move(data)  #
+    async def handle_move(self, data):
+        game_sessions[self.game_id].move_player(self.user.username, int(data['direction']))
 
     async def handle_receive_message(self, message):
         await self.channel_layer.group_send(
