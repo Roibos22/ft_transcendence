@@ -10,7 +10,7 @@ from asgiref.sync import sync_to_async
 #     5: new live_game()
 # }
 
-# live_games[1] 
+# live_games[1]
 
 # self.ball_pos = {'x': 0, 'y': 0}
 # self.ball_direction = {'x': 1, 'y': 1}
@@ -52,15 +52,19 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         import json
         data = json.loads(text_data)
 
+
         if data.get('action') == 'message':
             await self.handle_receive_message(data)
 
         # if data.get('action') == 'ready':
         #     await self.handle_ready()
 
-        # elif data.get('action') == 'move':
-        #     await self.handle_move(data)  #
+        elif data.get('action') == 'move':
+            await self.handle_move(data)
 
+    async def handle_move(data) {
+
+    }
     async def handle_receive_message(self, message):
         await self.channel_layer.group_send(
             self.game_group_name,

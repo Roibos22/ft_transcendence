@@ -8,6 +8,7 @@
 
 3. limit CORS origins
 4. setup email
+5. Check authentication in asgi
 
 ## Basic information
 
