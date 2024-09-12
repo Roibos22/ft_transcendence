@@ -4,6 +4,7 @@ import { initGameSetupView } from './views/gameSetup.js';
 import { initGameView } from './views/game.js';
 import { initProfileView } from './views/profile.js';
 import { initGameOnlineView } from './views/onlineGame.js';
+import { init3DView } from './views/pong_3d.js';
 
 const urlRoutes = {
 	"/": {
@@ -29,7 +30,11 @@ const urlRoutes = {
 	"/online-game": {
 		template: "../templates/online-game.html",
 		title: "Game"
-	}
+	},
+	"/pong_3d": {
+		template: "../templates/pong_3d.html",
+		title: "3D"
+	},
 };
 
 export const urlLocationHandler = async () => {
@@ -43,10 +48,12 @@ export const urlLocationHandler = async () => {
 	document.getElementById("app").innerHTML = html;
 	document.title = route.title;
 	
+	console.log('urlLocationHandler');
 	initCurrentView();
 };
 
-export function initCurrentView() {
+export async function initCurrentView() {
+	console.log('initCurrentView');
 	const currentPath = window.location.pathname;
 	if (currentPath === '/' || currentPath === '/login') {
 		initLoginView();
@@ -60,6 +67,8 @@ export function initCurrentView() {
 		initProfileView();
 	} else if (currentPath === '/online-game') {
 		initGameOnlineView();
+	} else if (currentPath === '/pong_3d') {
+		await init3DView();
 	}
 }
 

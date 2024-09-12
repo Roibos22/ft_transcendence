@@ -1,9 +1,9 @@
 import { initCurrentView, urlLocationHandler } from './router.js';
 
 function initMain() {
-	document.addEventListener('DOMContentLoaded', function() {
-		initCurrentView();
-	});
+	window.onload = async () => {
+		await initCurrentView();
+	};
 }
 
 initMain();

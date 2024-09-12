@@ -1,0 +1,8 @@
+Model Information:
+* title:	Elephant - Quirky Series
+* source:	https://sketchfab.com/3d-models/elephant-quirky-series-a0a9b3e9a2c6463fb56f846de93cb9cb
+* author:	Omabuarts Studio (https://sketchfab.com/omabuarts)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

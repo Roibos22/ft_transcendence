@@ -10,6 +10,13 @@ export async function initGameSetupView() {
 	const onlinePlayerBtn = document.getElementById('btn_online');
 	const addPlayerButton = document.getElementById('addPlayer');
 	const playerInputsContainer = document.getElementById('playerInputs');
+	const btn3d = document.getElementById('btn_3d');
+
+	if (btn3d) {
+		btn3d.addEventListener('click', () => {
+			window.location.href = '/pong_3d';
+		});
+	}
 
 	if (singlePlayerBtn && multiPlayerBtn && onlinePlayerBtn) {
 		singlePlayerBtn.addEventListener('change', updateUIForGameMode);
