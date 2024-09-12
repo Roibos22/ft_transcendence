@@ -73,41 +73,24 @@ html, body {
 	text-decoration: underline;
 }
 
-
-
-
-
-
-
-
-
-
-
-/* REGISTER VIEW */
-
-
-.register-input {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-
-/* TWOFA VIEW */
-
-
-.twofa-card {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-
 /* GAME SETUP VIEW */
 
+.btn-setting {
+	background-color: #2ec58e;
+	color: black;
+	border: 3px solid #000000;
+	font-weight: bold;
+	border-radius: 20px;
+}
 
-.btn-check:checked + .btn-outline-primary {
-	background-color: #0d6efd;
+.btn-setting.active, .btn-setting:hover {
+	background-color: black;
+	color: #2ec58e;
+}
+
+
+/* .btn-check:checked + .btn-outline-primary {
+	background-color: #2ec58e;
 	color: #fff;
 }
 .btn-check:not(:checked) + .btn-outline-primary {
@@ -118,7 +101,7 @@ html, body {
 .btn-outline-secondary {
 	background-color: #fff;
 	color: #000000;
-}
+} */
 
 .profile-icon {
 	font-size: 2rem;

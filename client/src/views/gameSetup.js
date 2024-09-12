@@ -116,30 +116,39 @@ function deleteAllPlayersButOne() {
 	}
 }
 
-function updateUIForGameMode() {
-	const singlePlayerBtn = document.getElementById('btn_singleplayer');
-	const multiPlayerBtn = document.getElementById('btn_multiplayer');
-	const onlineBtn = document.getElementById('btn_online');
-	const addPlayerButton = document.getElementById('addPlayer');
-	const startGameButton = document.querySelector('a.btn-success');
+function updateUIForGameMode(selectedButton) {
+    const singlePlayerBtn = document.getElementById('btn_singleplayer');
+    const multiPlayerBtn = document.getElementById('btn_multiplayer');
+    const onlineBtn = document.getElementById('btn_online');
+    const addPlayerButton = document.getElementById('addPlayer');
+    const startGameButton = document.querySelector('a.btn-success');
 
-	if (singlePlayerBtn.checked) {
-		deleteAllPlayersButOne();
-		if (addPlayerButton) addPlayerButton.style.display = 'none';
-		settings.mode = GameModes.SINGLE;
-		if (startGameButton) startGameButton.href = '/game';
-	} else if (multiPlayerBtn.checked) {
-		addPlayer();
-		if (addPlayerButton) addPlayerButton.style.display = 'block';
-		settings.mode = GameModes.MULTI;
-		if (startGameButton) startGameButton.href = '/game';
-	} else if (onlineBtn.checked) {
-		deleteAllPlayersButOne();
-		if (addPlayerButton) addPlayerButton.style.display = 'none';
-		settings.mode = GameModes.ONLINE;
-		if (startGameButton) startGameButton.href = '/online-game';
-	}
-	updatePlayers();
+    // Remove 'active' class from all buttons
+    [singlePlayerBtn, multiPlayerBtn, onlineBtn].forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // Add 'active' class to the selected button
+    selectedButton.classList.add('active');
+
+    if (selectedButton === singlePlayerBtn) {
+        deleteAllPlayersButOne();
+        if (addPlayerButton) addPlayerButton.style.display = 'none';
+        settings.mode = GameModes.SINGLE;
+        if (startGameButton) startGameButton.href = '/game';
+    } else if (selectedButton === multiPlayerBtn) {
+        addPlayer();
+        if (addPlayerButton) addPlayerButton.style.display = 'block';
+        settings.mode = GameModes.MULTI;
+        if (startGameButton) startGameButton.href = '/game';
+    } else if (selectedButton === onlineBtn) {
+        deleteAllPlayersButOne();
+        if (addPlayerButton) addPlayerButton.style.display = 'none';
+        settings.mode = GameModes.ONLINE;
+        if (startGameButton) startGameButton.href = '/online-game';
+    }
+
+    updatePlayers();
 }
 
 function initSettingsUI() {

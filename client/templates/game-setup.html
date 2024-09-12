@@ -1,5 +1,6 @@
 <div class="container" id="gameSetupView">
-
+	<div class="main-card">
+		<div class="card-body">
 	<!-- HEADING -->
 	<h1 class="text-center">Welcome to Pong!</h1>
 
@@ -12,13 +13,10 @@
 
 	<!-- SEGMENTED PICKER GAME MODE -->
 	<div class="d-flex flex-column align-items-center mt-3 mb-3">
-		<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-			<input type="radio" class="btn-check" name="btnradio" id="btn_singleplayer" autocomplete="off" checked>
-			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_singleplayer">Single Player</label>
-			<input type="radio" class="btn-check" name="btnradio" id="btn_multiplayer" autocomplete="off">
-			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_multiplayer">Multi Player</label>
-			<input type="radio" class="btn-check" name="btnradio" id="btn_online" autocomplete="off">
-			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_online">Online</label>
+		<div class="d-flex justify-content-center">
+			<button id="btn_singleplayer" class="btn btn-setting mx-1" style="width: 150px;">Single Player</button>
+			<button id="btn_multiplayer" class="btn btn-setting mx-1" style="width: 150px;">Multi Player</button>
+			<button id="btn_online" class="btn btn-setting mx-1" style="width: 150px;">Online</button>
 		</div>
 	</div>
 
@@ -67,5 +65,6 @@
 			</div>
 		</div>
 	</div>
-
+</div>
+</div>
 </div>
