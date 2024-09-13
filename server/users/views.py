@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.http import FileResponse
 from rest_framework import status
 from .models import User, TwoFactorCode
 from .serializer import *
@@ -229,3 +230,17 @@ def user_profile(request, username):
     else:
         data = clean_response_data(serializer.data)
     return Response(data)
+
+@debug_request
+@api_view(['GET'])
+@permission_classes([Is2FAComplete])
+def user_avatar(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    if user.avatar:
+        image_url = user.avatar.url
+        image_extension = image_url.rsplit('.', 1)[-1]
+    return FileResponse(open(ASSETS_ROOT + image_path, 'rb'), content_type=f'image/{image_extension}')
+
