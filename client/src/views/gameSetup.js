@@ -53,7 +53,7 @@ function updateUIForGameMode(selectedButton) {
 	const multiPlayerBtn = document.getElementById('btn_multiplayer');
 	const onlineBtn = document.getElementById('btn_online');
 	const addPlayerButton = document.getElementById('addPlayer');
-	const startGameButton = document.querySelector('a.btn-success');
+	const startGameButton = document.getElementById('startGameButton');
 	const playerInputs = document.getElementById('playerInputs');
 	const settingsView = document.getElementById('settingsView');
 
@@ -77,8 +77,8 @@ function updateUIForGameMode(selectedButton) {
 		if (playerInputs) playerInputs.style.display = 'block';
 		if (settingsView) settingsView.style.display = 'block';
 	} else if (selectedButton === onlineBtn) {
-		if (addPlayerButton) addPlayerButton.style.display = 'none';
 		settings.mode = GameModes.ONLINE;
+		if (addPlayerButton) addPlayerButton.style.display = 'none';
 		if (startGameButton) startGameButton.href = '/online-game';
 		if (playerInputs) playerInputs.style.display = 'block';
 		if (settingsView) settingsView.style.display = 'none';
