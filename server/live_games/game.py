@@ -127,7 +127,7 @@ class Game:
             self.start_time = 0
             return {
                 'game_id': self.game_id,
-                'start_time': self.start_time,
+                'start_time': self.start_time - time.time(),
             }
         # Prepare data
         player_1 = self._player1
@@ -153,4 +153,3 @@ class Game:
             },
         }
         return data
-
