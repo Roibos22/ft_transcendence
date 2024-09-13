@@ -34,6 +34,12 @@ export async function initGameSetupView() {
 		});
 	});
 
+	const playerInput = document.getElementById('playerForm');
+	playerInput.addEventListener('input', function() {
+		updatePlayers();
+	});
+
+
 	initSettingsUI();
 	updateUIForGameMode(document.querySelector('.btn-game-mode.active') || document.getElementById('btn_singleplayer'));
 	updatePlayers();
