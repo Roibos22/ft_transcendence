@@ -5,26 +5,13 @@ export async function initGameSetupView() {
 	const content = await loadTemplate('game-setup');
 	document.getElementById('app').innerHTML = content;
 
-	const singlePlayerBtn = document.getElementById('btn_singleplayer');
-	const multiPlayerBtn = document.getElementById('btn_multiplayer');
-	const onlinePlayerBtn = document.getElementById('btn_online');
+	const gameModeButtons = document.querySelectorAll('.btn-game-mode');
 	const addPlayerButton = document.getElementById('addPlayer');
 	const playerInputsContainer = document.getElementById('playerInputs');
 
-	if (singlePlayerBtn && multiPlayerBtn && onlinePlayerBtn) {
-        singlePlayerBtn.addEventListener('click', () => {
-            setActiveButton(singlePlayerBtn);
-            updateUIForGameMode();
-        });
-        multiPlayerBtn.addEventListener('click', () => {
-            setActiveButton(multiPlayerBtn);
-            updateUIForGameMode();
-        });
-        onlinePlayerBtn.addEventListener('click', () => {
-            setActiveButton(onlinePlayerBtn);
-            updateUIForGameMode();
-        });
-    }
+	gameModeButtons.forEach(button => {
+		button.addEventListener('click', () => updateUIForGameMode(button));
+	});
 
 	if (addPlayerButton) {
 		addPlayerButton.addEventListener('click', addPlayer);
@@ -38,17 +25,89 @@ export async function initGameSetupView() {
 		});
 	}
 
-	document.querySelectorAll('.btn-outline-secondary').forEach(button => {
+	const settingsButtons = document.querySelectorAll('[data-setting]');
+	settingsButtons.forEach(button => {
 		button.addEventListener('click', (e) => {
-			const setting = e.target.closest('.input-group').querySelector('.form-control').id.replace('Display', '');
-			const change = e.target.textContent === '+' ? 1 : -1;
-			updateValue(setting, change);
+			const setting = button.dataset.setting;
+			const value = parseInt(button.dataset.value);
+			updateValue(setting, value);
 		});
 	});
 
 	initSettingsUI();
-	updateUIForGameMode();
+	updateUIForGameMode(document.querySelector('.btn-game-mode.active') || document.getElementById('btn_singleplayer'));
 	updatePlayers();
+}
+
+function updateUIForGameMode(selectedButton) {
+	if (!selectedButton) return;
+
+	const singlePlayerBtn = document.getElementById('btn_singleplayer');
+	const multiPlayerBtn = document.getElementById('btn_multiplayer');
+	const onlineBtn = document.getElementById('btn_online');
+	const addPlayerButton = document.getElementById('addPlayer');
+	const startGameButton = document.querySelector('a.btn-success');
+	const playerInputs = document.getElementById('playerInputs');
+
+	[singlePlayerBtn, multiPlayerBtn, onlineBtn].forEach(btn => {
+		if (btn) btn.classList.remove('active');
+	});
+	selectedButton.classList.add('active');
+
+	if (selectedButton === singlePlayerBtn) {
+		deleteAllPlayersButOne();
+		if (addPlayerButton) addPlayerButton.style.display = 'none';
+		settings.mode = GameModes.SINGLE;
+		if (startGameButton) startGameButton.href = '/game';
+		if (playerInputs) playerInputs.style.display = 'block';
+	} else if (selectedButton === multiPlayerBtn) {
+		addPlayer();
+		if (addPlayerButton) addPlayerButton.style.display = 'block';
+		settings.mode = GameModes.MULTI;
+		if (startGameButton) startGameButton.href = '/game';
+		if (playerInputs) playerInputs.style.display = 'block';
+	} else if (selectedButton === onlineBtn) {
+		deleteAllPlayersButOne();
+		if (addPlayerButton) addPlayerButton.style.display = 'none';
+		settings.mode = GameModes.ONLINE;
+		if (startGameButton) startGameButton.href = '/online-game';
+		if (playerInputs) playerInputs.style.display = 'none';
+	}
+
+	updatePlayers();
+}
+
+function initSettingsUI() {
+	const settingsToUpdate = ['pointsToWin', 'numberOfGames'];
+	
+	settingsToUpdate.forEach(setting => {
+		const buttons = document.querySelectorAll(`[data-setting="${setting}"]`);
+		buttons.forEach(button => {
+			const value = parseInt(button.dataset.value);
+			if (settings[setting] === value) {
+				button.classList.add('active');
+			} else {
+				button.classList.remove('active');
+			}
+		});
+	});
+}
+
+
+function updateValue(setting, newValue) {
+	if (settings.hasOwnProperty(setting)) {
+		settings[setting] = newValue;
+		
+		const buttons = document.querySelectorAll(`[data-setting="${setting}"]`);
+		buttons.forEach(button => {
+			const value = parseInt(button.dataset.value);
+			if (value === newValue) {
+				button.classList.add('active');
+			} else {
+				button.classList.remove('active');
+			}
+		});
+	}
 }
 
 export function addPlayer() {
@@ -74,7 +133,7 @@ export function deletePlayer(button) {
 	const playerInputGroup = button.closest('.player-input-group');
 	if (playerInputGroup) {
 		const playerInputs = document.getElementById('playerInputs');
-		if (playerInputs.children.length > 1) {
+		if (playerInputs && playerInputs.children.length > 1) {
 			playerInputGroup.remove();
 			renumberPlayers();
 			updatePlayers();
@@ -123,66 +182,4 @@ function deleteAllPlayersButOne() {
 			playerInputs.removeChild(playerInputs.lastChild);
 		}
 	}
-}
-
-function setActiveButton(button) {
-    document.querySelectorAll('#btn_singleplayer, #btn_multiplayer, #btn_online').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    button.classList.add('active');
-}
-
-function updateUIForGameMode() {
-    const singlePlayerBtn = document.getElementById('btn_singleplayer');
-    const multiPlayerBtn = document.getElementById('btn_multiplayer');
-    const onlineBtn = document.getElementById('btn_online');
-    const addPlayerButton = document.getElementById('addPlayer');
-    const startGameButton = document.querySelector('a.btn-success');
-
-    if (singlePlayerBtn.classList.contains('active')) {
-        deleteAllPlayersButOne();
-        if (addPlayerButton) addPlayerButton.style.display = 'none';
-        settings.mode = GameModes.SINGLE;
-        if (startGameButton) startGameButton.href = '/game';
-    } else if (multiPlayerBtn.classList.contains('active')) {
-        addPlayer();
-        if (addPlayerButton) addPlayerButton.style.display = 'block';
-        settings.mode = GameModes.MULTI;
-        if (startGameButton) startGameButton.href = '/game';
-    } else if (onlineBtn.classList.contains('active')) {
-        deleteAllPlayersButOne();
-        if (addPlayerButton) addPlayerButton.style.display = 'none';
-        settings.mode = GameModes.ONLINE;
-        if (startGameButton) startGameButton.href = '/online-game';
-    }
-
-    updatePlayers();
-}
-
-function initSettingsUI() {
-	const settingsElements = {
-		pointsToWin: document.getElementById('pointsToWinDisplay'),
-		numberOfGames: document.getElementById('numberOfGamesDisplay')
-	};
-
-	for (const [key, element] of Object.entries(settingsElements)) {
-		if (element) {
-			element.textContent = settings[key];
-		} else {
-			console.error(`Element for ${key} not found`);
-		}
-	}
-}
-
-export function updateValue(setting, change) {
-	const display = document.getElementById(`${setting}Display`);
-	if (!display) {
-		console.error(`Display element for ${setting} not found`);
-		return;
-	}
-
-	let value = parseInt(display.textContent) + change;
-	value = Math.max(1, value); // Ensure the value doesn't go below 1
-	display.textContent = value;
-	settings[setting] = value;
 }

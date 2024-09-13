@@ -13,12 +13,12 @@
 
 	<!-- SEGMENTED PICKER GAME MODE -->
 	<div class="d-flex flex-column align-items-center mt-3 mb-3">
-		<div class="d-flex justify-content-center">
-			<button id="btn_singleplayer" class="btn btn-setting mx-1" style="width: 150px;">Single Player</button>
-			<button id="btn_multiplayer" class="btn btn-setting mx-1" style="width: 150px;">Multi Player</button>
-			<button id="btn_online" class="btn btn-setting mx-1" style="width: 150px;">Online</button>
-		</div>
-	</div>
+        <div class="d-flex justify-content-center btn-group-game-mode">
+            <button id="btn_singleplayer" class="btn btn-setting btn-game-mode mx-1">Single Player</button>
+            <button id="btn_multiplayer" class="btn btn-setting btn-game-mode mx-1">Multi Player</button>
+            <button id="btn_online" class="btn btn-setting btn-game-mode mx-1">Online</button>
+        </div>
+    </div>
 
 	<!-- PLAYER INPUT FIELDS -->
 	<form id="playerForm">
@@ -43,28 +43,32 @@
 
 	<!-- TOURNAMENT SETTINGS -->
 	<div id="settingsView" class="container-md settings-input-fields mt-4">
-		<h5 class="text-center mt-4 mb-4"">Tournament Settings</h5>
-
-		<!-- POINTS TO WIN -->
-		<div class="mb-3">
-			<label for="pointsToWin" class="form-label">Points to win:</label>
-			<div class="input-group">
-				<button class="btn btn-outline-secondary" type="button">-</button>
-				<span id="pointsToWinDisplay" class="form-control text-center">5</span>
-				<button class="btn btn-outline-secondary" type="button">+</button>
-			</div>
-		</div>
-		
-		<!-- NUMBER OF GAMES -->
-		<div class="mb-3">
-			<label for="numberOfGames" class="form-label">Number of games:</label>
-			<div class="input-group">
-				<button class="btn btn-outline-secondary" type="button">-</button>
-				<span id="numberOfGamesDisplay" class="form-control text-center">1</span>
-				<button class="btn btn-outline-secondary" type="button">+</button>
-			</div>
-		</div>
-	</div>
+        <h5 class="text-center mt-4 mb-4">Tournament Settings</h5>
+    
+        <!-- POINTS TO WIN -->
+        <div class="mb-3 settings-group points-to-win">
+            <label class="form-label text-center w-100">Points to win:</label>
+            <div class="btn-container d-flex flex-wrap justify-content-center btn-group-points-to-win" role="group" aria-label="Points to win">
+                <button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="3">3</button>
+                <button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="5">5</button>
+                <button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="10">10</button>
+                <button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="15">15</button>
+                <button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="20">20</button>
+            </div>
+        </div>
+        
+        <!-- Number of Games Buttons -->
+        <div class="mb-3 settings-group number-of-games">
+            <label class="form-label text-center w-100">Number of Games:</label>
+            <div class="btn-container d-flex flex-wrap justify-content-center btn-group-number-of-games" role="group" aria-label="Number of Games">
+                <button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="1">1</button>
+                <button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="2">2</button>
+                <button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="3">3</button>
+                <button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="4">4</button>
+                <button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="5">5</button>
+            </div>
+        </div>
+    </div>
 </div>
 </div>
 </div>

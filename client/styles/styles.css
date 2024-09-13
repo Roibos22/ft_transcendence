@@ -49,17 +49,49 @@ html, body {
 /* BUTTON */
 
 .btn {
-	background-color: black; /* White background for buttons */
-	color: white; /* Black text for buttons */
-	border: none;
-	padding: 10px 20px;
-	border-radius: 5px;
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.btn:hover {
-	background-color: #bce2ce;
-	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+.btn:hover, .btn.active {
+    background-color: black;
+    color: white;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}
 
+/* Ensure the hover effect doesn't change the active state */
+.btn.active:hover {
+    background-color: black;
+    color: white;
+}
+
+
+.settings-group {
+    text-align: center;
+}
+
+.settings-group .btn-container {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Game Mode Buttons */
+.btn-group-game-mode .btn-game-mode {
+    width: 150px;
+}
+
+/* Points to Win Buttons */
+.btn-group-points-to-win .btn-setting {
+    width: 60px;
+}
+
+/* Number of Games Buttons */
+.btn-group-number-of-games .btn-setting {
+    width: 60px;
 }
 
 /* Links */
