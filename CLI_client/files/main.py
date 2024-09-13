@@ -1,10 +1,27 @@
 import inquirer
-from CLI_client.files.models import *
+from models import *
 from pages import *
-from constants import main_choices, profile_choices
+from constants import main_choices, profile_choices, url
 from colorama import Fore, Back, Style, init
+import asyncio
 
 init()
+
+async def play(user: User):
+    websocket = Websocket('ws://server:8000/ws/matchmaking/', user.access_tocken)
+    await websocket.connect()
+    data = await websocket.recieve()
+    game_id = data.get('game_id')
+    url = f'ws://server:8000/ws/live_game/{game_id}/'
+    websocket = Websocket(url, user.access_tocken)
+    await websocket.connect()
+    while True:
+        data: dict = await websocket.recieve()
+        if data == None:
+            break
+        print (data.items())
+        print (data)
+
 
 def profile(command, user: User):
     if command == profile_choices[0]:
@@ -36,12 +53,12 @@ def profile(command, user: User):
     elif command == profile_choices[5]:
         pass
 
-def main():
+async def main():
     user = User()
     answer = inquirer.prompt(Pages.main_menu(user))['Main menu']
     while True:
         if answer == main_choices[0]:
-            page = Pages.play()
+            await play(user)
         elif answer == main_choices[1]:
             page = Pages.profile(user)
             if page:
@@ -72,4 +89,4 @@ def main():
         answer = inquirer.prompt(Pages.main_menu(user))['Main menu']
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

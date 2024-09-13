@@ -39,13 +39,15 @@ services:
     volumes:
       - ./client:/usr/share/nginx/html/
 
-  # cli_client:
-  #   container_name: cli_client
-  #   build:
-  #     context: ./CLI_client
-  #     dockerfile: Dockerfile
-  #   image: cli_client
-  #   restart: on-failure:3
+  cli_client:
+    container_name: cli_client
+    build:
+      context: ./CLI_client
+      dockerfile: Dockerfile
+    image: cli_client
+    restart: on-failure:3
+    networks:
+      - backend
 
 volumes:
   postgres-data:

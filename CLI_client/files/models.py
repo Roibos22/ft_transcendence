@@ -3,8 +3,8 @@ import json
 from constants import url
 import urllib.parse
 from colorama import Fore, Back, Style
-import asyncio
 import websockets
+import curses
 
 class User:
     id:int=None
@@ -181,13 +181,13 @@ class User:
         # answers = answers['form']
 
 class Websocket:
-    def __init__(self, uri):
+    def __init__(self, uri, token):
         self.uri = uri
+        self.token = token
         self.websocket = None
 
     async def  connect(self):
-        self.websocket = await websockets.connect(self.uri)
-        print('Joining the game')
+        self.websocket = await websockets.connect(self.uri, extra_headers={'Authorization': f'Bearer {self.token}'})
     async def send(self, data):
         try:
             await self.websocket.send(data)
@@ -195,15 +195,67 @@ class Websocket:
             print('Wesocket: no connection')
     async def recieve(self):
         try:
-            data = await self.websocket.recv()
-            return data
+            data: json = await self.websocket.recv()
+            if data:
+                return json.loads(data)
         except websockets.exceptions.ConnectionClosed:
             print('Wesocket: no connection')
     async def close(self):
         if self.websocket:
-
             await self.websocket.close()
 
+
+
 class Game:
-    def __init__(self, data: dict):
-        self._game_width = data.get('')
+    def __init__(self, data: dict, websocket):
+        self.websocket: Websocket = websocket
+        self._game_width = data['maze']['width']
+        self._game_height = data['maze']['height']
+        self._paddle_size = data['paddle_size']
+        self._no_players = data['no_players']
+
+    def retrieve_data(self):
+        pass
+
+    def start(self):
+        curses.wrapper(self.main)
+    def main(self, stdscr):
+        self._stdscr = stdscr
+        curses.curs_set(0)
+        self._stdscr.clear()
+        self._stdscr.nodelay(1)
+        self._stdscr.timeout(100)
+
+    def check_window(self):
+        max_y, max_x = self._stdscr.getmaxyx()
+
+    # Check if terminal is at the required size
+        if max_y != self._game_height or max_x != self._game_width:
+            # If not, display a message and wait for resizing
+            self._stdscr.clear()
+            self._stdscr.addstr(0, 0, f"Please resize your terminal to {self._game_width}x{self._game_height}.")
+            self._stdscr.refresh()
+
+            # Wait for the user to resize the terminal
+            while max_y != self._game_height or max_x != self._game_width:
+                max_y, max_x = self._stdscr.getmaxyx()
+                self._stdscr.clear()
+                self._stdscr.addstr(0, 0, f"Current size: {max_x}x{max_y}. Please resize your terminal to {self._game_width}x{self._game_height}.")
+                self._stdscr.refresh()
+
+    def draw_paddle(self, paddle_y, x):
+        for i in range(self._game_height):
+            self._stdscr.addch(paddle_y + i, x, '|')
+            if x == self._game_width - 1:
+                self._stdscr.addch(paddle_y + i, x - 1, '|')
+            else:
+                self._stdscr.addch(paddle_y + i, x + 1, '|')
+
+    def draw_ball(self, ball_y, ball_x):
+        if 0 <= ball_y <= self._game_height - 1 and 0 <= ball_x <= self._game_width - 1:
+            self._stdscr.addch(ball_y, ball_x, '0')
+
+    def move_paddle(self, paddle_y, max_y, direction):
+        pass
+
+
