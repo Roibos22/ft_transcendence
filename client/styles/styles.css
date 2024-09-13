@@ -85,7 +85,9 @@ html, body {
 
 .btn-setting.active, .btn-setting:hover {
 	background-color: black;
-	color: #2ec58e;
+    color: white;
+    border: 3px solid #000000;
+	/* color: #2ec58e; */
 }
 
 
