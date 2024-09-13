@@ -18,25 +18,24 @@ class GameLogic():
             'player1_pos': self.player1_pos,
             'player2_pos': self.player2_pos,
             'ball_pos': self.ball_pos,
-            'ball_direction': self.ball_direction,
         }
         return state_dict
 
-    # this will be changed to
-    def move_player(self, username, direction):
-        if username == self.player1_username:
+    def move_player1(self, direction):
             new_player_pos = self.player1_pos + (direction * PLAYER_STEP)
             if new_player_pos >= PLAYER_SIZE and new_player_pos <= 100:
                 self.player1_pos = new_player_pos
-        else:
+
+    def move_player2(self, direction):
             new_player_pos = self.player2_pos + (direction * PLAYER_STEP)
             if new_player_pos >= PLAYER_SIZE and new_player_pos <= 100:
                 self.player2_pos = new_player_pos
+                
+    def set_player_1_ready(self):
+        self.player1_ready = True
 
-    # def start_game():
+    def set_player_2_ready(self):
+        self.player2_ready = True
 
-    # move_player1
-
-    # move_player2
             
 

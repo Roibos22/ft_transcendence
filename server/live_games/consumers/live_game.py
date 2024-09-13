@@ -27,7 +27,13 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         player1_username = await database_sync_to_async(lambda: game.player1.username)()
         player2_username = await database_sync_to_async(lambda: game.player2.username)()
 
-        # remove player if not part of game...
+        if self.user.username == player1_username:
+            self.user_player_no = 1
+        elif self.user.username == player2_username:
+            self.user_player_no = 2
+        else:
+            print("LiveGame consumer: User is not part of this game")
+            return
 
         await self.channel_layer.group_add(
             self.game_group_name,
@@ -41,11 +47,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
-        # check if user in game
-
-        # create single instance of game class
-
-        self.periodic_task = asyncio.create_task(self.send_periodic_message())
+        self.periodic_task = asyncio.create_task(self.send_game_updates())
 
     async def receive(self, text_data):
         import json
@@ -55,20 +57,28 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             await self.handle_receive_message(data)
         elif data.get('action') == 'get_state':
             await self.handle_get_state()
-        # elif data.get('action') == 'player_ready':
-        #     await self.handle_get_state()
-        elif data.get('action') == 'move':
+        elif data.get('action') == 'player_ready':
+            await self.handle_player_ready()
+        elif data.get('action') == 'move_player':
             await self.handle_move(data)
 
     async def handle_get_state(self):
         await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state_dict()}))
 
+    async def handle_player_ready(self, data):
+        if self.user_player_no == 1:
+            game_sessions[self.game_id].set_player1_ready()
+        elif self.user_player_no == 2:
+            game_sessions[self.game_id].set_player2_ready()
+
     async def handle_move(self, data):
-        # take care of identifying the user here 
-        game_sessions[self.game_id].move_player(self.user.username, int(data['direction']))
+        if self.user_player_no == 1:
+            game_sessions[self.game_id].move_player1(int(data['direction']))
+        elif self.user_player_no == 2:
+            game_sessions[self.game_id].move_player2(int(data['direction']))
 
     async def handle_receive_message(self, message):
-        await self.channel_layer.group_send(
+        self.channel_layer.group_send(
             self.game_group_name,
             {
                 'type': 'chat_message',
@@ -80,18 +90,13 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         message = event["message"]
         await self.send(text_data=json.dumps({"message": message}))
 
-    async def send_periodic_message(self):
-        """ Send a message to the client at regular intervals """
+    async def send_game_updates(self):
         try:
             while True:
-                # Replace this with the message you want to send
-                await self.send(text_data=json.dumps({"message": "Periodic update"}))
-
-                # Sleep for the desired interval (e.g., 10 seconds)
-                await asyncio.sleep(3)
+                await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state_dict()}))
+                await asyncio.sleep(1)
 
         except asyncio.CancelledError:
-            # Task was cancelled, safely exit
             pass
 
 
