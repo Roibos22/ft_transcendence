@@ -53,6 +53,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         import json
         data = json.loads(text_data)
 
+
         if data.get('action') == 'message':
             await self.handle_receive_message(data)
         elif data.get('action') == 'get_state':
