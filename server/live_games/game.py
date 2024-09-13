@@ -18,15 +18,9 @@ class Paddle:
         return self.position_top + paddle_size / 2
     def move_paddle(self):
         pass
-    def check_hit(self, ball_position: dict):
-        if self.side == 'Left' and ball_position.get('x') == 0:
-            ball_y_pos = ball_position.get('y')
-            if self.position_top <= ball_y_pos <= self.position_bot:
-                return (ball_y_pos - self.position_center) / paddle_size
-        elif self.side == 'Right' and ball_position.get('x') == screen_width - 1:
-            ball_y_pos = ball_position.get('y')
-            if self.position_top <= ball_y_pos <= self.position_bot:
-                return (ball_y_pos - self.position_center) / paddle_size
+    def check_hit(self, ball_position):
+        if self.position_top <= ball_position <= self.position_bot:
+            return (ball_position - self.position_center) / (paddle_size / 2)
         return None
 
 class Ball:
@@ -49,28 +43,39 @@ class Ball:
     def position(self):
         return {'x': self._position_x, 'y': self._position_y}
 
-    def movement(self, left_paddle: Paddle, right_paddle: Paddle):
+    def paddle_hit(self, paddle: Paddle):
+        paddle_hit = paddle.check_hit()
+        if paddle_hit != None:
+            self._direction_x *= -1
+        if paddle_hit > 0 and self._direction_y <= 0:
+            self._direction_y *= -1
+        elif paddle_hit < 0 and self._direction_y >= 0:
+            self._direction_y *= -1
+
+
+    def movement(self, left_paddle: Paddle, right_paddle: Paddle, top_paddle: Paddle, bottom_paddle: Paddle):
         # Ball movement
         self._position_x += self._direction_x * self.speed
         self._position_y += self._direction_y * self.speed
         # Wall collisions
         if self.top and self._position_y <= 1:
             self._direction_y *= -1
-        if self.bot and self._position_y >= self._screen_size.get('height') - 1:
+        if self.bot and self._position_y >= self._screen_size.get('height') - 2:
             self._direction_y *= -1
         if self.left and self._position_x <= 1:
             self._direction_x *= -1
-        if self.right and self._position_x >= self._screen_size.get('width') - 1:
+        if self.right and self._position_x >= self._screen_size.get('width') - 2:
             self._direction_x *= -1
         # Paddle collisions
-        if left_paddle.side == 'Left' and self._position_x == 0:
-            ball_y_pos = self._position_y
-            if left_paddle.position_top <= ball_y_pos <= left_paddle.position_bot:
+        if not self.left and self._position_x == 1:
+            self.paddle_hit(left_paddle)
+        elif not self.right and self._position_x == self._screen_size.get('x') - 2:
+            self.paddle_hit(right_paddle)
+        elif not self.top and self._position_y == 1:
+            self.paddle_hit(top_paddle)
+        elif not self.bot and self._position_y == self._screen_size.get('y') - 2:
+            self.paddle_hit(bottom_paddle)
 
-        elif self.side == 'Right' and self._position_x == screen_width - 1:
-            ball_y_pos = self._position_y
-            if self.position_top <= ball_y_pos <= self.position_bot:
-                # return (ball_y_pos - self.position_center) / paddle_size
 
 
 
