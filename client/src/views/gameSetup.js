@@ -55,6 +55,7 @@ function updateUIForGameMode(selectedButton) {
 	const addPlayerButton = document.getElementById('addPlayer');
 	const startGameButton = document.querySelector('a.btn-success');
 	const playerInputs = document.getElementById('playerInputs');
+	const settingsView = document.getElementById('settingsView');
 
 	[singlePlayerBtn, multiPlayerBtn, onlineBtn].forEach(btn => {
 		if (btn) btn.classList.remove('active');
@@ -67,17 +68,20 @@ function updateUIForGameMode(selectedButton) {
 		settings.mode = GameModes.SINGLE;
 		if (startGameButton) startGameButton.href = '/game';
 		if (playerInputs) playerInputs.style.display = 'block';
+		if (settingsView) settingsView.style.display = 'block';
 	} else if (selectedButton === multiPlayerBtn) {
 		addPlayer();
 		if (addPlayerButton) addPlayerButton.style.display = 'block';
 		settings.mode = GameModes.MULTI;
 		if (startGameButton) startGameButton.href = '/game';
 		if (playerInputs) playerInputs.style.display = 'block';
+		if (settingsView) settingsView.style.display = 'block';
 	} else if (selectedButton === onlineBtn) {
 		if (addPlayerButton) addPlayerButton.style.display = 'none';
 		settings.mode = GameModes.ONLINE;
 		if (startGameButton) startGameButton.href = '/online-game';
 		if (playerInputs) playerInputs.style.display = 'block';
+		if (settingsView) settingsView.style.display = 'none';
 	}
 
 	updatePlayers();
