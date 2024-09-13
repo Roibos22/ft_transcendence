@@ -14,10 +14,10 @@ class Paddle:
         self.position_top = dimention / 2 - paddle_size / 2
     @property
     def position_bot(self):
-        return self.position_top + paddle_size
+        return self.position_top + self.size
     @property
     def position_center(self):
-        return self.position_top + paddle_size / 2
+        return self.position_top + self.size / 2
     def move_paddle(self, direction: int):
         if direction < 0 and self.position_top >= - direction:
             self.position_top += direction
@@ -29,7 +29,7 @@ class Paddle:
         else:
             ball_position = ball_coords.get('x')
         if self.position_top <= ball_position <= self.position_bot:
-            return (ball_position - self.position_center) / (paddle_size / 2)
+            return (ball_position - self.position_center) / (self.size / 2)
         return None
 
 class Ball:
@@ -94,9 +94,10 @@ class Game:
         self.game_id = game_id
         # Init game maze
         self._screen_size = {'height': screen_height, 'width': screen_width}
+        self._paddle_size = paddle_size
         # Init paddles
-        self._player1: Paddle = Paddle('Left', self._screen_size.get('height'), paddle_size) # left player
-        self._player2: Paddle = Paddle('Right', self._screen_size.get('width'), paddle_size) # right player
+        self._player1: Paddle = Paddle('Left', self._screen_size.get('height'), self._paddle_size) # left player
+        self._player2: Paddle = Paddle('Right', self._screen_size.get('width'), self._paddle_size) # right player
         # Init ball
         self._ball: Ball = Ball({'N': True, 'S': True, 'W': False, 'E': False}, self.screen_size) # Set walls to True
 
@@ -118,22 +119,23 @@ class Game:
             self.start()
 
     def start(self):
-        if time.time() - self.last_tick > 1 * self._ball.speed:
-            self.start_time = time.time() + 3
-            self._ball.movement()
+        self.start_time = time.time() + 3
 
     def get_state(self):
         # Move ball
-        if self.start_time == 0 and time.time() - self.last_tick > self._ball.speed:
-            self.last_tick = time.time()
+        if self.start_time == 0 and time.perf_counter() - self.last_tick > self._ball.speed:
+            self.last_tick = time.perf_counter()
             self._ball.movement()
-        if self.start_time - time.time() > 0:
-            self.start_time = 0
+        # Send countdown
+        if self.start_time !=0 and self.start_time - time.time() > 0:
             return {
                 'game_id': self.game_id,
                 'start_time': self.start_time - time.time(),
             }
-        # Prepare data
+        else:
+            self.start_time = 0
+        # Send game data
+        ## Prepare data
         player_1 = self._player1
         player_2 = self._player2
         ball = self._ball
@@ -157,3 +159,10 @@ class Game:
             },
         }
         return data
+
+    def get_init_data(self):
+        data = {
+            'maze': self._screen_size,
+            'no_players': 2,
+            'paddle_size': self._paddle_size
+        }
