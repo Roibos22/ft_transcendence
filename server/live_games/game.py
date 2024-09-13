@@ -3,7 +3,7 @@ import time
 screen_width = 100 #?
 screen_height = 50 #?
 paddle_size = 10 #?
-ball_speed = 0.005 #?
+ball_speed = 1 #?
 
 class Paddle:
     def __init__(self, side, dimention, paddle_size):
@@ -104,15 +104,38 @@ class Game:
     def move_player2(self, direction: int):
         self._player2.move_paddle(direction)
 
+    def set_player1_ready(self):
+        self._playe1_ready = True
+        if self._playe2_ready:
+            self.start()
+    def set_player2_ready(self):
+        self._playe2_ready = True
+        if self._playe1_ready:
+            self.start()
+
     def start(self):
-        self.last_tick = time.time()
+        if time.time() - self.last_tick > 1 * self._ball.speed:
+            self.start_time = time.time() + 3
+            self._ball.movement()
 
     def get_state(self):
+        # Move ball
+        if self.start_time == 0 and time.time() - self.last_tick > self._ball.speed:
+            self.last_tick = time.time()
+            self._ball.movement()
+        if self.start_time - time.time() > 0:
+            self.start_time = 0
+            return {
+                'game_id': self.game_id,
+                'start_time': self.start_time,
+            }
+        # Prepare data
         player_1 = self._player1
         player_2 = self._player2
         ball = self._ball
         data = {
             'game_id': self.game_id,
+            'start_time': self.start_time,
             'player_1': {
                 'side': player_1.side,
                 'size': player_1.size,
