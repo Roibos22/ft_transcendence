@@ -4,7 +4,7 @@ export const API_BASE_URL = 'http://localhost:8000';
 
 export async function fetchWithAuth(url, options = {}) {
 	const accessToken = Cookies.getCookie("accessToken");
-	console.log("Access Token:", accessToken);
+	//console.log("Access Token:", accessToken);
 	if (!accessToken) {
 		throw new Error("Access token not found in cookies");
 	}
