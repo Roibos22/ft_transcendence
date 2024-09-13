@@ -40,6 +40,8 @@ class GameLogic():
 
     # def start_game():
 
-    # 
+    # move_player1
+
+    # move_player2
             
 
