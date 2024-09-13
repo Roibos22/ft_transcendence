@@ -23,7 +23,11 @@ class Paddle:
             self.position_top += direction
         elif direction > 0 and self.position_bot <= self.dimention + direction:
             self.position_top += direction
-    def check_hit(self, ball_position):
+    def check_hit(self, ball_coords: dict):
+        if self.side == 'Left' or 'Right':
+            ball_position = ball_coords.get('y')
+        else:
+            ball_position = ball_coords.get('x')
         if self.position_top <= ball_position <= self.position_bot:
             return (ball_position - self.position_center) / (paddle_size / 2)
         return None
@@ -53,7 +57,7 @@ class Ball:
         return {'x': self._position_x, 'y': self._position_y}
 
     def paddle_hit(self, paddle: Paddle):
-        paddle_hit = paddle.check_hit()
+        paddle_hit = paddle.check_hit(self.position)
         if paddle_hit != None:
             self._direction_x *= -1
         if paddle_hit > 0 and self._direction_y <= 0:
@@ -105,12 +109,12 @@ class Game:
         self._player2.move_paddle(direction)
 
     def set_player1_ready(self):
-        self._playe1_ready = True
-        if self._playe2_ready:
+        self._player1_ready = True
+        if self._player2_ready:
             self.start()
     def set_player2_ready(self):
-        self._playe2_ready = True
-        if self._playe1_ready:
+        self._player2_ready = True
+        if self._player1_ready:
             self.start()
 
     def start(self):
