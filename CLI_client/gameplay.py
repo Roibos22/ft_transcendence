@@ -2,8 +2,8 @@ import curses
 import time
 
 # Desired terminal size (width, height)
-REQUIRED_WIDTH = 80
-REQUIRED_HEIGHT = 24
+REQUIRED_WIDTH = 100
+REQUIRED_HEIGHT = 50
 
 PADDLE_HEIGHT = 4
 DELAY = 0.05

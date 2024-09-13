@@ -1,0 +1,4 @@
+inquirer
+requests
+colorama
+websockets>=13.0.1

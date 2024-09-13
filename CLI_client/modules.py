@@ -2,8 +2,11 @@ import requests
 import json
 from constants import url
 import urllib.parse
+from colorama import Fore, Back, Style
+import asyncio
+import websockets
 
-class User():
+class User:
     id:int=None
     username:str=None
     public_name:str=None
@@ -147,3 +150,38 @@ class User():
         self.access_tocken=None
         self.refresh_tocken=None
         self.auth_2fa=False
+        print('User logged out')
+        print(Fore.GREEN + '---------------------')
+    def sign_up(self, answers):
+        response = requests.post(f'{url}create/', json=answers)
+        if response.status_code == 201:
+            print('User created')
+            print(Fore.GREEN + '---------------------')
+        else:
+            print(f'Error: {response}')
+            print(Fore.GREEN + '---------------------')
+        # answers = answers['form']
+
+class Websocket:
+    def __init__(self, uri):
+        self.uri = uri
+        self.websocket = None
+
+    async def  connect(self):
+        self.websocket = await websockets.connect(self.uri)
+        print('Joining the game')
+    async def send(self, data):
+        try:
+            await self.websocket.send(data)
+        except websockets.exceptions.ConnectionClosed:
+            print('Wesocket: no connection')
+    async def recieve(self):
+        try:
+            data = await self.websocket.recv()
+            return data
+        except websockets.exceptions.ConnectionClosed:
+            print('Wesocket: no connection')
+    async def close(self):
+        if self.websocket:
+
+            await self.websocket.close()
