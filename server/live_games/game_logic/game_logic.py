@@ -5,7 +5,7 @@ PLAYER_STEP = 1
 
 class GameLogic():
 
-    def __init__(self):   
+    def __init__(self, game_id):   
         self.ball_pos = {'x': 0, 'y': 0}
         self.ball_direction = {'x': 1, 'y': 1}
         self.player1_pos = (GAME_HEIGHT / 2) - (PLAYER_SIZE / 2)

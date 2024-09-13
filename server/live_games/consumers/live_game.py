@@ -41,7 +41,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         )
 
         if (self.game_id not in game_sessions):
-            game_sessions[self.game_id] = GameLogic()
+            game_sessions[self.game_id] = GameLogic(self.game_id)
 
         print("LiveGame consumer: User Connected! Username: ", self.user.username)
 
@@ -78,7 +78,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             game_sessions[self.game_id].move_player2(int(data['direction']))
 
     async def handle_receive_message(self, message):
-        self.channel_layer.group_send(
+        await self.channel_layer.group_send(
             self.game_group_name,
             {
                 'type': 'chat_message',
