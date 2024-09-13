@@ -8,6 +8,10 @@ export class Game {
         this.scene = this.createScene();
         this.camera = this.getCamera();
         this.renderer = this.setupRenderer()
+        // this.ambientLight = new THREE.AmbientLight(0xffffff);
+        // this.scene.add(this.ambientLight);
+
+
         this.clock = new THREE.Clock();
         this.audioListener = new THREE.AudioListener();
 
@@ -59,6 +63,7 @@ export class Game {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
         this.scene.add(this.camera);
+
     }
     
     setupRenderer() {

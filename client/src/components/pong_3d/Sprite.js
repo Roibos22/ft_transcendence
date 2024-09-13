@@ -29,6 +29,14 @@ export class Sprite {
 			);
 			this.model.scale.set(this.scale.x, this.scale.y, this.scale.z);
 			this.model.rotation.y = this.player === 2 ? Math.PI : 0;
+			//cast shadows
+			this.model.traverse((child) => {
+				if (child.isMesh) {
+					child.castShadow = true;
+					child.receiveShadow = true;
+				}
+			});
+			
 
 			this.scene.add(this.model);
 

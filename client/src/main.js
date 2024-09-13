@@ -1,9 +1,7 @@
 import { initCurrentView, urlLocationHandler } from './router.js';
 
 function initMain() {
-	window.onload = async () => {
-		await initCurrentView();
-	};
+	window.addEventListener('popstate', urlLocationHandler);
 }
 
 initMain();
