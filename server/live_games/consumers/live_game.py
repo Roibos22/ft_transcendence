@@ -5,6 +5,7 @@ from channels.db import database_sync_to_async
 import json
 from asgiref.sync import sync_to_async
 from live_games.game_logic.game_logic import GameLogic
+import asyncio
 
 game_sessions = {}
 
@@ -44,6 +45,8 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
 
         # create single instance of game class
 
+        self.periodic_task = asyncio.create_task(self.send_periodic_message())
+
     async def receive(self, text_data):
         import json
         data = json.loads(text_data)
@@ -52,6 +55,8 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             await self.handle_receive_message(data)
         elif data.get('action') == 'get_state':
             await self.handle_get_state()
+        # elif data.get('action') == 'player_ready':
+        #     await self.handle_get_state()
         elif data.get('action') == 'move':
             await self.handle_move(data)
 
@@ -59,6 +64,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state_dict()}))
 
     async def handle_move(self, data):
+        # take care of identifying the user here 
         game_sessions[self.game_id].move_player(self.user.username, int(data['direction']))
 
     async def handle_receive_message(self, message):
@@ -73,6 +79,21 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event["message"]
         await self.send(text_data=json.dumps({"message": message}))
+
+    async def send_periodic_message(self):
+        """ Send a message to the client at regular intervals """
+        try:
+            while True:
+                # Replace this with the message you want to send
+                await self.send(text_data=json.dumps({"message": "Periodic update"}))
+
+                # Sleep for the desired interval (e.g., 10 seconds)
+                await asyncio.sleep(3)
+
+        except asyncio.CancelledError:
+            # Task was cancelled, safely exit
+            pass
+
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(

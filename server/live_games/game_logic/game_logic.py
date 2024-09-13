@@ -38,5 +38,8 @@ class GameLogic():
             if new_player_pos >= PLAYER_SIZE and new_player_pos <= 100:
                 self.player2_pos = new_player_pos
 
+    # def start_game():
+
+    # 
             
 
