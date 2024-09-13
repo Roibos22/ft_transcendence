@@ -1,5 +1,6 @@
 import { players, settings, GameModes } from '../utils/shared.js';
 import { loadTemplate } from '../router.js';
+import * as Cookies from '../services/cookies.js';
 
 export async function initGameSetupView() {
 	const content = await loadTemplate('game-setup');
@@ -96,6 +97,12 @@ function initSettingsUI() {
 			}
 		});
 	});
+
+	const username = Cookies.getCookie("username");
+	const player1Input = document.getElementById('player1');
+	if (player1Input && username) {
+		player1Input.value = username;
+	}
 }
 
 
