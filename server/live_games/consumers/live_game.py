@@ -35,7 +35,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         )
 
         if (self.game_id not in game_sessions):
-            game_sessions[self.game_id] = GameLogic(player1_username, player2_username)
+            game_sessions[self.game_id] = GameLogic()
 
         print("LiveGame consumer: User Connected! Username: ", self.user.username)
 
