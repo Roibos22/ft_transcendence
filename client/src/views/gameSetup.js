@@ -59,9 +59,9 @@ function updateUIForGameMode(selectedButton) {
 		if (btn) btn.classList.remove('active');
 	});
 	selectedButton.classList.add('active');
+	deleteAllPlayersButOne();
 
 	if (selectedButton === singlePlayerBtn) {
-		deleteAllPlayersButOne();
 		if (addPlayerButton) addPlayerButton.style.display = 'none';
 		settings.mode = GameModes.SINGLE;
 		if (startGameButton) startGameButton.href = '/game';
@@ -73,11 +73,10 @@ function updateUIForGameMode(selectedButton) {
 		if (startGameButton) startGameButton.href = '/game';
 		if (playerInputs) playerInputs.style.display = 'block';
 	} else if (selectedButton === onlineBtn) {
-		deleteAllPlayersButOne();
 		if (addPlayerButton) addPlayerButton.style.display = 'none';
 		settings.mode = GameModes.ONLINE;
 		if (startGameButton) startGameButton.href = '/online-game';
-		if (playerInputs) playerInputs.style.display = 'none';
+		if (playerInputs) playerInputs.style.display = 'block';
 	}
 
 	updatePlayers();
