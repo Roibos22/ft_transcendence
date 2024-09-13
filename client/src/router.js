@@ -49,7 +49,7 @@ export const urlLocationHandler = async () => {
 export function initCurrentView() {
 	const currentPath = window.location.pathname;
 	if (currentPath === '/' || currentPath === '/login') {
-		initGameSetupView();
+		initLoginView();
 	} else if (currentPath === '/register') {
 		initRegisterView();
 	} else if (currentPath === '/game-setup') {
