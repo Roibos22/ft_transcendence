@@ -1,14 +1,15 @@
 import inquirer
 from modules import *
+from constants import main_choices, profile_choices
+from colorama import Fore, Back, Style
 
 class Pages():
     def main_menu(user: User):
         if user.state:
-            print('---------------------')
             print(f'User: {user.public_name}')
             print()
         message = 'Choose to continue'
-        choices=['Play', 'Profile', 'Login', 'Exit']
+        choices=main_choices
         main_menu_page = [
             inquirer.List(
                 'Main menu',
@@ -21,32 +22,53 @@ class Pages():
     def login(user: User):
         if user.state:
             print('You already logged in')
+            print(Fore.GREEN + '---------------------')
             return None
         login_page = [
             inquirer.Text('username', message='Enter username'),
             inquirer.Password('password', message='Enter password')
         ]
+        print(Fore.GREEN + '---------------------')
         return login_page
 
     def profile(user: User):
         if not user.state:
             print('You are not logged in')
+            print(Fore.GREEN + '---------------------')
             return None
         user.profile()
         profile_page = [
             inquirer.List(
                 'User profile',
                 message='Choose to continue',
-                choices=['Update profile', 'Upload profile picture', 'Setup 2FA', 'Delete', 'Back'],
+                choices=profile_choices,
             )
         ]
+        print(Fore.GREEN + '---------------------')
         return profile_page
 
     def verify_2fa(user: User):
         verify_page = [inquirer.Text('token', message='Enter OTP token', validate=lambda _, c: c.isdigit() and 100000 <= int(c) <= 999999)]
+        print(Fore.GREEN + '---------------------')
         return verify_page
     def play():
+        print(Fore.GREEN + '---------------------')
         pass
+
+    def sign_up(user: User):
+        if user.state:
+            print('You already logged in')
+            print(Fore.GREEN + '---------------------')
+            return None
+        login_page = [
+            inquirer.Text('username', message='username'),
+            inquirer.Text('first_name', message='First name'),
+            inquirer.Text('last_name', message='Last name'),
+            inquirer.Text('email', message='Email'),
+            inquirer.Password('password', message='Enter password')
+        ]
+        print(Fore.GREEN + '---------------------')
+        return login_page
 
     def exit():
         exit()
@@ -62,8 +84,10 @@ class ProfilePages():
                 f"Last name: {data['last_name']}\n"
                 f"Email: {data['email']}\n"
             )
+            print(Fore.GREEN + '---------------------')
             return data
         else:
+            print(Fore.GREEN + '---------------------')
             return ""
     def update(user: User):
         update_page = [inquirer.Editor("form", message="Fill out the form", default=ProfilePages.fetch_data(user))]

@@ -23,7 +23,7 @@ class User(AbstractUser):
     # Online status
     online = models.BooleanField(default=False)
     # Avatar picture
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, default='avatars/default_avatar.png')
     # Friends list (symmetric?)
     friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='friend_of')
     def save(self, *args, **kwargs):

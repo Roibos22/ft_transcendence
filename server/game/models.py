@@ -25,4 +25,4 @@ class Game(models.Model):
     winner = models.BooleanField()
 
     def __str__(self):
-        return self
+        return f"Game (id {self.id}) between {self.player1.username} and {self.player2.username} on {self.game_date.strftime('%Y-%m-%d')}"

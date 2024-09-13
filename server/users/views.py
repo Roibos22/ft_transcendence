@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.http import FileResponse
 from rest_framework import status
 from .models import User, TwoFactorCode
 from .serializer import *
@@ -202,8 +203,13 @@ def update_user(request, user_id):
 @debug_request
 @api_view(['DELETE'])
 @permission_classes([Is2FAComplete])
-def delete_user(request):
-    user = request.user
+def delete_user(request, user_id: int):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    if request.user != user:
+        return Response({'error': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
     serializer = UserSerializer(user, data={'is_active': False}, partial=True)
     if serializer.is_valid():
         serializer.save()
@@ -224,3 +230,17 @@ def user_profile(request, username):
     else:
         data = clean_response_data(serializer.data)
     return Response(data)
+
+@debug_request
+@api_view(['GET'])
+@permission_classes([Is2FAComplete])
+def user_avatar(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    if user.avatar:
+        image_url = user.avatar.url
+        image_extension = image_url.rsplit('.', 1)[-1]
+    return FileResponse(open(ASSETS_ROOT + image_path, 'rb'), content_type=f'image/{image_extension}')
+

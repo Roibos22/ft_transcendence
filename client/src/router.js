@@ -2,23 +2,34 @@ import { initLoginView } from './views/login.js';
 import { initRegisterView } from './views/register.js';
 import { initGameSetupView } from './views/gameSetup.js';
 import { initGameView } from './views/game.js';
+import { initProfileView } from './views/profile.js';
+import { initGameOnlineView } from './views/onlineGame.js';
 
 const urlRoutes = {
-	404: {
-		template: "/templates/404.html",
-	},
 	"/": {
 		template: "../templates/login.html",
+		title: "Login"
 	},
 	"/register": {
 		template: "../templates/register.html",
+		title: "Register"
 	},
 	"/game-setup": {
 		template: "../templates/game-setup.html",
+		title: "Setup"
 	},
 	"/game": {
 		template: "../templates/game.html",
+		title: "Game"
 	},
+	"/profile": {
+		template: "../templates/profile.html",
+		title: "Profile"
+	},
+	"/online-game": {
+		template: "../templates/online-game.html",
+		title: "Game"
+	}
 };
 
 export const urlLocationHandler = async () => {
@@ -45,6 +56,10 @@ export function initCurrentView() {
 		initGameSetupView();
 	} else if (currentPath === '/game') {
 		initGameView();
+	} else if (currentPath === '/profile') {
+		initProfileView();
+	} else if (currentPath === '/online-game') {
+		initGameOnlineView();
 	}
 }
 

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-7f^-%ra#sj3m)1h=)@!!6dud8d9@fk+b!*!lyqp$va@u*(7^vh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['server', 'localhost']
 
 
 # Application definition
@@ -46,7 +48,9 @@ INSTALLED_APPS = [
     'django_otp',  # Core OTP support
     'django_otp.plugins.otp_totp',  # Time-based OTP support (Google Authenticator, etc.)
     'two_factor',  # Main two-factor auth app
-    'corsheaders'
+    # CORS
+    'corsheaders',
+    'channels',   # Channels is used for websocket communication
 ]
 
 REST_FRAMEWORK = {
@@ -54,6 +58,12 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication'
     ),
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # In-memory backend for development/testing
+    },
 }
 
 # Dev mode
@@ -99,7 +109,6 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-from corsheaders.defaults import default_headers
 CORS_ALLOW_HEADERS = list(default_headers) + [
     'Authorization',
     'Content-Type',
@@ -122,7 +131,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'transcendence_server.wsgi.application'
+# WSGI_APPLICATION = 'transcendence_server.wsgi.application'
+ASGI_APPLICATION = 'transcendence_server.asgi.application'
 
 
 # Database
@@ -139,6 +149,7 @@ DATABASES = {
     }
 }
 
+ASSETS_ROOT = '/app/avatars/'
 
 AUTH_USER_MODEL = 'users.User'
 

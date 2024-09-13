@@ -9,6 +9,7 @@ RUN apk update && \
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV DJANGO_SETTINGS_MODULE=transcendence_server.settings
 
 WORKDIR /app
 
