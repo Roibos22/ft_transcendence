@@ -8,14 +8,14 @@ export async function initGameOnlineView() {
 	const game = new PongGame();
 
 	//const socketWithUrlToken = connectWebSocketWithUrlToken();
-	//const socketWithMessageToken = connectWebSocketWithMessageToken();
+	const socketWithMessageToken = connectWebSocketWithMessageToken();
 }
 
 function connectWebSocketWithUrlToken() {
 	const authToken = Cookies.getCookie("accessToken");
 
 	// Pass the token in the URL
-	const socket = new WebSocket(`ws://localhost:8000/ws/matchmaking/?Authorization=Bearer ${authToken}`);
+	const socket = new WebSocket(`ws://localhost:8000/ws/matchmaking/?Authorization=Bearer${authToken}`);
 
 	socket.addEventListener('open', (event) => {
 		console.log('WebSocket connection opened (URL Token Method)');

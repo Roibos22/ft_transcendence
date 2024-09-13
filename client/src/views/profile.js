@@ -19,6 +19,7 @@ export async function initProfileView() {
 function populateProfile(data) {
 	document.getElementById('displayName').textContent = data.display_name;
 	document.getElementById('username').textContent = '@' + data.username;
+	document.getElementById('displayNameDisplay').textContent = data.display_name;
 	document.getElementById('firstNameDisplay').textContent = data.first_name;
 	document.getElementById('lastNameDisplay').textContent = data.last_name;
 	document.getElementById('emailDisplay').textContent = data.email;
@@ -82,7 +83,8 @@ function setupEditSave() {
 			first_name: document.getElementById('firstNameInput').value,
 			last_name: document.getElementById('lastNameInput').value,
 			email: document.getElementById('emailInput').value,
-			phone_number: document.getElementById('phoneNumberInput').value
+			phone_number: document.getElementById('phoneNumberInput').value,
+			display_name: document.getElementById('displayNameInput').value
 		};
 
 		try {

@@ -127,7 +127,7 @@ export function addPlayer() {
 	newPlayerDiv.innerHTML = `
 		<div class="input-group">
 			<input type="text" class="form-control form-input" id="player${playerCount}" placeholder="Player ${playerCount}" autocomplete=off>
-			<button type="button" class="btn btn-danger">X</button>
+			<button type="button" class="btn btn-danger fw-bold">X</button>
 		</div>
 	`;
 	playerInputs.appendChild(newPlayerDiv);
