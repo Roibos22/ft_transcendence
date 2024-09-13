@@ -118,22 +118,24 @@ class Game:
             self.start()
 
     def start(self):
-        if time.time() - self.last_tick > 1 * self._ball.speed:
             self.start_time = time.time() + 3
             self._ball.movement()
 
     def get_state(self):
         # Move ball
-        if self.start_time == 0 and time.time() - self.last_tick > self._ball.speed:
-            self.last_tick = time.time()
+        if self.start_time == 0 and time.perf_counter() - self.last_tick > self._ball.speed:
+            self.last_tick = time.perf_counter()
             self._ball.movement()
-        if self.start_time - time.time() > 0:
-            self.start_time = 0
+        # Send countdown
+        if self.start_time !=0 and self.start_time - time.time() > 0:
             return {
                 'game_id': self.game_id,
                 'start_time': self.start_time - time.time(),
             }
-        # Prepare data
+        else:
+            self.start_time = 0
+        # Send game data
+        ## Prepare data
         player_1 = self._player1
         player_2 = self._player2
         ball = self._ball
