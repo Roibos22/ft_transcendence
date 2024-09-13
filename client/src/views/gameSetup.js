@@ -121,7 +121,7 @@ export function addPlayer() {
 	newPlayerDiv.className = 'player-input-group mb-3';
 	newPlayerDiv.innerHTML = `
 		<div class="input-group">
-			<input type="text" class="form-control" id="player${playerCount}" placeholder="Player ${playerCount}">
+			<input type="text" class="form-control form-input" id="player${playerCount}" placeholder="Player ${playerCount}" autocomplete=off>
 			<button type="button" class="btn btn-danger">X</button>
 		</div>
 	`;
