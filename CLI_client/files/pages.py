@@ -1,5 +1,5 @@
 import inquirer
-from modules import *
+from CLI_client.files.models import *
 from constants import main_choices, profile_choices
 from colorama import Fore, Back, Style
 

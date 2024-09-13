@@ -203,3 +203,7 @@ class Websocket:
         if self.websocket:
 
             await self.websocket.close()
+
+class Game:
+    def __init__(self, data: dict):
+        self._game_width = data.get('')
