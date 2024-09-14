@@ -57,6 +57,8 @@ class Ball:
         return {'x': self._position_x, 'y': self._position_y}
 
     def paddle_hit(self, paddle: Paddle):
+        if paddle == None:
+            return
         paddle_hit = paddle.check_hit(self.position)
         if paddle_hit != None:
             self._direction_x *= -1
@@ -66,7 +68,7 @@ class Ball:
             self._direction_y *= -1
 
 
-    def movement(self, left_paddle: Paddle, right_paddle: Paddle, top_paddle: Paddle, bottom_paddle: Paddle):
+    def movement(self, left_paddle: Paddle = None, right_paddle: Paddle = None, top_paddle: Paddle= None, bottom_paddle: Paddle = None):
         # Ball movement
         self._position_x += self._direction_x * self.speed
         self._position_y += self._direction_y * self.speed
@@ -82,11 +84,11 @@ class Ball:
         # Paddle collisions
         if not self.left and self._position_x == 1:
             self.paddle_hit(left_paddle)
-        elif not self.right and self._position_x == self._screen_size.get('x') - 2:
+        elif not self.right and self._position_x == self._screen_size.get('width') - 2:
             self.paddle_hit(right_paddle)
         elif not self.top and self._position_y == 1:
             self.paddle_hit(top_paddle)
-        elif not self.bot and self._position_y == self._screen_size.get('y') - 2:
+        elif not self.bot and self._position_y == self._screen_size.get('height') - 2:
             self.paddle_hit(bottom_paddle)
 
 class GameLogic:
@@ -101,13 +103,10 @@ class GameLogic:
         # Init ball
         self._ball: Ball = Ball({'N': True, 'S': True, 'W': False, 'E': False}, self._screen_size) # Set walls to True
 
-        self._start_time = None
-        self._last_tick = None
+        self._start_time = time.time()
+        self._last_tick = 0
         self._player1_ready = False
         self._player2_ready = False
-
-    def run_tick(self):
-        self._ball.movement()
 
     def move_player1(self, direction: int):
         self._player1.move_paddle(direction)
@@ -124,21 +123,32 @@ class GameLogic:
             self.start()
 
     def start(self):
-        self.start_time = time.time() + 3
+        self._start_time = time.time() + 3
 
     def get_state(self):
+        print('state sent')
+        # Check if users are ready
+        if not self._player2_ready or not self._player1_ready:
+            return {
+                'game_id': self.game_id,
+                'start_time': 3, # adjust this to your value
+            }
         # Move ball
-        if self.start_time == 0 and time.perf_counter() - self.last_tick > self._ball.speed:
-            self.last_tick = time.perf_counter()
-            self._ball.movement()
+        if self._start_time == 0 and time.perf_counter() - self._last_tick > self._ball.speed:
+            print('move ball')
+            self._last_tick = time.perf_counter()
+            self._ball.movement(self._player1, self._player2)
         # Send countdown
-        if self.start_time !=0 and self.start_time - time.time() > 0:
+        if self._start_time !=0 and self._start_time - time.time() > 0:
+            print('send countdown')
             return {
                 'game_id': self.game_id,
                 'start_time': self._start_time - time.time(),
             }
-        else:
-            self.start_time = 0
+        elif self._start_time !=0:
+            print('send countdown else')
+            self._start_time = 0
+            self._last_tick = 0
         # Send game data
         ## Prepare data
         player_1 = self._player1
