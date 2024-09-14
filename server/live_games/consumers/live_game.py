@@ -22,15 +22,17 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game_group_name = f'game_{self.game_id}'
         game = await sync_to_async(Game.objects.get)(id=self.game_id)
-        player1_username = await database_sync_to_async(lambda: game.player1.username)()
-        player2_username = await database_sync_to_async(lambda: game.player2.username)()
+        players_username = await database_sync_to_async(
+            lambda: (game.player1.username,game.player2.username)
+        )()
 
-        if self.user.username == player1_username:
+        if self.user.username == players_username[0]:
             self.user_player_no = 1
-        elif self.user.username == player2_username:
+        elif self.user.username == players_username[1]:
             self.user_player_no = 2
         else:
             print("LiveGame consumer: User is not part of this game")
+            await self.close()
             return
 
         await self.channel_layer.group_add(
@@ -48,16 +50,16 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         self.periodic_task = asyncio.create_task(self.send_game_updates())
 
     async def receive(self, text_data):
-        import json
         data = json.loads(text_data)
+        action = data.get('action')
 
-        if data.get('action') == 'message':
+        if action == 'message':
             await self.handle_receive_message(data)
-        elif data.get('action') == 'get_state':
+        elif action == 'get_state':
             await self.handle_get_state()
-        elif data.get('action') == 'player_ready':
+        elif action == 'player_ready':
             await self.handle_player_ready()
-        elif data.get('action') == 'move_player':
+        elif action == 'move_player':
             await self.handle_move(data)
 
     async def handle_get_state(self):
