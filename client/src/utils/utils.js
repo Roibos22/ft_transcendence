@@ -1,3 +1,5 @@
+import state from '../state/stateManager.js';
+
 export function deepCopy(obj) {
     if (obj === null || typeof obj !== 'object') {
         return obj;
@@ -14,4 +16,12 @@ export function deepCopy(obj) {
         }
     }
     return copy;
+}
+
+export function incrementCurrentMatchIndex() {
+    const currentMatchIndex = state.get('tournament.currentMatchIndex');
+    state.set('tournament.currentMatchIndex', currentMatchIndex + 1);
+
+    const matches = state.get('tournament.matches');
+    state.set('tournament.currentMatch', matches[currentMatchIndex + 1]);
 }

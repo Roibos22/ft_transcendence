@@ -1,4 +1,5 @@
 import { GameModes, GamePhases } from '../constants.js';
+import { incrementCurrentMatchIndex } from '../utils/utils.js';
 
 export class Input {
 	constructor(game) {
@@ -40,7 +41,7 @@ export class Input {
 	handleEnterKey() {
 		if (this.game.state.waitingForEnter) {
 			if (this.game.state.currentState === GamePhases.MATCH_ENDED) {
-				this.game.tournament.currentMatchIndex++;
+				incrementCurrentMatchIndex();
 				this.game.state.startNextMatch();
 				this.game.state.startCountdown();
 			} else if (this.game.state.currentState === GamePhases.FINISHED) {

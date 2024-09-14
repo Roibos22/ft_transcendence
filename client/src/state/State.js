@@ -1,5 +1,5 @@
-import { initState } from "../constants";
-import { deepCopy } from "../utils/utils";
+import { initState } from "../constants.js";
+import { deepCopy } from "../utils/utils.js";
 
 export class State {
     constructor() {
@@ -7,13 +7,31 @@ export class State {
         this.listeners = {};
     }
 
-    get(key) {
-        return this.data[key];
+    get(path) {
+        const keys = path.split('.');
+        let result = this.data;
+        for (let key of keys) {
+            result = result?.[key];
+            if (result === undefined) break;
+        }
+        return deepCopy(result);
     }
 
-    set(key, value) {
-        this.data[key] = value;
-        this.notify(key);
+    set(path, value) {
+        const keys = path.split('.');
+        let result = this.data;
+
+        for (let i = 0; i < keys.length - 1; i++) {
+            const key = keys[i];
+
+            if (!(key in result) || typeof result[key] !== 'object') {
+                result[key] = {};
+            }
+
+            result = result[key];
+        }
+
+        result[keys[keys.length - 1]] = value;
     }
 
     subscribe(key, callback) {

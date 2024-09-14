@@ -1,6 +1,6 @@
-import { players, settings } from '../utils/shared.js';
 import { GameModes } from '../constants.js';
 import { loadTemplate } from '../router.js';
+import state from '../state/stateManager.js';
 import * as Cookies from '../services/cookies.js';
 
 export async function initGameSetupView() {
@@ -66,19 +66,19 @@ function updateUIForGameMode(selectedButton) {
 
 	if (selectedButton === singlePlayerBtn) {
 		if (addPlayerButton) addPlayerButton.style.display = 'none';
-		settings.mode = GameModes.SINGLE;
+		state.set('matchSettings.mode', GameModes.SINGLE);
 		if (startGameButton) startGameButton.href = '/game';
 		if (playerInputs) playerInputs.style.display = 'block';
 		if (settingsView) settingsView.style.display = 'block';
 	} else if (selectedButton === multiPlayerBtn) {
 		addPlayer();
 		if (addPlayerButton) addPlayerButton.style.display = 'block';
-		settings.mode = GameModes.MULTI;
+		state.set('matchSettings.mode', GameModes.MULTI);
 		if (startGameButton) startGameButton.href = '/game';
 		if (playerInputs) playerInputs.style.display = 'block';
 		if (settingsView) settingsView.style.display = 'block';
 	} else if (selectedButton === onlineBtn) {
-		settings.mode = GameModes.ONLINE;
+		state.set('matchSettings.mode', GameModes.ONLINE);
 		if (addPlayerButton) addPlayerButton.style.display = 'none';
 		if (startGameButton) startGameButton.href = '/online-game';
 		if (playerInputs) playerInputs.style.display = 'block';

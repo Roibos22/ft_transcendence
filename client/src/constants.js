@@ -1,13 +1,13 @@
 export const GameModes = {
 	SINGLE: 'single',
 	MULTI: 'multi',
-	ONLINE: 'online',
+	ONLINE: 'online'
 };
 
 export const GameTypes = {
 	TWO_D: '2D',
 	THREE_D: '3D',
-	CLI: 'CLI',
+	CLI: 'CLI'
 };
 
 export const GamePhases = {
@@ -22,12 +22,12 @@ export const initState = {
 	user: {
 		username: "",
 		authToken: "",
-		refreshToken: "",
+		refreshToken: ""
 	},
 	matchSettings: {
 		pointsToWin: 5,
 		mode: GameModes.SINGLE,
-		displayType: GameTypes.TWO_D,
+		displayType: GameTypes.TWO_D
 	},
 	currentMatchInfo: {
 		player1pos: 0,
@@ -37,12 +37,14 @@ export const initState = {
 			y: 0,
 		},
 		player1score: 0,
-		player2score: 0,
+		player2score: 0
 	},
-	currentGamePhase: GamePhases.WAITING_TO_START,
+	gamePhase: GamePhases.WAITING_TO_START,
 	tournament: {
+		players: [],
 		numberOfGames: 1,
 		currentMatchIndex: 0,
-		previousMatches: [],
+		matches: [],
+		currentMatch: {}
 	},
 };
