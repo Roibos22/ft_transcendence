@@ -89,7 +89,7 @@ class Ball:
         elif not self.bot and self._position_y == self._screen_size.get('y') - 2:
             self.paddle_hit(bottom_paddle)
 
-class Game:
+class GameLogic:
     def __init__(self, game_id):
         self.game_id = game_id
         # Init game maze
@@ -98,7 +98,12 @@ class Game:
         self._player1: Paddle = Paddle('Left', self._screen_size.get('height'), paddle_size) # left player
         self._player2: Paddle = Paddle('Right', self._screen_size.get('width'), paddle_size) # right player
         # Init ball
-        self._ball: Ball = Ball({'N': True, 'S': True, 'W': False, 'E': False}, self.screen_size) # Set walls to True
+        self._ball: Ball = Ball({'N': True, 'S': True, 'W': False, 'E': False}, self._screen_size) # Set walls to True
+
+        self._start_time = None
+        self._last_tick = None
+        self._player1_ready = False
+        self._player2_ready = False
 
     def run_tick(self):
         self._ball.movement()
@@ -118,31 +123,32 @@ class Game:
             self.start()
 
     def start(self):
-        if time.time() - self.last_tick > 1 * self._ball.speed:
-            self.start_time = time.time() + 3
+        if time.time() - self._last_tick > 1 * self._ball.speed:
+            self._start_time = time.time() + 3
             self._ball.movement()
 
     def get_state(self):
         # Move ball
-        if self.start_time == 0 and time.time() - self.last_tick > self._ball.speed:
-            self.last_tick = time.time()
+        if self._start_time == 0 and time.time() - self._last_tick > self._ball.speed:
+            self._last_tick = time.time()
             self._ball.movement()
-        if self.start_time - time.time() > 0:
-            self.start_time = 0
+        if self._start_time - time.time() > 0:
+            self._start_time = 0
             return {
                 'game_id': self.game_id,
-                'start_time': self.start_time - time.time(),
+                '_start_time': self._start_time - time.time(),
             }
+
         # Prepare data
         player_1 = self._player1
         player_2 = self._player2
         ball = self._ball
         data = {
             'game_id': self.game_id,
-            'start_time': self.start_time,
+            '_start_time': self._start_time,
             'player_1': {
                 'side': player_1.side,
-                'size': player_1.size,
+                'size': player_1.side,
                 'top_position': player_1.position_top,
                 'bot_position': player_1.position_bot
             },

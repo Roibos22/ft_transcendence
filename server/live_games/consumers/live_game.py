@@ -1,10 +1,8 @@
-import random
-import string
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 import json
 from asgiref.sync import sync_to_async
-from live_games.game_logic.game_logic import GameLogic
+from live_games.game import GameLogic
 import asyncio
 
 game_sessions = {}
@@ -53,7 +51,6 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         import json
         data = json.loads(text_data)
 
-
         if data.get('action') == 'message':
             await self.handle_receive_message(data)
         elif data.get('action') == 'get_state':
@@ -64,9 +61,9 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             await self.handle_move(data)
 
     async def handle_get_state(self):
-        await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state_dict()}))
+        await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
 
-    async def handle_player_ready(self, data):
+    async def handle_player_ready(self):
         if self.user_player_no == 1:
             game_sessions[self.game_id].set_player1_ready()
         elif self.user_player_no == 2:
@@ -94,7 +91,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
     async def send_game_updates(self):
         try:
             while True:
-                await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state_dict()}))
+                await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
                 await asyncio.sleep(1)
 
         except asyncio.CancelledError:
