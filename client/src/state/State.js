@@ -1,9 +1,9 @@
-import { GameTypes } from "../constants";
-import { GameModes, GamePhases } from "../constants";
+import { initState } from "../constants";
+import { deepCopy } from "../utils/utils";
 
 export class State {
     constructor() {
-        this.data = this.initState();
+        this.data = deepCopy(initState);
         this.listeners = {};
     }
 
@@ -29,34 +29,7 @@ export class State {
         }
     }
 
-    initState() {
-        return {
-            user: {
-                username: "",
-                authToken: "",
-                refreshToken: "",
-            },
-            matchSettings: {
-                pointsToWin: 5,
-                mode: GameModes.SINGLE,
-                displayType: GameTypes.TWO_D,
-            },
-            currentMatchInfo: {
-                player1pos: 0,
-                player2pos: 0,
-                ball: {
-                    x: 0,
-                    y: 0,
-                },
-                player1score: 0,
-                player2score: 0,
-            },
-            currentGamePhase: GamePhases.WAITING_TO_START,
-            tournament: {
-                numberOfGames: 1,
-                currentMatchIndex: 0,
-                matches: [],
-            },
-        };
+    reset() {
+        this.data = initState;
     }
 }
