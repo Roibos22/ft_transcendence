@@ -1,4 +1,4 @@
-import { GameModes, GameStates } from '../utils/shared.js';
+import { GameModes, GamePhases } from '../constants.js';
 
 export class Input {
 	constructor(game) {
@@ -39,11 +39,11 @@ export class Input {
 
 	handleEnterKey() {
 		if (this.game.state.waitingForEnter) {
-			if (this.game.state.currentState === GameStates.MATCH_ENDED) {
+			if (this.game.state.currentState === GamePhases.MATCH_ENDED) {
 				this.game.tournament.currentMatchIndex++;
 				this.game.state.startNextMatch();
 				this.game.state.startCountdown();
-			} else if (this.game.state.currentState === GameStates.FINISHED) {
+			} else if (this.game.state.currentState === GamePhases.FINISHED) {
 				console.log("TOURNAMENT COMPLETED");
 				// Add logic to restart the tournament or return to main menu
 			} else {
@@ -62,7 +62,7 @@ export class Input {
 	}
 
 	updateSinglePlayerMode() {
-		if (this.game.state.currentState === GameStates.RUNNING || this.game.state.currentState === GameStates.COUNTDOWN) {
+		if (this.game.state.currentState === GamePhases.RUNNING || this.game.state.currentState === GamePhases.COUNTDOWN) {
 			if (this.keys.ArrowUp) {
 				this.game.physics.leftPaddleY = Math.max(
 					0, 
@@ -79,7 +79,7 @@ export class Input {
 	}
 
 	updateMultiPlayerMode() {
-		if (this.game.state.currentState === GameStates.RUNNING || this.game.state.currentState === GameStates.COUNTDOWN) {
+		if (this.game.state.currentState === GamePhases.RUNNING || this.game.state.currentState === GamePhases.COUNTDOWN) {
 			if (this.keys.w) {
 				this.game.physics.leftPaddleY = Math.max(
 					0, 

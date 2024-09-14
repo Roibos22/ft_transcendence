@@ -4,7 +4,7 @@ import { GamePhysics } from './GamePhysics.js';
 import { GameState } from './GameState.js';
 import { UIManager } from './UIManager.js';
 import { AIPlayer } from './AIPlayer.js';
-import { GameModes, GameStates } from '../utils/shared.js';
+import { GameModes, GamePhases } from '../constants.js';
 
 export class PongGame {
 	constructor(settings) {
@@ -49,7 +49,7 @@ export class PongGame {
 
 	gameLoop() {
 		this.input.update();
-		if (this.state.currentState === GameStates.RUNNING) {
+		if (this.state.currentState === GamePhases.RUNNING) {
 			this.physics.moveBall();
 			this.physics.checkCollision();
 			if (this.tournamentSettings.mode === GameModes.SINGLE) {

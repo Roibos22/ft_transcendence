@@ -1,4 +1,5 @@
-import { players, settings, GameModes } from '../utils/shared.js';
+import { players, settings } from '../utils/shared.js';
+import { GameModes } from '../constants.js';
 import { loadTemplate } from '../router.js';
 import * as Cookies from '../services/cookies.js';
 

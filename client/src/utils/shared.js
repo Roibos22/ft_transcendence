@@ -1,22 +1,11 @@
-export const GameModes = {
-	SINGLE: 'single',
-	MULTI: 'multi',
-	ONLINE: 'online',
-};
+import { GameModes, GameTypes } from '../constants.js';
 
 export const settings = {
 	pointsToWin: 5,
 	numberOfGames: 1,
 	username: "",
-	mode: GameModes.SINGLE
-};
-
-export const GameStates = {
-	WAITING_TO_START: 'waitingToStart',
-	COUNTDOWN: 'countdown',
-	RUNNING: 'running',
-	FINISHED: 'finished',
-	MATCH_ENDED: 'matchEnded'
+	mode: GameModes.SINGLE,
+	type: GameTypes['2D']
 };
 
 export let players = [];

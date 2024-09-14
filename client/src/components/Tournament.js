@@ -1,4 +1,4 @@
-import { GameStates } from '../utils/shared.js';
+import { GamePhases } from '../constants.js';
 
 export class Tournament {
 	constructor(game, players, settings) {
@@ -53,9 +53,9 @@ export class Tournament {
 		}
 
 		if (this.currentMatchIndex >= this.matches.length - 1) {
-			this.game.state.currentState = GameStates.FINISHED;
+			this.game.state.currentState = GamePhases.FINISHED;
 		} else {
-			this.game.state.currentState = GameStates.MATCH_ENDED;
+			this.game.state.currentState = GamePhases.MATCH_ENDED;
 		}
 		this.game.state.waitingForEnter = true;
 		this.game.uiManager.updateUI();
