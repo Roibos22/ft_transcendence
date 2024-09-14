@@ -135,7 +135,7 @@ class GameLogic:
         if self.start_time !=0 and self.start_time - time.time() > 0:
             return {
                 'game_id': self.game_id,
-                '_start_time': self._start_time - time.time(),
+                'start_time': self._start_time - time.time(),
             }
         else:
             self.start_time = 0
@@ -146,10 +146,10 @@ class GameLogic:
         ball = self._ball
         data = {
             'game_id': self.game_id,
-            '_start_time': self._start_time,
+            'start_time': self._start_time,
             'player_1': {
                 'side': player_1.side,
-                'size': player_1.side,
+                'size': player_1.size,
                 'top_position': player_1.position_top,
                 'bot_position': player_1.position_bot
             },
