@@ -13,8 +13,8 @@ Example:
 
 ```json
 {
-"action": "message",
-"content": "Hello, everyone!"
+    "action": "message",
+    "content": "Hello, everyone!"
 }
 ```
 
@@ -30,7 +30,7 @@ Example:
 
 ```json
 {
-  "action": "get_state"
+    "action": "get_state"
 }
 ```
 
@@ -47,7 +47,7 @@ None.
 Example:
 ```json
 {
-  "action": "player_ready"
+    "action": "player_ready"
 }
 ```
 
@@ -70,7 +70,7 @@ Example:
 
 ```json
 {
-  "action": "move_player",
-  "direction": 1
+    "action": "move_player",
+    "direction": 1
 }
 ```
