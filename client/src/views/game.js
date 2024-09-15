@@ -1,5 +1,6 @@
 import { PongGame } from '../components/PongGame.js';
 import { Tournament } from '../components/Tournament.js';
+import { GameTypes } from '../constants.js';
 import { loadTemplate } from '../router.js';
 
 export class GameView {

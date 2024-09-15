@@ -9,7 +9,7 @@ export class GameSetupView {
 		this.UIelements = null;
 	}
 
-	async initView() {
+	async init() {
 		const content = await loadTemplate('game-setup');
 		document.getElementById('app').innerHTML = content;
 
@@ -17,7 +17,6 @@ export class GameSetupView {
 		this.addEventListeners();
 		this.initSettingsUI();
 		this.updateUIForGameMode();
-		console.log(this.UIelements);
 	}
 
 	getUIElements() {

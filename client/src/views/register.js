@@ -2,73 +2,84 @@ import { urlLocationHandler, loadTemplate } from '../router.js';
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';
 
-export async function initRegisterView() {
-	const content = await loadTemplate('register');
-	document.getElementById('app').innerHTML = content;
+export class RegisterView {
+	constructor() {
+		this.template = 'register';
+		this.UIelements = null;
+	}
 
-	const showLoginLink = document.getElementById('showLogin');
-	if (showLoginLink) {
-		showLoginLink.addEventListener('click', function(e) {
+	async init() {
+		const content = await loadTemplate(this.template);
+		document.getElementById('app').innerHTML = content;
+
+		this.UIelements = this.getUIElements();
+		this.addEventListeners();
+	}
+
+	getUIElements() {
+		return {
+			registrationForm: document.getElementById('registrationForm'),
+			showLoginLink: document.getElementById('showLogin'),
+			firstName: document.getElementById('first_name_registration'),
+			lastName: document.getElementById('last_name_registration'),
+			username: document.getElementById('username_registration'),
+			email: document.getElementById('email_registration'),
+			password: document.getElementById('password_registration'),
+			registrationError: document.getElementById('registrationError')
+		};
+	}
+
+	addEventListeners() {
+		this.UIelements.registrationForm.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			await this.registerUser();
+		});
+
+		this.UIelements.showLoginLink.addEventListener('click', (e) => {
 			e.preventDefault();
 			window.history.pushState({}, "", "/");
 			urlLocationHandler();
 		});
 	}
 
-	const registrationForm = document.getElementById('registrationForm');
-	if (registrationForm) {
-		registrationForm.addEventListener('submit', function(e) {
-			e.preventDefault();
-			registerUser();
-		});
-	}
-}
+	async registerUser() {
+		const userData = {
+			first_name: this.UIelements.firstName.value,
+			last_name: this.UIelements.lastName.value,
+			username: this.UIelements.username.value,
+			email: this.UIelements.email.value,
+			password: this.UIelements.password.value
+		};
 
+		try {
+			const response = await UserService.registerUser(userData);
 
-async function registerUser() {
-	const firstName = document.getElementById('first_name_registration').value;
-	const lastName = document.getElementById('last_name_registration').value;
-	const username = document.getElementById('username_registration').value;
-	const email = document.getElementById('email_registration').value;
-	const password = document.getElementById('password_registration').value;
-
-	const userData = {
-		username: username,
-		email: email,
-		password: password,
-		first_name: firstName,
-		last_name: lastName,
-		active: true
-	};
-
-	try {
-		const response = await UserService.registerUser(userData);
-
-		if (response.success) {
-			const data = response.data;
-			Notification.showNotification(["Registration successful"]);
-			window.history.pushState({}, "", "/");
-			urlLocationHandler();
-		} else {
-			displayRegistrationError(response.error);
+			if (response.success) {
+				Notification.showNotification(["Registration successful"]);
+				window.history.pushState({}, "", "/");
+				urlLocationHandler();
+			} else {
+				displayRegistrationError(response.error);
+			}
+		} catch (error) {
+			console.error('Failed to login', error);
+			displayRegistrationError(error);
 		}
-	} catch (error) {
-		console.error('Failed to login', error);
-		displayRegistrationError(error);
 	}
-}
 
-function displayRegistrationError(error) {
-	const loginError = document.getElementById('registrationError');
-	loginError.style.display = 'block';
-	let errorMessages = [];
+	displayRegistrationError() {
+		loginError = this.UIelements.registrationError;
+		loginError.style.display = 'block';
+		let errorMessages = [];
 
-	if (error.message.includes("400")) {
-		errorMessages.push(`Username already taken`);
-	} else {
-		errorMessages.push(`Something went wrong.`);
+		if (error.message.includes("400")) {
+			errorMessages.push(`Username already taken`);
+		} else {
+			errorMessages.push(`Something went wrong.`);
+		}
+		errorMessages.push(`Please try again.`);
+
+		loginError.innerHTML = errorMessages.join('<br>');
 	}
-	errorMessages.push(`Please try again.`);
-	
-	loginError.innerHTML = errorMessages.join('<br>');
+
 }
