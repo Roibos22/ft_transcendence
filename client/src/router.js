@@ -52,18 +52,29 @@ export async function initCurrentView() {
 	
 	delete currentView.view;
 
-	if (currentPath === '/' || currentPath === '/login') {
-		currentView.view = new LoginView();
-	} else if (currentPath === '/register') {
-		currentView.view = new RegisterView();
-	} else if (currentPath === '/game-setup') {
-		currentView.view = new GameSetupView();
-	} else if (currentPath === '/game') {
-		currentView.view = new GameView();
-	} else if (currentPath === '/profile') {
-		currentView.view = new ProfileView();
-	} else if (currentPath === '/online-game') {
-		// currentView.view = new GameOnlineView();
+	switch (currentPath) {
+		case "/":
+		case "/login":
+			currentView.view = new LoginView();
+			break;
+		case "/register":
+			currentView.view = new RegisterView();
+			break;
+		case "/game-setup":
+			currentView.view = new GameSetupView();
+			break;
+		case "/game":
+			currentView.view = new GameView();
+			break;
+		case "/profile":
+			currentView.view = new ProfileView();
+			break;
+		// case "/online-game":
+		// 	currentView.view = new GameOnlineView();
+		// 	break;
+		default:
+			window.history.pushState({}, "", "/404");
+			return;
 	}
 
 	await currentView.view.init();
