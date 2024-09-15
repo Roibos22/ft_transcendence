@@ -9,7 +9,7 @@ export class LoginView {
 		this.UIelements = null;
 	}
 
-	async initView() {
+	async init() {
 		const content = await loadTemplate(this.template);
         document.getElementById('app').innerHTML = content;
 		

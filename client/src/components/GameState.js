@@ -7,15 +7,15 @@ export class GameState {
 		this.countdownValue = 3;
 		this.waitingForEnter = true;
 
-		state.set('gamePhase', GamePhases.WAITING_TO_START);
+		state.set('gameData', 'phase', GamePhases.WAITING_TO_START);
 	}
 
 	startOrResumeGame() {
-		state.set('gamePhase', GamePhases.RUNNING);
+		state.set('gameData', 'phase', GamePhases.RUNNING);
 	}
 
 	startCountdown() {
-		state.set('gamePhase', GamePhases.COUNTDOWN);
+		state.set('gameData', 'phase', GamePhases.COUNTDOWN);
 		this.countdownValue = 3;
 		this.countdownInterval = setInterval(() => {
 			this.countdownValue--;
@@ -29,18 +29,18 @@ export class GameState {
 	}
 
 	startNextMatch() {
-		if (state.get('tournament.currentMatchIndex') < state.get('tournament.matches').length) {
+		if (state.get('tournament', 'currentMatchIndex') < state.get('tournament','matches').length) {
 			this.resetMatchState();
 			this.game.physics.resetBallPosition();
 			this.game.uiManager.updateUI();
 		} else {
-			state.set('gamePhase', GamePhases.FINISHED);
+			state.set('gameData', 'phase', GamePhases.FINISHED);
 			this.game.uiManager.updateUI();
 		}
 	}
 
 	resetMatchState() {
-		state.set('gamePhase', GamePhases.WAITING_TO_START);
+		state.set('gameData', 'phase', GamePhases.WAITING_TO_START);
 		this.game.physics.resetPaddles();
 		this.waitingForEnter = true;
 	}
@@ -50,18 +50,18 @@ export class GameState {
 		this.checkIfMatchWon();
 		this.game.uiManager.updateUI();
 
-		const gamePhase = state.get('gamePhase');
+		const gamePhase = state.get('gameData', 'phase');
 		if (gamePhase !== GamePhases.MATCH_ENDED && gamePhase !== GamePhases.FINISHED) {
 			this.startCountdown();
 		}
 	}
 
 	checkIfMatchWon() {
-		const currentMatch = state.get('tournament.currentMatch');
+		const currentMatch = state.get('tournament','currentMatch');
 
 		if (currentMatch.players[0].score >= this.game.tournamentSettings.pointsToWin || 
 			currentMatch.players[1].score >= this.game.tournamentSettings.pointsToWin) {
-			state.set('gamePhase', GamePhases.MATCH_ENDED);
+			state.set('gameData', 'phase', GamePhases.MATCH_ENDED);
 			this.waitingForEnter = true;
 			this.game.render.draw();
 			this.game.tournament.completeMatch();

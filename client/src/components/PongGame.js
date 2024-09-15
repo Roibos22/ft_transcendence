@@ -30,7 +30,6 @@ export class PongGame {
 		this.canvas = document.getElementById('gameCanvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.gameView = document.getElementById('gameView');
-		this.playerInfo = document.getElementById('playerInfo');
 		this.tournamentInfo = document.getElementById('tournamentInfo');
 		this.tournamentInfoMatches = document.getElementById('tournamentInfoMatches');
 		this.tournamentInfoStandings = document.getElementById('tournamentInfoStandings');

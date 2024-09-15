@@ -1,20 +1,8 @@
 import state from '../State.js';
 
-export class UIManager {
-	constructor(view) {
-		this.view = view;
-	}
-
-	updateUI(path) {
-		if (path !== '/game')
-			return;
-		this.updateScoreCard()
-		this.updateMatchList();
-		this.updateTable();
-	}
-
-	updateScoreCard() {
-		const tournament = state.get('tournament');
+export default class GameInfoSubscribers {
+    updateScoreCard(view) {
+        const tournament = state.get('tournament');
         if (!tournament) {
             console.error("Tournament not initialized");
             return;
@@ -26,24 +14,24 @@ export class UIManager {
             return;
         }
 
-		const player1 = currentMatch.players[0];
-		const player2 = currentMatch.players[1];
-	
-		this.view.scoreCard.player1Name.innerHTML = player1.name;
-		this.view.scoreCard.player2Name.innerHTML = player2.name;
-		this.view.scoreCard.player1Score.innerHTML = player1.score;
-		this.view.scoreCard.player2Score.innerHTML = player2.score;
-	}
+        const player1 = currentMatch.players[0];
+        const player2 = currentMatch.players[1];
+    
+        view.scoreCard.player1Name.innerHTML = player1.name;
+        view.scoreCard.player2Name.innerHTML = player2.name;
+        view.scoreCard.player1Score.innerHTML = player1.score;
+        view.scoreCard.player2Score.innerHTML = player2.score;
+    }
 
-	updateMatchList() {
-		const tournament = state.get('tournament');
-		const matchesList = tournament.matches.map((match, index) => {
-			const player1 = match.players[0].name;
-			const player2 = match.players[1].name;
-			let matchClass = 'list-group-item';
-			let matchContent = '';
-	
-			if (match.completed) {
+    updateFixtures(view) {
+        const tournament = state.get('tournament');
+        const matchesList = tournament.matches.map((match, index) => {
+            const player1 = match.players[0].name;
+            const player2 = match.players[1].name;
+            let matchClass = 'list-group-item';
+            let matchContent = '';
+        
+            if (match.completed) {
 				matchContent = `
 					<div class="d-flex justify-content-between align-items-center">
 						<span>${player1} vs ${player2}</span>
@@ -65,9 +53,9 @@ export class UIManager {
 			}
 			return `<li class="${matchClass}">${matchContent}</li>`;
 		}).join('');
-	
-		this.view.tournamentInfoMatches.innerHTML = `
-			<div class="card">
+
+        view.fixtures.innerHTML = `
+            <div class="card">
 				<div class="card-header bg-dark text-white text-center">
 					<h5 class="mb-0">Matches</h5>
 				</div>
@@ -75,11 +63,11 @@ export class UIManager {
 					${matchesList}
 				</ul>
 			</div>
-		`;
-	}
+        `;
+    }
 
-	updateTable() {
-		const standings = this.game.tournament.getStandings();
+    updateStandings(view) {
+		const standings = view.tournament.getStandings();
 		const standingsTable = `
 			<div class="table-responsive">
 				<table class="table table-striped mb-0 text-center">
@@ -107,7 +95,7 @@ export class UIManager {
 			</div>
 		`;
 	
-		this.game.tournamentInfoStandings.innerHTML = `
+		view.fixtures.innerHTML = `
 			<div class="card">
 				<div class="card-header bg-dark text-white text-center">
 					<h5 class="mb-0">Standings</h5>
@@ -118,5 +106,4 @@ export class UIManager {
 			</div>
 		`;
 	}
-
 }

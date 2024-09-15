@@ -1,9 +1,9 @@
 import { LoginView } from './views/login.js';
-import { initRegisterView } from './views/register.js';
 import { GameSetupView } from './views/gameSetup.js';
-import { initGameView } from './views/game.js';
+import { GameView } from './views/game.js';
 import { initProfileView } from './views/profile.js';
 import { initGameOnlineView } from './views/onlineGame.js';
+import { currentView } from './constants.js';
 
 const urlRoutes = {
 	"/": {
@@ -46,24 +46,24 @@ export const urlLocationHandler = async () => {
 	initCurrentView();
 };
 
-export function initCurrentView() {
+export async function initCurrentView() {
 	const currentPath = window.location.pathname;
-	let view = null;
+
 	if (currentPath === '/' || currentPath === '/login') {
-		view = new LoginView();
-		view.initView();
+		currentView.view = new LoginView();
 	} else if (currentPath === '/register') {
-		initRegisterView();
+		currentView.view = new RegisterView();
 	} else if (currentPath === '/game-setup') {
-		view = new GameSetupView();
-		view.initView();
+		currentView.view = new GameSetupView();
 	} else if (currentPath === '/game') {
-		initGameView();
+		currentView.view = new GameView();
 	} else if (currentPath === '/profile') {
-		initProfileView();
+		currentView.view = new ProfileView();
 	} else if (currentPath === '/online-game') {
-		initGameOnlineView();
+		currentView.view = new GameOnlineView();
 	}
+
+	await currentView.view.init();
 }
 
 const urlRoute = (event) => {

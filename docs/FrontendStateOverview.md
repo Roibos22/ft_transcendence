@@ -1,30 +1,39 @@
 # Frontend State/Constants
 
 state = {
+    view: {
+        path: string,
+        displayType: GameType
+    },
     user: {
-        //todo
+        username: string,
+        authToken: string,
+        refreshToken: string
     },
     gameSettings: {
         pointsToWin: number,
         numberOfGames: number,
-        mode: GameMode,
-        displayType: GameType
+        mode: GameMode
     },
     currentMatchInfo: {
+        players: [],
+        player1score: number,
+        player2score: number,
+    },
+    gameData: {
+        phase: GamePhases,
         player1position: number,
         player2position: number,
         ball: {
             x: number,
             y: number
         }
-        player1score: number,
-        player2score: number,
     },
     tournament: {
         players: [],
-        currentMatchIndex,
+        currentMatchIndex: number,
         previousMatches: [MatchResult]
-        currentMatch{}
+        currentMatch: {}
     }
 }
 

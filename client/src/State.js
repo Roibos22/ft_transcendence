@@ -1,53 +1,80 @@
 import { initState } from "./constants.js";
 import { deepCopy } from "./utils/utils.js";
-// import { UIManager } from "./components/UIManager.js";
+import { UIManager } from "./components/UIManager.js";
 
 class State {
     constructor() {
-        this.data = deepCopy(initState);
+        this.view = null;
+        this.info = {}
+        this.user = {}
+        this.gameSettings = {}
+        this.currentMatchInfo = {}
+        this.tournament = {}
+
+        this.data = initState();
+    }
+
+    initState() {
+        const initStateCopy = deepCopy(initState);
+
+        this.info = initStateCopy.info;
+        this.user = initStateCopy.user;
+        this.gameSettings = initStateCopy.gameSettings;
+        this.currentMatchInfo = initStateCopy.currentMatchInfo;
+        this.tournament = initStateCopy.tournament;
+
+        return {
+            info: this.info,
+            user: this.user,
+            gameSettings: this.gameSettings,
+            currentMatchInfo: this.currentMatchInfo,
+            tournament: this.tournament
+        }
+    }
+
+    getState() {
+        return this.data;
     }
 
     get(path) {
-        const keys = path.split('.');
-        let result = this.data;
-        for (let key of keys) {
-            result = result?.[key];
-            if (result === undefined) break;
+        if (path === undefined) {
+            console.error('Path is required');
         }
-        return deepCopy(result);
+        return deepCopy(this.data[path]);
+    }
+
+    get(path, key) {
+        if (path === undefined || key === undefined) {
+            console.error('Path and key are required');
+        }
+        return this.data[path][key];
     }
 
     set(path, value) {
-        const keys = path.split('.');
-        let result = this.data;
+        this.data[path] = value;
 
-        for (let i = 0; i < keys.length - 1; i++) {
-            const key = keys[i];
-            if (!(key in result) || typeof result[key] !== 'object') {
-                result[key] = {};
-            }
-            result = result[key];
-        }
-
-        result[keys[keys.length - 1]] = value;
-        // UIManager.updateUI(this.get('path'));
+        this.notify(path);
     }
 
-    subscribe(key, callback) {
-        if (!this.listeners[key]) {
-            this.listeners[key] = [];
-        }
-        this.listeners[key].push(callback);
+    set(path, key, value) {
+        this.data[path][key] = value;
+
+        this.notify(path);
     }
 
-    notify(key) {
-        if (this.listeners[key]) {
-            this.listeners[key].forEach(callback => callback(this.data[key]));
+    notify(valuePath) {
+        const viewPath = this.info.path;
+        if (valuePath === 'gameSettings') {
+            UIManager.updateGame();
+            return;
+        }
+        if (viewPath === '/game' || viewPath === '/game-setup') {
+            UIManager.update(viewPath, valuePath);
         }
     }
 
     reset() {
-        this.data = initState;
+        this.initState();
     }
 }
 

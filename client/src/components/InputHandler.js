@@ -41,11 +41,11 @@ export class Input {
 
 	handleEnterKey() {
 		if (this.game.state.waitingForEnter) {
-			if (state.get('gamePhase') === GamePhases.MATCH_ENDED) {
+			if (state.get('gameData', 'phase') === GamePhases.MATCH_ENDED) {
 				incrementCurrentMatchIndex();
 				this.game.state.startNextMatch();
 				this.game.state.startCountdown();
-			} else if (state.get('gamePhase') === GamePhases.FINISHED) {
+			} else if (state.get('gameData', 'phase') === GamePhases.FINISHED) {
 				console.log("TOURNAMENT COMPLETED");
 				// Add logic to restart the tournament or return to main menu
 			} else {
@@ -56,15 +56,15 @@ export class Input {
 	}
 
 	update() {
-		if (state.get('gameSettings.mode') === GameModes.SINGLE) {
+		if (state.get('gameSettings', 'mode') === GameModes.SINGLE) {
 			this.updateSinglePlayerMode();
-		} else if (state.get('gameSettings.mode') === GameModes.MULTI) {
+		} else if (state.get('gameSettings', 'mode') === GameModes.MULTI) {
 			this.updateMultiPlayerMode();
 		}
 	}
 
 	updateSinglePlayerMode() {
-		if (state.get('gamePhase') === GamePhases.RUNNING || state.get('gamePhase') === GamePhases.COUNTDOWN) {
+		if (state.get('gameData', 'phase') === GamePhases.RUNNING || state.get('gameData', 'phase') === GamePhases.COUNTDOWN) {
 			if (this.keys.ArrowUp) {
 				this.game.physics.leftPaddleY = Math.max(
 					0, 
@@ -81,7 +81,7 @@ export class Input {
 	}
 
 	updateMultiPlayerMode() {
-		if (state.get('gamePhase') === GamePhases.RUNNING || state.get('gamePhase') === GamePhases.COUNTDOWN) {
+		if (state.get('gameData', 'phase') === GamePhases.RUNNING || state.get('gameData', 'phase') === GamePhases.COUNTDOWN) {
 			if (this.keys.w) {
 				this.game.physics.leftPaddleY = Math.max(
 					0, 
