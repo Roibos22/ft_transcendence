@@ -19,17 +19,20 @@ export const GamePhases = {
 };
 
 export const initState = {
+	path: '/',
 	user: {
 		username: "",
 		authToken: "",
 		refreshToken: ""
 	},
-	matchSettings: {
+	gameSettings: {
 		pointsToWin: 5,
+		numberOfGames: 1,
 		mode: GameModes.SINGLE,
 		displayType: GameTypes.TWO_D
 	},
 	currentMatchInfo: {
+		players: [],
 		player1pos: 0,
 		player2pos: 0,
 		ball: {
@@ -42,7 +45,6 @@ export const initState = {
 	gamePhase: GamePhases.WAITING_TO_START,
 	tournament: {
 		players: [],
-		numberOfGames: 1,
 		currentMatchIndex: 0,
 		matches: [],
 		currentMatch: {}

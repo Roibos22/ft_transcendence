@@ -1,6 +1,6 @@
-import { initLoginView } from './views/login.js';
+import { LoginView } from './views/login.js';
 import { initRegisterView } from './views/register.js';
-import { initGameSetupView } from './views/gameSetup.js';
+import { GameSetupView } from './views/gameSetup.js';
 import { initGameView } from './views/game.js';
 import { initProfileView } from './views/profile.js';
 import { initGameOnlineView } from './views/onlineGame.js';
@@ -48,12 +48,15 @@ export const urlLocationHandler = async () => {
 
 export function initCurrentView() {
 	const currentPath = window.location.pathname;
+	let view = null;
 	if (currentPath === '/' || currentPath === '/login') {
-		initLoginView();
+		view = new LoginView();
+		view.initView();
 	} else if (currentPath === '/register') {
 		initRegisterView();
 	} else if (currentPath === '/game-setup') {
-		initGameSetupView();
+		view = new GameSetupView();
+		view.initView();
 	} else if (currentPath === '/game') {
 		initGameView();
 	} else if (currentPath === '/profile') {

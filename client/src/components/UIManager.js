@@ -3,14 +3,15 @@ export class UIManager {
 		this.game = game;
 	}
 
-	updateUI() {
+	updateUI(path) {
+		if (path !== '/game')
+			return;
 		this.updateScoreHeader()
 		this.updateMatchList();
 		this.updateTable();
 	}
 
 	updateScoreHeader() {
-
         if (!this.game.tournament) {
             console.error("Tournament not initialized");
             return;

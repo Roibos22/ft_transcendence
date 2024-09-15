@@ -1,4 +1,4 @@
-import state from '../state/stateManager.js';
+import state from '../State.js';
 
 export function deepCopy(obj) {
     if (obj === null || typeof obj !== 'object') {

@@ -3,67 +3,80 @@ import * as Cookies from '../services/cookies.js';
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';
 
-export async function initLoginView() {
-	const content = await loadTemplate('login');
-	document.getElementById('app').innerHTML = content;
-
-	const loginForm = document.getElementById('loginForm');
-	const loginError = document.getElementById('loginError');
-
-	if (loginForm) {
-		loginForm.addEventListener('submit', async function(e) {
-			e.preventDefault();
-			loginUser();
-		});
+export class LoginView {
+	constructor() {
+		this.template = 'login';
+		this.UIelements = null;
 	}
 
-	const showRegistrationLink = document.getElementById('showRegistration');
-	if (showRegistrationLink) {
-		showRegistrationLink.addEventListener('click', function(e) {
+	async initView() {
+		const content = await loadTemplate(this.template);
+        document.getElementById('app').innerHTML = content;
+		
+		this.UIelements = this.getUIElements();
+		this.addEventListeners();
+	}
+	
+	getUIElements() {
+		return {
+			loginForm: document.getElementById('loginForm'),
+			showRegistrationLink: document.getElementById('showRegistration'),
+			username: document.getElementById('username'),
+			password: document.getElementById('password')
+		};
+	}
+
+	addEventListeners() {
+		this.UIelements.loginForm.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			await this.loginUser();
+		});
+
+		this.UIelements.showRegistrationLink.addEventListener('click', (e) => {
 			e.preventDefault();
 			window.history.pushState({}, "", "/register");
 			urlLocationHandler();
 		});
 	}
-}
 
-async function loginUser() {
-	const username = document.getElementById('username').value;
-	const password = document.getElementById('password').value;
-
-	try {
-		const response = await UserService.loginUser(username, password);
-
-		if (response.success) {
-			const data = response.data;
-			Cookies.setCookie("accessToken", data.tokens.access, 24);
-			Cookies.setCookie("refreshToken", data.tokens.refresh, 24);
-			Cookies.setCookie("username", data.username, 24);
-			Notification.showNotification(["Login successful"]);
-			window.history.pushState({}, "", "/game-setup");
-			urlLocationHandler();
-		} else {
-			displayLoginError(response.error);
-		}
-	} catch (error) {
-		console.error('Failed to login', error);
-		displayLoginError(error);
-	}
-}
-
-function displayLoginError(error) {
-	const loginError = document.getElementById('loginError');
-	loginError.style.display = 'block';
-	let errorMessages = [];
-
-	if (error.message.includes("400")) {
-		errorMessages.push(`Username and Password field may not be blank.`);
-	} else if (error.message.includes("401")) {
-		errorMessages.push(`Username and Password do not match.`);
-	} else {
-		errorMessages.push(`Something went wrong.`);
-	}
-	errorMessages.push(`Please try again.`);
+	async loginUser() {
+		const username = this.UIelements.username.value;
+		const password = this.UIelements.password.value;
 	
-	loginError.innerHTML = errorMessages.join('<br>');
+		try {
+			const response = await UserService.loginUser(username, password);
+	
+			if (response.success) {
+				const data = response.data;
+				Cookies.setCookie("accessToken", data.tokens.access, 24);
+				Cookies.setCookie("refreshToken", data.tokens.refresh, 24);
+				Cookies.setCookie("username", data.username, 24);
+				Notification.showNotification(["Login successful"]);
+				window.history.pushState({}, "", "/game-setup");
+				urlLocationHandler();
+			} else {
+				displayLoginError(response.error);
+			}
+		} catch (error) {
+			console.error('Failed to login', error);
+			displayLoginError(error);
+		}
+	}
+	
+	displayLoginError(error) {
+		const loginError = document.getElementById('loginError');
+		loginError.style.display = 'block';
+		let errorMessages = [];
+	
+		if (error.message.includes("400")) {
+			errorMessages.push(`Username and Password field may not be blank.`);
+		} else if (error.message.includes("401")) {
+			errorMessages.push(`Username and Password do not match.`);
+		} else {
+			errorMessages.push(`Something went wrong.`);
+		}
+		errorMessages.push(`Please try again.`);
+		
+		loginError.innerHTML = errorMessages.join('<br>');
+	}
 }

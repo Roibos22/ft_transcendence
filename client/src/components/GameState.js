@@ -1,5 +1,5 @@
 import { GamePhases } from '../constants.js';
-import state from '../state/stateManager.js';
+import state from '../State.js';
 
 export class GameState {
 	constructor(game) {

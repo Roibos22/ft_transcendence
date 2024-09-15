@@ -1,5 +1,5 @@
 import { GamePhases } from '../constants.js';
-import state from '../state/stateManager.js';
+import state from '../State.js';
 
 export class Tournament {
 	constructor(game) {
@@ -9,13 +9,13 @@ export class Tournament {
 
 	generateMatches() {
 		const matches = [];
-		for (let i = 0; i < state.tournament.numberOfGames; i++) {
-			for (let j = 0; j < state.players.length; j++) {
-				for (let k = j + 1; k < state.players.length; k++) {
+		for (let i = 0; i < state.get('tournament.numberOfGames'); i++) {
+			for (let j = 0; j < state.get('tournament.players').length; j++) {
+				for (let k = j + 1; k < state.get('tournament.players').length; k++) {
 					matches.push({
 						players: [
-							{ ...state.players[j], score: 0 },
-							{ ...state.players[k], score: 0 }
+							{ ...state.get('tournament.players')[j], score: 0 },
+							{ ...state.get('tournament.players')[k], score: 0 }
 						],
 						completed: false
 					});

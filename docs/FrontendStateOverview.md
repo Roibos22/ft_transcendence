@@ -4,8 +4,9 @@ state = {
     user: {
         //todo
     },
-    matchSettings: {
+    gameSettings: {
         pointsToWin: number,
+        numberOfGames: number,
         mode: GameMode,
         displayType: GameType
     },
@@ -20,9 +21,10 @@ state = {
         player2score: number,
     },
     tournament: {
-        numberOfGames: number,
+        players: [],
         currentMatchIndex,
         previousMatches: [MatchResult]
+        currentMatch{}
     }
 }
 
