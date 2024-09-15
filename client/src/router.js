@@ -49,6 +49,8 @@ export const urlLocationHandler = async () => {
 
 export async function initCurrentView() {
 	const currentPath = window.location.pathname;
+	
+	delete currentView.view;
 
 	if (currentPath === '/' || currentPath === '/login') {
 		currentView.view = new LoginView();
