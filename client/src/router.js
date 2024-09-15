@@ -1,8 +1,9 @@
 import { LoginView } from './views/login.js';
 import { GameSetupView } from './views/gameSetup.js';
 import { GameView } from './views/game.js';
-import { initProfileView } from './views/profile.js';
-import { initGameOnlineView } from './views/onlineGame.js';
+import { RegisterView } from './views/register.js';
+import { ProfileView } from './views/profile.js';
+// import { GameOnlineView } from './views/gameOnline.js';
 import { currentView } from './constants.js';
 
 const urlRoutes = {
@@ -60,7 +61,7 @@ export async function initCurrentView() {
 	} else if (currentPath === '/profile') {
 		currentView.view = new ProfileView();
 	} else if (currentPath === '/online-game') {
-		currentView.view = new GameOnlineView();
+		// currentView.view = new GameOnlineView();
 	}
 
 	await currentView.view.init();

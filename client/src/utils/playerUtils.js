@@ -58,13 +58,13 @@ export function updatePlayers() {
 			score: 0
 		});
 	});
-	if (state.get('gameSettings.mode') === GameModes.SINGLE && players.length === 1) {
+	if (state.get('gameSettings', 'mode') === GameModes.SINGLE && players.length === 1) {
 		players.push({
 			name: "AI Player",
 			score: 0
 		});
 	}
-	state.set('currentMatchInfo.players', players);
+	state.set('currentMatchInfo', 'players', players);
 }
 
 export function deleteAllPlayersButOne() {

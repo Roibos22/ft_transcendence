@@ -17,7 +17,7 @@ export class ProfileView {
 
 		try {
 			this.userData = await UserService.fetchUserData();
-			this.populateProfile(userData);
+			this.populateProfile();
 			this.setupEditSave();
 			//setupDeleteUser();
 		}
@@ -38,11 +38,26 @@ export class ProfileView {
 				lastLogin: document.getElementById('lastLogin'),
 			},
 			personalInfo : {
-				displayName: document.getElementById('displayNameDisplay'),
-				firstName: document.getElementById('firstNameDisplay'),
-				lastName: document.getElementById('lastNameDisplay'),
-				email: document.getElementById('emailDisplay'),
-				phoneNumber: document.getElementById('phoneNumberDisplay'),
+				displayName: {
+					display: document.getElementById('displayNameDisplay'),
+					input: document.getElementById('displayNameInput'),
+				},
+				firstName: {
+					display: document.getElementById('firstNameDisplay'),
+					input: document.getElementById('firstNameInput'),
+				},
+				lastName: {
+					display: document.getElementById('lastNameDisplay'),
+					input: document.getElementById('lastNameInput'),
+				},
+				email: {
+					display: document.getElementById('emailDisplay'),
+					input: document.getElementById('emailInput'),
+				},
+				phoneNumber: {
+					display: document.getElementById('phoneNumberDisplay'),
+					input: document.getElementById('phoneNumberInput'),
+				}
 			},
 			buttons: {
 				edit: document.getElementById('editBtn'),
@@ -64,11 +79,11 @@ export class ProfileView {
 		card.dateJoined.textContent = new Date(data.date_joined).toLocaleDateString();
 		card.lastLogin.textContent = data.last_login ? new Date(data.last_login).toLocaleDateString() : 'Never';
 
-		personalInfo.displayName.textContent = data.display_name;
-		personalInfo.firstName.textContent = data.first_name;
-		personalInfo.lastName.textContent = data.last_name;
-		personalInfo.email.textContent = data.email;
-		personalInfo.phoneNumber.textContent = data.phone_number || 'Not provided';
+		personalInfo.displayName.display.textContent = data.display_name;
+		personalInfo.firstName.display.textContent = data.first_name;
+		personalInfo.lastName.display.textContent = data.last_name;
+		personalInfo.email.display.textContent = data.email;
+		personalInfo.phoneNumber.display.textContent = data.phone_number || 'Not provided';
 		
 		this.updateOnlineStatus(data.online);
 		this.updateAvatar(data);
@@ -110,12 +125,10 @@ export class ProfileView {
 			saveBtn.style.display = 'inline-block';
 
 			// Switch to edit mode
-			personalInfo.querySelectorAll('.infoField').forEach(container => {
-				const span = container.querySelector('span');
-				const input = container.querySelector('input');
-				span.classList.add('d-none');
-				input.classList.remove('d-none');
-				input.value = span.textContent;
+			Object.values(personalInfo).forEach(info => {
+				info.display.classList.add('d-none');
+				info.input.classList.remove('d-none');
+				info.input.value = info.display.textContent;
 			});
 		});
 
@@ -124,22 +137,20 @@ export class ProfileView {
 			editBtn.style.display = 'inline-block';
 
 			const updatedData = {
-				first_name: document.getElementById('firstNameInput').value,
-				last_name: document.getElementById('lastNameInput').value,
-				email: document.getElementById('emailInput').value,
-				phone_number: document.getElementById('phoneNumberInput').value,
-				display_name: document.getElementById('displayNameInput').value
+				first_name: personalInfo.firstName.input.value,
+				last_name: personalInfo.lastName.input.value,
+				email: personalInfo.email.input.value,
+				phone_number: personalInfo.phoneNumber.input.value,
+				display_name: personalInfo.displayName.input.value
 			};
 
 			try {
 				const newUserData = await UserService.updateUserData(updatedData);
 				this.populateProfile(newUserData);
 				// Switch back to display mode
-				personalInfo.querySelectorAll('.infoField').forEach(container => {
-					const span = container.querySelector('span');
-					const input = container.querySelector('input');
-					input.classList.add('d-none');
-					span.classList.remove('d-none');
+				Object.values(personalInfo).forEach(info => {
+					info.display.classList.remove('d-none');
+					info.input.classList.add('d-none');
 				});
 			} catch (error) {
 				console.error('Failed to update profile:', error);

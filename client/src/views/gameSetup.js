@@ -77,7 +77,7 @@ export class GameSetupView {
 			const buttons = document.querySelectorAll(`[data-setting="${setting}"]`);
 			buttons.forEach(button => {
 				const value = parseInt(button.dataset.value);
-				if (state.get(`gameSettings.${setting}`) === value) {
+				if (state.get('gameSettings', setting) === value) {
 					button.classList.add('active');
 				} else {
 					button.classList.remove('active');
@@ -109,19 +109,19 @@ export class GameSetupView {
 	
 		if (selectedButton === gameModeButtons.singlePlayer) {
 			if (addPlayerButton) addPlayerButton.style.display = 'none';
-			state.set('gameSettings.mode', GameModes.SINGLE);
+			state.set('gameSettings', 'mode', GameModes.SINGLE);
 			if (startGameButton) startGameButton.href = '/game';
 			if (playerInputs) playerInputs.style.display = 'block';
 			if (settingsView) settingsView.style.display = 'block';
 		} else if (selectedButton === gameModeButtons.multiPlayer) {
 			PlayerUtils.addPlayer();
 			if (addPlayerButton) addPlayerButton.style.display = 'block';
-			state.set('gameSettings.mode', GameModes.MULTI);
+			state.set('gameSettings', 'mode', GameModes.MULTI);
 			if (startGameButton) startGameButton.href = '/game';
 			if (playerInputs) playerInputs.style.display = 'block';
 			if (settingsView) settingsView.style.display = 'block';
 		} else if (selectedButton === gameModeButtons.online) {
-			state.set('gameSettings.mode', GameModes.ONLINE);
+			state.set('gameSettings', 'mode', GameModes.ONLINE);
 			if (addPlayerButton) addPlayerButton.style.display = 'none';
 			if (startGameButton) startGameButton.href = '/online-game';
 			if (playerInputs) playerInputs.style.display = 'block';
@@ -132,8 +132,8 @@ export class GameSetupView {
 	}
 
 	updateValue(setting, newValue) {
-		if (state.get('gameSettings')[setting] !== newValue) {
-			state.set(`gameSettings.${setting}`, newValue);
+		if (state.get('gameSettings', setting) !== newValue) {
+			state.set('gameSettings', setting, newValue);
 			
 			const buttons = document.querySelectorAll(`[data-setting="${setting}"]`);
 			buttons.forEach(button => {

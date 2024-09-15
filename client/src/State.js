@@ -4,27 +4,26 @@ import { UIManager } from "./components/UIManager.js";
 
 class State {
     constructor() {
-        this.view = null;
-        this.info = {}
+        this.view = {}
         this.user = {}
         this.gameSettings = {}
         this.currentMatchInfo = {}
         this.tournament = {}
 
-        this.data = initState();
+        this.data = this.initState();
     }
 
     initState() {
         const initStateCopy = deepCopy(initState);
 
-        this.info = initStateCopy.info;
+        this.view = initStateCopy.view;
         this.user = initStateCopy.user;
         this.gameSettings = initStateCopy.gameSettings;
         this.currentMatchInfo = initStateCopy.currentMatchInfo;
         this.tournament = initStateCopy.tournament;
 
         return {
-            info: this.info,
+            view: this.view,
             user: this.user,
             gameSettings: this.gameSettings,
             currentMatchInfo: this.currentMatchInfo,
@@ -40,6 +39,9 @@ class State {
         if (path === undefined) {
             console.error('Path is required');
         }
+        if(this.data[path] === undefined) {
+            console.error('Path not found');
+        }
         return deepCopy(this.data[path]);
     }
 
@@ -47,28 +49,49 @@ class State {
         if (path === undefined || key === undefined) {
             console.error('Path and key are required');
         }
+        if(this.data[path] === undefined) {
+            console.error('Path not found');
+        }
+        if(this.data[path][key] === undefined) {
+            console.error('Key not found');
+        }
         return this.data[path][key];
     }
 
     set(path, value) {
+        if (path === undefined || value === undefined) {
+            console.error('Path and value are required');
+        }
+        if(this.data[path] === undefined) {
+            console.error('Path not found');
+        }
         this.data[path] = value;
 
         this.notify(path);
     }
 
     set(path, key, value) {
+        if (path === undefined || key === undefined || value === undefined) {
+            console.error('Path, key, and value are required');
+        }
+        if(this.data[path] === undefined) {
+            console.error('Path not found');
+        }
+        if(this.data[path][key] === undefined) {
+            console.error('Key not found');
+        }
         this.data[path][key] = value;
 
         this.notify(path);
     }
 
     notify(valuePath) {
-        const viewPath = this.info.path;
-        if (valuePath === 'gameSettings') {
-            UIManager.updateGame();
+        const viewPath = this.view.path;
+        if (valuePath === 'gameSettings' && viewPath === '/game') {
+            // UIManager.updateGame();
             return;
         }
-        if (viewPath === '/game' || viewPath === '/game-setup') {
+        if (viewPath === '/game') {
             UIManager.update(viewPath, valuePath);
         }
     }
