@@ -14,12 +14,11 @@ export class ProfileView {
 		document.getElementById('app').innerHTML = content;
 
 		this.UIelements = this.getUIElements();
+		this.setupEditSave();
 
 		try {
 			this.userData = await UserService.fetchUserData();
-			this.populateProfile();
-			this.setupEditSave();
-			//setupDeleteUser();
+			this.update();
 		}
 		catch (error) {
 			Notification.showErrorNotification(["Failed to load profile", "Please try again later"]);
@@ -68,6 +67,12 @@ export class ProfileView {
 		};
 	}
 
+	update() {
+		this.populateProfile();
+		this.updateOnlineStatus();
+		this.updateAvatar();
+	}
+
 	populateProfile() {
 		const data = this.userData;
 		const card = this.UIelements.card;
@@ -84,35 +89,27 @@ export class ProfileView {
 		personalInfo.lastName.display.textContent = data.last_name;
 		personalInfo.email.display.textContent = data.email;
 		personalInfo.phoneNumber.display.textContent = data.phone_number || 'Not provided';
-		
-		this.updateOnlineStatus(data.online);
-		this.updateAvatar(data);
 
 	}
 
-	updateAvatar(data) {
+	updateAvatar() {
 		const avatarImg = this.UIelements.card.avatar;
 
-		if (data.avatar) {
-			avatarImg.src = data.avatar;
+		if (this.userData.avatar) {
+			avatarImg.src = userData.avatar;
 		} 
 		// else {
 		//     avatarImg.src = './default_avatar.png'; // Make sure to have a default avatar image
 		// }
 	}
 
-	updateOnlineStatus(isOnline) {
+	updateOnlineStatus() {
 		const onlineStatusElement = this.UIelements.card.onlineStatus;
+		const isOnline = this.userData.is_online;
 		
-		if (isOnline) {
-			onlineStatusElement.textContent = 'Online';
-			onlineStatusElement.classList.remove('bg-danger');
-			onlineStatusElement.classList.add('bg-success');
-		} else {
-			onlineStatusElement.textContent = 'Offline';
-			onlineStatusElement.classList.remove('bg-success');
-			onlineStatusElement.classList.add('bg-danger');
-		}
+		onlineStatusElement.textContent = isOnline ? 'Online' : 'Offline';
+		onlineStatusElement.classList.remove(isOnline ? 'bg-danger' : 'bg-success');
+		onlineStatusElement.classList.add(isOnline ? 'bg-success' : 'bg-danger');
 	}
 
 	setupEditSave() {
@@ -145,13 +142,13 @@ export class ProfileView {
 			};
 
 			try {
-				const newUserData = await UserService.updateUserData(updatedData);
-				this.populateProfile(newUserData);
-				// Switch back to display mode
 				Object.values(personalInfo).forEach(info => {
 					info.display.classList.remove('d-none');
 					info.input.classList.add('d-none');
 				});
+				const newUserData = await UserService.updateUserData(updatedData);
+				this.userData = newUserData;
+				this.populateProfile();
 			} catch (error) {
 				console.error('Failed to update profile:', error);
 				// Error notification is handled in UserService.updateUserData

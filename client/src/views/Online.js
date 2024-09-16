@@ -1,5 +1,5 @@
 import { loadTemplate } from '../router.js';
-import { PongGame } from './../conponents_online/PongGame.js';
+import { PongGame } from '../conponents_online/PongGame.js';
 import * as Cookies from '../services/cookies.js';
 
 export async function initGameOnlineView() {

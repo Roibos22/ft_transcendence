@@ -3,6 +3,7 @@ import { loadTemplate } from '../router.js';
 import state from '../State.js';
 import * as Cookies from '../services/cookies.js';
 import * as PlayerUtils from '../utils/playerUtils.js';
+import { buttonIdToGameMode } from '../utils/utils.js';
 
 export class GameSetupView {
 	constructor() {
@@ -15,8 +16,7 @@ export class GameSetupView {
 
 		this.UIelements = this.getUIElements();
 		this.addEventListeners();
-		this.initSettingsUI();
-		this.updateUIForGameMode();
+		this.update();
 	}
 
 	getUIElements() {
@@ -27,10 +27,14 @@ export class GameSetupView {
 				online: document.getElementById('btn_online')
 			},
 			multiPlayerOptions:{
-				addPlayerButton: document.getElementById('addPlayer'),
-				playerInputsContainer: document.getElementById('playerInputs')
+				playerInputsContainer: document.getElementById('playerInputs'),
+				addPlayerButton: document.getElementById('addPlayer')
 			},
-			settingsButtons: document.querySelectorAll('[data-setting]'),
+			settingsButtons: {
+				settingsContainer: document.getElementById('settingsView'),
+				pointsToWinButtons: document.querySelectorAll('[data-setting="pointsToWin"]'),
+				numberOfGamesButtons: document.querySelectorAll('[data-setting="numberOfGames"]')
+			},
 			playerInput: document.getElementById('playerForm'),
 			startGameButton: document.getElementById('startGameButton')
 		};
@@ -38,11 +42,15 @@ export class GameSetupView {
 
 	addEventListeners() {
 		const gameModeButtons = this.UIelements.gameModeButtons;
-		const { settingsButtons, playerInput } = this.UIelements;
+		const { playerInput, startGameButton } = this.UIelements;
 		const { addPlayerButton, playerInputsContainer } = this.UIelements.multiPlayerOptions;
+		const { pointsToWinButtons, numberOfGamesButtons } = this.UIelements.settingsButtons;
 
 		Object.values(gameModeButtons).forEach(button => {
-			if (button) button.addEventListener('click', () => this.updateUIForGameMode(button));
+			button.addEventListener('click', (e) => {
+				const id = e.target.id;
+				state.set('gameSettings', 'mode', buttonIdToGameMode(id));
+			});
 		});
 
 		if (addPlayerButton) {
@@ -57,34 +65,30 @@ export class GameSetupView {
 			});
 		}
 
-		settingsButtons.forEach(button => {
+		Object.values(pointsToWinButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
-				const setting = button.dataset.setting;
-				const value = parseInt(button.dataset.value);
-				this.updateValue(setting, value);
+				const value = parseInt(e.target.dataset.value);
+				state.set('gameSettings', 'pointsToWin', value);
+			});
+		});
+
+		Object.values(numberOfGamesButtons).forEach(button => {
+			button.addEventListener('click', (e) => {
+				const value = parseInt(e.target.dataset.value);
+				state.set('gameSettings', 'numberOfGames', value);
 			});
 		});
 
 		playerInput.addEventListener('input', function() {
 			PlayerUtils.updatePlayers();
 		});
+
+		startGameButton.addEventListener('click', () => {
+			PlayerUtils.updatePlayers();
+		});
 	}
 
 	initSettingsUI() {
-		const settingsToUpdate = ['pointsToWin', 'numberOfGames'];
-		
-		settingsToUpdate.forEach(setting => {
-			const buttons = document.querySelectorAll(`[data-setting="${setting}"]`);
-			buttons.forEach(button => {
-				const value = parseInt(button.dataset.value);
-				if (state.get('gameSettings', setting) === value) {
-					button.classList.add('active');
-				} else {
-					button.classList.remove('active');
-				}
-			});
-		});
-	
 		const username = Cookies.getCookie("username");
 		const player1Input = document.getElementById('player1');
 		if (player1Input && username) {
@@ -92,58 +96,32 @@ export class GameSetupView {
 		}
 	}
 
-	updateUIForGameMode(button) {
-		const selectedButton = button ? button : document.querySelector('.btn-game-mode.active') || this.UIelements.gameModeButtons.singlePlayer;
-		if (!selectedButton) return;
+	update() {
+		const gameMode = state.get('gameSettings', 'mode');
+		const pointsToWin = state.get('gameSettings', 'pointsToWin');
+		const numberOfGames = state.get('gameSettings', 'numberOfGames');
 
 		const gameModeButtons = this.UIelements.gameModeButtons;
-		const { addPlayerButton, playerInputs } = this.UIelements.multiPlayerOptions;
-		const { startGameButton, settingsView } = this.UIelements;
-	
-		
-		Object.values(gameModeButtons).forEach(button => {
-			if (button) button.classList.remove('active');
-		});
-		selectedButton.classList.add('active');
-		PlayerUtils.deleteAllPlayersButOne();
-	
-		if (selectedButton === gameModeButtons.singlePlayer) {
-			if (addPlayerButton) addPlayerButton.style.display = 'none';
-			state.set('gameSettings', 'mode', GameModes.SINGLE);
-			if (startGameButton) startGameButton.href = '/game';
-			if (playerInputs) playerInputs.style.display = 'block';
-			if (settingsView) settingsView.style.display = 'block';
-		} else if (selectedButton === gameModeButtons.multiPlayer) {
-			PlayerUtils.addPlayer();
-			if (addPlayerButton) addPlayerButton.style.display = 'block';
-			state.set('gameSettings', 'mode', GameModes.MULTI);
-			if (startGameButton) startGameButton.href = '/game';
-			if (playerInputs) playerInputs.style.display = 'block';
-			if (settingsView) settingsView.style.display = 'block';
-		} else if (selectedButton === gameModeButtons.online) {
-			state.set('gameSettings', 'mode', GameModes.ONLINE);
-			if (addPlayerButton) addPlayerButton.style.display = 'none';
-			if (startGameButton) startGameButton.href = '/online-game';
-			if (playerInputs) playerInputs.style.display = 'block';
-			if (settingsView) settingsView.style.display = 'none';
-		}
-	
-		PlayerUtils.updatePlayers();
-	}
+		const { addPlayerButton, playerInputsContainer } = this.UIelements.multiPlayerOptions;
+		const { startGameButton } = this.UIelements;
+		const { pointsToWinButtons, numberOfGamesButtons, settingsContainer } = this.UIelements.settingsButtons;
 
-	updateValue(setting, newValue) {
-		if (state.get('gameSettings', setting) !== newValue) {
-			state.set('gameSettings', setting, newValue);
-			
-			const buttons = document.querySelectorAll(`[data-setting="${setting}"]`);
-			buttons.forEach(button => {
-				const value = parseInt(button.dataset.value);
-				if (value === newValue) {
-					button.classList.add('active');
-				} else {
-					button.classList.remove('active');
-				}
-			});
-		}
+		gameModeButtons.multiPlayer.classList.toggle('active', gameMode === GameModes.MULTI);
+		gameModeButtons.singlePlayer.classList.toggle('active', gameMode === GameModes.SINGLE);
+		gameModeButtons.online.classList.toggle('active', gameMode === GameModes.ONLINE);
+
+		addPlayerButton.style.display = gameMode === GameModes.MULTI ? 'block' : 'none';
+		startGameButton.href = gameMode === GameModes.ONLINE ? '/online-game' : '/game';
+		settingsContainer.style.display = gameMode === GameModes.ONLINE ? 'none' : 'block';
+		playerInputsContainer.style.display =  gameMode === GameModes.MULTI ? 'block' : 'none';
+	
+		Object.values(pointsToWinButtons).forEach(button => {
+			const value = parseInt(button.dataset.value);
+			button.classList.toggle('active', pointsToWin === value);
+		});
+		Object.values(numberOfGamesButtons).forEach(button => {
+			const value = parseInt(button.dataset.value);
+			button.classList.toggle('active', numberOfGames === value);
+		});
 	}
 }

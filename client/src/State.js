@@ -1,13 +1,13 @@
 import { initState } from "./constants.js";
 import { deepCopy } from "./utils/utils.js";
-import { UIManager } from "./components/UIManager.js";
+import { currentView } from "./constants.js";
 
 class State {
     constructor() {
-        this.view = {}
-        this.user = {}
-        this.gameSettings = {}
-        this.currentMatchInfo = {}
+        this.user = {};
+        this.gameSettings = {};
+        this.currentMatchInfo = {};
+        this.gameData = {};
         this.tournament = {}
 
         this.data = this.initState();
@@ -16,17 +16,16 @@ class State {
     initState() {
         const initStateCopy = deepCopy(initState);
 
-        this.view = initStateCopy.view;
         this.user = initStateCopy.user;
         this.gameSettings = initStateCopy.gameSettings;
         this.currentMatchInfo = initStateCopy.currentMatchInfo;
         this.tournament = initStateCopy.tournament;
 
         return {
-            view: this.view,
             user: this.user,
             gameSettings: this.gameSettings,
             currentMatchInfo: this.currentMatchInfo,
+            gameData: this.gameData,
             tournament: this.tournament
         }
     }
@@ -82,18 +81,7 @@ class State {
         }
         this.data[path][key] = value;
 
-        this.notify(path);
-    }
-
-    notify(valuePath) {
-        const viewPath = this.view.path;
-        if (valuePath === 'gameSettings' && viewPath === '/game') {
-            // UIManager.updateGame();
-            return;
-        }
-        if (viewPath === '/game') {
-            UIManager.update(viewPath, valuePath);
-        }
+        currentView.view.update();
     }
 
     reset() {

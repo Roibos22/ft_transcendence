@@ -1,37 +1,10 @@
-import { LoginView } from './views/login.js';
-import { GameSetupView } from './views/gameSetup.js';
-import { GameView } from './views/game.js';
-import { RegisterView } from './views/register.js';
-import { ProfileView } from './views/profile.js';
+import { LoginView } from './views/Login.js';
+import { GameSetupView } from './views/GameSetup.js';
+import { GameView } from './views/Game.js';
+import { RegisterView } from './views/Register.js';
+import { ProfileView } from './views/Profile.js';
 // import { GameOnlineView } from './views/gameOnline.js';
-import { currentView } from './constants.js';
-
-const urlRoutes = {
-	"/": {
-		template: "../templates/login.html",
-		title: "Login"
-	},
-	"/register": {
-		template: "../templates/register.html",
-		title: "Register"
-	},
-	"/game-setup": {
-		template: "../templates/game-setup.html",
-		title: "Setup"
-	},
-	"/game": {
-		template: "../templates/game.html",
-		title: "Game"
-	},
-	"/profile": {
-		template: "../templates/profile.html",
-		title: "Profile"
-	},
-	"/online-game": {
-		template: "../templates/online-game.html",
-		title: "Game"
-	}
-};
+import { currentView, urlRoutes } from './constants.js';
 
 export const urlLocationHandler = async () => {
 	let location = window.location.pathname;

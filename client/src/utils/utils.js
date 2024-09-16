@@ -1,4 +1,5 @@
 import state from '../State.js';
+import { GameModes } from '../constants.js';
 
 export function deepCopy(obj) {
     if (obj === null || typeof obj !== 'object') {
@@ -24,4 +25,17 @@ export function incrementCurrentMatchIndex() {
 
     const matches = state.get('tournament.matches');
     state.set('tournament.currentMatch', matches[currentMatchIndex + 1]);
+}
+
+export function buttonIdToGameMode(id) {
+    switch (id) {
+        case 'btn_singleplayer':
+            return GameModes.SINGLE;
+        case 'btn_multiplayer':
+            return GameModes.MULTI;
+        case 'btn_online':
+            return GameModes.ONLINE;
+        default:
+            return GameModes.SINGLE;
+    }
 }

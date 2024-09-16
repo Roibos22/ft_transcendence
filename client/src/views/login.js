@@ -16,6 +16,8 @@ export class LoginView {
 		this.UIelements = this.getUIElements();
 		this.addEventListeners();
 	}
+
+	update() {}
 	
 	getUIElements() {
 		return {

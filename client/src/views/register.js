@@ -16,6 +16,8 @@ export class RegisterView {
 		this.addEventListeners();
 	}
 
+	update() {}
+
 	getUIElements() {
 		return {
 			registrationForm: document.getElementById('registrationForm'),

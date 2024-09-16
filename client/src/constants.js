@@ -1,4 +1,5 @@
 export const currentView = {
+	path: '/',
 	view: null
 };
 
@@ -23,16 +24,13 @@ export const GamePhases = {
 };
 
 export const initState = {
-	view: {
-		path: '/',
-		displayType: GameTypes.TWO_D
-	},
 	user: {
 		username: "",
 		authToken: "",
 		refreshToken: ""
 	},
 	gameSettings: {
+		displayType: GameTypes.TWO_D,
 		pointsToWin: 5,
 		numberOfGames: 1,
 		mode: GameModes.SINGLE,
@@ -57,4 +55,31 @@ export const initState = {
 		matches: [],
 		currentMatch: {}
 	},
+};
+
+export const urlRoutes = {
+	"/": {
+		template: "../templates/login.html",
+		title: "Login"
+	},
+	"/register": {
+		template: "../templates/register.html",
+		title: "Register"
+	},
+	"/game-setup": {
+		template: "../templates/game-setup.html",
+		title: "Setup"
+	},
+	"/game": {
+		template: "../templates/game.html",
+		title: "Game"
+	},
+	"/profile": {
+		template: "../templates/profile.html",
+		title: "Profile"
+	},
+	"/online-game": {
+		template: "../templates/online-game.html",
+		title: "Game"
+	}
 };
