@@ -8,17 +8,6 @@ import time
 
 init()
 
-
-# key = stdscr.getch()
-#         if key == ord('w'):
-#             left_paddle_y = move_paddle(left_paddle_y, max_y, -1)
-#         elif key == ord('s'):
-#             left_paddle_y = move_paddle(left_paddle_y, max_y, 1)
-#         elif key == curses.KEY_UP:
-#             right_paddle_y = move_paddle(right_paddle_y, max_y, -1)
-#         elif key == curses.KEY_DOWN:
-#             right_paddle_y = move_paddle(right_paddle_y, max_y, 1)
-
 async def play(user: User):
     websocket = Websocket(f'{url_game}ws/matchmaking/', user.access_tocken)
     print('Connecting to matchmaking')

@@ -48,11 +48,9 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
         await self.run()
-        # self.periodic_task = asyncio.create_task(self.send_game_updates())
 
     async def run(self):
         self.periodic_task = asyncio.create_task(self.send_game_updates())
-    #     if
 
     async def receive(self, text_data):
         data = json.loads(text_data)
