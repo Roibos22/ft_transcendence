@@ -62,8 +62,8 @@ def game(stdscr):
         stdscr.clear()
 
         # Draw paddles
-        draw_paddle(stdscr, left_paddle_y, 1)
-        draw_paddle(stdscr, right_paddle_y, max_x - 2)
+        draw_vert_paddle(stdscr, left_paddle_y, 1)
+        draw_vert_paddle(stdscr, right_paddle_y, max_x - 2)
 
         # Draw ball
         draw_ball(stdscr, ball_y, ball_x)

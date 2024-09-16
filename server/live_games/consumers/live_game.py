@@ -66,6 +66,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             await self.handle_player_ready()
         elif action == 'move_player':
             await self.handle_move(data)
+            # await self.send(text_data='MOVE RECIEVED')
         elif action == 'get_init_data':
             await self.send_init_data()
 
@@ -104,7 +105,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         try:
             while True:
                 await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.)
 
         except asyncio.CancelledError:
             pass

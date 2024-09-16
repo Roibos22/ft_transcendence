@@ -224,6 +224,8 @@ class Game:
     def main(self, stdscr):
         self._stdscr = stdscr
         curses.curs_set(0)
+        curses.noecho()
+        stdscr.keypad(True)
         self._stdscr.clear()
         self._stdscr.nodelay(1)
         self._stdscr.timeout(100)
@@ -248,24 +250,39 @@ class Game:
     def draw_vert_paddle(self, paddle: dict):
         pos_bot: int = int(paddle.get('bot_position'))
         pos_top: int = int(paddle.get('top_position'))
-        x: int = 1 if paddle.get('side') == 'Left' else self._game_width - 1
+        x: int = 1 if paddle.get('side') == 'Left' else self._game_width - 2
         for i in range(pos_top, pos_bot):
             max_y, max_x = self._stdscr.getmaxyx()
+            # print(f'Max_y: {max_y}, max_x: {max_x}, paddle_top: {pos_top}, paddle_bot: {pos_bot}, current_y: {i}')
             if 0 <= i < max_y and 0 <= x < max_x:
                 self._stdscr.addch(i, x, '|')
             if x == self._game_width - 1:
-                self._stdscr.addch(i, x - 1, '|')
+                if 0 <= i < max_y and 0 <= x - 1 < max_x:
+                    self._stdscr.addch(i, x - 1, '|')
             else:
-                self._stdscr.addch(i, x + 1, '|')
-        stdscr.refresh()
+                if 0 <= i < max_y and 0 <= x + 1 < max_x:
+                    self._stdscr.addch(i, x + 1, '|')
+        self._stdscr.refresh()
 
     def draw_ball(self, ball_pos:dict):
         ball_y: int = int(ball_pos.get('y'))
         ball_x: int = int(ball_pos.get('x'))
         if 0 <= ball_y <= self._game_height - 1 and 0 <= ball_x <= self._game_width - 1:
             self._stdscr.addch(ball_y, ball_x, '0')
+        self._stdscr.refresh()
 
-    def move_paddle(self, paddle_y, max_y, direction):
-        pass
+    async def move_paddle(self, key):
+        if key == curses.KEY_UP:
+            print("key up")
+            self.websocket.send({
+                "action": "move_player",
+                "direction": 1
+            })
+        elif key == curses.KEY_DOWN:
+            print("key up")
+            self.websocket.send({
+                "action": "move_player",
+                "direction": -1
+            })
 
 
