@@ -190,16 +190,17 @@ class Websocket:
         self.websocket = await websockets.connect(self.uri, extra_headers={'Authorization': f'Bearer {self.token}'})
     async def send(self, data):
         try:
-            await self.websocket.send(data)
+            await self.websocket.send(json.dumps(data))
         except websockets.exceptions.ConnectionClosed:
-            print('Wesocket: no connection')
+            print('Wesocket: no connection on send')
     async def recieve(self):
         try:
             data: json = await self.websocket.recv()
             if data:
                 return json.loads(data)
         except websockets.exceptions.ConnectionClosed:
-            print('Wesocket: no connection')
+            print('Wesocket: no connection on recv')
+            return None
     async def close(self):
         if self.websocket:
             await self.websocket.close()
@@ -213,6 +214,7 @@ class Game:
         self._game_height = data['maze']['height']
         self._paddle_size = data['paddle_size']
         self._no_players = data['no_players']
+        self._player_no = data['player_no']
 
     def retrieve_data(self):
         pass
@@ -243,15 +245,23 @@ class Game:
                 self._stdscr.addstr(0, 0, f"Current size: {max_x}x{max_y}. Please resize your terminal to {self._game_width}x{self._game_height}.")
                 self._stdscr.refresh()
 
-    def draw_paddle(self, paddle_y, x):
-        for i in range(self._game_height):
-            self._stdscr.addch(paddle_y + i, x, '|')
+    def draw_vert_paddle(self, paddle: dict):
+        pos_bot: int = int(paddle.get('bot_position'))
+        pos_top: int = int(paddle.get('top_position'))
+        x: int = 1 if paddle.get('side') == 'Left' else self._game_width - 1
+        for i in range(pos_top, pos_bot):
+            max_y, max_x = self._stdscr.getmaxyx()
+            if 0 <= i < max_y and 0 <= x < max_x:
+                self._stdscr.addch(i, x, '|')
             if x == self._game_width - 1:
-                self._stdscr.addch(paddle_y + i, x - 1, '|')
+                self._stdscr.addch(i, x - 1, '|')
             else:
-                self._stdscr.addch(paddle_y + i, x + 1, '|')
+                self._stdscr.addch(i, x + 1, '|')
+        stdscr.refresh()
 
-    def draw_ball(self, ball_y, ball_x):
+    def draw_ball(self, ball_pos:dict):
+        ball_y: int = int(ball_pos.get('y'))
+        ball_x: int = int(ball_pos.get('x'))
         if 0 <= ball_y <= self._game_height - 1 and 0 <= ball_x <= self._game_width - 1:
             self._stdscr.addch(ball_y, ball_x, '0')
 

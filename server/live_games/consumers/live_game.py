@@ -47,7 +47,12 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
+        await self.run()
+        # self.periodic_task = asyncio.create_task(self.send_game_updates())
+
+    async def run(self):
         self.periodic_task = asyncio.create_task(self.send_game_updates())
+    #     if
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -61,6 +66,11 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             await self.handle_player_ready()
         elif action == 'move_player':
             await self.handle_move(data)
+        elif action == 'get_init_data':
+            await self.send_init_data()
+
+    async def send_init_data(self):
+        await self.send(text_data=json.dumps({"game_data": game_sessions[self.game_id].get_init_data(self.user_player_no)}))
 
     async def handle_get_state(self):
         await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
@@ -105,4 +115,6 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             self.game_group_name,
             self.channel_name
         )
+        if hasattr(self, 'periodic_task'):
+            self.periodic_task.cancel()
         await self.close()

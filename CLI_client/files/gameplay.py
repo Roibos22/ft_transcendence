@@ -26,7 +26,7 @@ def check_terminal_size(stdscr):
             stdscr.addstr(0, 0, f"Current size: {max_x}x{max_y}. Please resize your terminal to {REQUIRED_WIDTH}x{REQUIRED_HEIGHT}.")
             stdscr.refresh()
 
-def draw_paddle(screen, paddle_y, x):
+def draw_vert_paddle(screen, pos_bot, pos_top, x):
     for i in range(PADDLE_HEIGHT):
         screen.addch(paddle_y + i, x, '|')
         if x == REQUIRED_WIDTH - 1:
