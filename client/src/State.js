@@ -4,19 +4,12 @@ import { currentView } from "./constants.js";
 
 class State {
     constructor() {
-        this.data = this.initState();
+        this.data = {};
+        this.initState();
     }
 
     initState() {
-        const {user, userData, gameSettings, currentMatchInfo, gameData, tournament } = deepCopy(initState);
-        return {
-            user,
-            userData,
-            gameSettings,
-            currentMatchInfo,
-            gameData,
-            tournament
-        };
+        this.data = deepCopy(initState);
     }
 
     get(...args) {
@@ -31,10 +24,6 @@ class State {
     }
 
     set(...args) {
-        if (args.length < 2) {
-            throw new Error('Path, key, or value is missing');
-        }
-    
         const value = deepCopy(args.pop());
 
         let path = this.data;
@@ -51,7 +40,7 @@ class State {
     }
 
     reset() {
-        this.data = this.initState();
+        this.initState();
     }
 }
 
