@@ -19,7 +19,6 @@ export class ProfileView {
 
 		try {
 			const userData = await UserService.fetchUserData();
-			console.log('User data:', userData);
 			state.set('userData', userData);
 		}
 		catch (error) {

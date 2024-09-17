@@ -5,10 +5,10 @@ import { currentView } from "./constants.js";
 class State {
     constructor() {
         this.data = {};
-        this.initState();
+        this.init();
     }
 
-    initState() {
+    async init() {
         this.data = deepCopy(initState);
     }
 
@@ -40,7 +40,7 @@ class State {
     }
 
     reset() {
-        this.initState();
+        this.init();
     }
 }
 

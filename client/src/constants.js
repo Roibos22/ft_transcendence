@@ -38,10 +38,10 @@ export const initState = {
 		numberOfGames: 1,
 		mode: GameModes.SINGLE,
 	},
-	currentMatchInfo: {
-		players: [],
-		player1score: 0,
-		player2score: 0
+	currentMatch: {
+		player1: {},
+		player2: {},
+		winner: null
 	},
 	gameData: {
 		phase: GamePhases.WAITING_TO_START,
@@ -54,35 +54,7 @@ export const initState = {
 	},
 	tournament: {
 		players: [],
-		currentMatchIndex: 0,
 		matches: [],
-		currentMatch: {}
+		currentMatchIndex: 0,
 	},
-};
-
-export const urlRoutes = {
-	"/": {
-		template: "../templates/login.html",
-		title: "Login"
-	},
-	"/register": {
-		template: "../templates/register.html",
-		title: "Register"
-	},
-	"/game-setup": {
-		template: "../templates/game-setup.html",
-		title: "Setup"
-	},
-	"/game": {
-		template: "../templates/game.html",
-		title: "Game"
-	},
-	"/profile": {
-		template: "../templates/profile.html",
-		title: "Profile"
-	},
-	"/online-game": {
-		template: "../templates/online-game.html",
-		title: "Game"
-	}
 };
