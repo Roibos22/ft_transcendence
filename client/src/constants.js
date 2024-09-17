@@ -26,8 +26,11 @@ export const GamePhases = {
 export const initState = {
 	user: {
 		username: "",
+		displayName: "",
 		authToken: "",
 		refreshToken: ""
+	},
+	userData: {
 	},
 	gameSettings: {
 		displayType: GameTypes.TWO_D,

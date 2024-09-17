@@ -1,6 +1,7 @@
 import { loadTemplate } from '../router.js';
 import * as Notification from '../services/notification.js';
 import * as UserService from '../services/api/userService.js';
+import state from '../State.js';
 
 export class ProfileView {
 	constructor() {
@@ -17,8 +18,9 @@ export class ProfileView {
 		this.setupEditSave();
 
 		try {
-			this.userData = await UserService.fetchUserData();
-			this.update();
+			const userData = await UserService.fetchUserData();
+			console.log('User data:', userData);
+			state.set('userData', userData);
 		}
 		catch (error) {
 			Notification.showErrorNotification(["Failed to load profile", "Please try again later"]);
@@ -68,6 +70,7 @@ export class ProfileView {
 	}
 
 	update() {
+		this.userData = state.get('userData');
 		this.populateProfile();
 		this.updateOnlineStatus();
 		this.updateAvatar();
