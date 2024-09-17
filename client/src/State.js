@@ -51,7 +51,7 @@ class State {
     }
 
     reset() {
-        this.initState();
+        this.data = this.initState();
     }
 }
 
