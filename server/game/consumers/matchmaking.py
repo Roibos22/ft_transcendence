@@ -15,7 +15,7 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
         from django.contrib.auth.models import AnonymousUser
         self.user = AnonymousUser()
 
-        print("Matchmaking consumer: Client Connected but not yet authenticated!")
+        print("Matchmaking consumer: Client connected to websocket")
         await self.accept()
 
     async def receive(self, text_data):
@@ -58,7 +58,6 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
         matchmaking_queue[self.user.id].append(self)
 
         if len(matchmaking_queue) >= 2:
-            print("test")
             player1_id, player1_connections = matchmaking_queue.popitem()
             player2_id, player2_connections= matchmaking_queue.popitem()
 

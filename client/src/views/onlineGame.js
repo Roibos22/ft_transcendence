@@ -130,6 +130,7 @@ function connectWebSocketWithMessageToken() {
 		console.log('WebSocket connection opened (Message Token Method)');
 
 		socket.send(JSON.stringify({
+            action: 'join_game',
 			token: `${authToken}`
 		}));
 	});
