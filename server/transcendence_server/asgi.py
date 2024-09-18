@@ -19,15 +19,13 @@ from .middleware import JWTAuthMiddlewareStack
 from django.urls import re_path
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcendence_server.settings')
-django.setup() 
+django.setup() # ?
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": JWTAuthMiddlewareStack(
-        URLRouter([
-            path('ws/matchmaking/', MatchmakingConsumer.as_asgi()),
-            # path('ws/live_game/', LiveGameConsumer.as_asgi()),
-            re_path(r'ws/live_game/(?P<game_id>\w+)/$', LiveGameConsumer.as_asgi()),
-        ])
-    ),
+    "websocket": URLRouter([
+        path('ws/matchmaking/', MatchmakingConsumer.as_asgi()),
+        # path('ws/live_game/', LiveGameConsumer.as_asgi()),
+        re_path(r'ws/live_game/(?P<game_id>\w+)/$', LiveGameConsumer.as_asgi()),
+    ])
 })

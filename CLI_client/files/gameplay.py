@@ -2,8 +2,8 @@ import curses
 import time
 
 # Desired terminal size (width, height)
-REQUIRED_WIDTH = 80
-REQUIRED_HEIGHT = 24
+REQUIRED_WIDTH = 100
+REQUIRED_HEIGHT = 50
 
 PADDLE_HEIGHT = 4
 DELAY = 0.05
@@ -26,7 +26,7 @@ def check_terminal_size(stdscr):
             stdscr.addstr(0, 0, f"Current size: {max_x}x{max_y}. Please resize your terminal to {REQUIRED_WIDTH}x{REQUIRED_HEIGHT}.")
             stdscr.refresh()
 
-def draw_paddle(screen, paddle_y, x):
+def draw_vert_paddle(screen, pos_bot, pos_top, x):
     for i in range(PADDLE_HEIGHT):
         screen.addch(paddle_y + i, x, '|')
         if x == REQUIRED_WIDTH - 1:
@@ -62,8 +62,8 @@ def game(stdscr):
         stdscr.clear()
 
         # Draw paddles
-        draw_paddle(stdscr, left_paddle_y, 1)
-        draw_paddle(stdscr, right_paddle_y, max_x - 2)
+        draw_vert_paddle(stdscr, left_paddle_y, 1)
+        draw_vert_paddle(stdscr, right_paddle_y, max_x - 2)
 
         # Draw ball
         draw_ball(stdscr, ball_y, ball_x)

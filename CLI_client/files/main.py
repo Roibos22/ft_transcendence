@@ -1,10 +1,67 @@
 import inquirer
-from modules import *
+from models import *
 from pages import *
-from constants import main_choices, profile_choices
+from constants import main_choices, profile_choices, url, url_game
 from colorama import Fore, Back, Style, init
+import asyncio
+import time
 
 init()
+
+async def play(user: User):
+    websocket = Websocket(f'{url_game}ws/matchmaking/', user.access_tocken)
+    print('Connecting to matchmaking')
+    await websocket.connect()
+    data = await websocket.recieve()
+    game_id = data.get('game_id')
+    url = f'{url_game}ws/live_game/{game_id}/'
+    websocket = Websocket(url, user.access_tocken)
+    print('Connecting to game')
+    await websocket.connect()
+    await websocket.send({"action": "get_init_data"})
+    game: Game = {}
+    print('Waiting for data')
+    while True:
+        data: dict = await websocket.recieve()
+        if data and data.get('game_data'):
+            game = Game(data.get('game_data'), websocket)
+            break
+        await websocket.send({"action": "get_init_data"})
+    print(game)
+    game.start()
+    game.check_window()
+    await websocket.send({"action": "player_ready"})
+    while True:
+        game._stdscr.clear()
+        data: dict = await websocket.recieve()
+        if data == None:
+            break
+        data = data.get('game_state', None)
+        if data and data['start_time'] != 0:
+            print(f'Game will start in {int(data.get("start_time"))}')
+        elif data:
+            game.draw_vert_paddle(data.get('player_1'))
+            game.draw_vert_paddle(data.get('player_2'))
+            game.draw_ball(data['ball']['position'])
+        key = game._stdscr.getch()
+        # await game.move_paddle(key)
+        if key == ord('w'):
+            # print("key up")
+            websocket.send({
+                "action": "move_player",
+                "direction": 1
+            })
+        elif key == ord('s'):
+            # print("key up")
+            websocket.send({
+                "action": "move_player",
+                "direction": -1
+            })
+        game._stdscr.refresh()
+        time.sleep(0.01)
+
+
+
 
 def profile(command, user: User):
     if command == profile_choices[0]:
@@ -36,12 +93,12 @@ def profile(command, user: User):
     elif command == profile_choices[5]:
         pass
 
-def main():
+async def main():
     user = User()
     answer = inquirer.prompt(Pages.main_menu(user))['Main menu']
     while True:
         if answer == main_choices[0]:
-            page = Pages.play()
+            await play(user)
         elif answer == main_choices[1]:
             page = Pages.profile(user)
             if page:
@@ -72,4 +129,4 @@ def main():
         answer = inquirer.prompt(Pages.main_menu(user))['Main menu']
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

@@ -24,7 +24,7 @@ help:
 	@echo "  help                   - Show this help message"
 
 # Run containers in detached mode
-run: 
+run:
 	@echo "$(BLUE)Starting containers ...$(RESET)"
 	@$(DOCKER_COMPOSE) up -d --force-recreate --build
 	@echo "$(GREEN)Containers started$(RESET)"
@@ -65,3 +65,8 @@ status:
 	@docker network ls
 	@echo "$(BLUE)CONTAINER LOGS$(RESET)"
 	@$(DOCKER_COMPOSE) logs
+
+dev:
+	python3 -m virtualenv .venv
+	.venv/bin/pip3 install -r ./server/requirements.txt
+	.venv/bin/pip3 install -r ./CLI_client/files/requirements.txt
