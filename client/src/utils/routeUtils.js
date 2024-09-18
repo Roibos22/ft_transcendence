@@ -1,10 +1,9 @@
 import { GameView } from "../views/Game.js";
 import { GameSetupView } from "../views/GameSetup.js";
 import { LoginView } from "../views/Login.js";
-// import { OnlineGameView } from "../views/OnlineGame.js";
+import { OnlineGameView } from "../views/Online.js";
 import { ProfileView } from "../views/Profile.js";
 import { RegisterView } from "../views/Register.js";
-
 
 export const urlRoutes = {
 	"/": {
@@ -35,6 +34,6 @@ export const urlRoutes = {
 	"/online-game": {
 		template: "../templates/online-game.html",
 		title: "Game",
-		// view: OnlineGameView,
+		view: OnlineGameView,
 	}
 };
