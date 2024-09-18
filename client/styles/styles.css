@@ -1,3 +1,168 @@
+
+/* GENERAL */
+
+html, body {
+	height: 100%;
+	background-color: black;
+}
+
+#app {
+	padding: 5rem;
+}
+
+.background-gradient {
+	min-height: 100vh;
+	width: 100%;
+	background: #bce2ce;
+}
+
+/* MAIN CARD */
+
+.main-card {
+	max-width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #2ec58e;
+	color: black;
+	/* padding: 20px; */
+	border-radius: 10px;
+	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+}
+
+.profile-card {
+	max-width: 1000px;
+}
+
+.card-body {
+	padding: 5rem;
+}
+
+.profile-card-body {
+	padding: 1rem;
+}
+
+/* FORM */
+
+.form-input, .form-input:focus {
+	background-color: #2ec58e;
+	border: 3px solid black;
+	color: black;
+}
+
+.form-input:focus {
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.form-input::placeholder {
+	color: rgb(61, 59, 59); /* Lighter white for placeholder text */
+}
+
+/* BUTTON */
+
+.btn {
+	background-color: black;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn:hover, .btn.active {
+	background-color: black;
+	color: white;
+	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure the hover effect doesn't change the active state */
+.btn.active:hover {
+	background-color: black;
+	color: white;
+}
+
+.settings-group {
+	text-align: center;
+}
+
+.settings-group .btn-container {
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+/* Action Buttons */
+
+.btn-action {
+	width: 150px;
+	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Game Mode Buttons */
+.btn-group-game-mode .btn-game-mode {
+	width: 150px;
+}
+
+/* Points to Win Buttons */
+.btn-group-points-to-win .btn-setting {
+	width: 60px;
+}
+
+/* Number of Games Buttons */
+.btn-group-number-of-games .btn-setting {
+	width: 60px;
+}
+
+/* Links */
+
+.link {
+	color: rgba(0, 26, 255, 0.7);
+	text-decoration: none;
+}
+
+.link:hover { 
+	text-decoration: underline;
+}
+
+/* GAME SETUP VIEW */
+
+.btn-setting {
+	background-color: #2ec58e;
+	color: black;
+	border: 3px solid #000000;
+	font-weight: bold;
+	border-radius: 20px;
+}
+
+.btn-setting.active, .btn-setting:hover {
+	background-color: black;
+	color: white;
+	border: 3px solid #000000;
+	/* color: #2ec58e; */
+}
+
+
+/* .btn-check:checked + .btn-outline-primary {
+	background-color: #2ec58e;
+	color: #fff;
+}
+.btn-check:not(:checked) + .btn-outline-primary {
+	background-color: #fff;
+	color: #0d6efd;
+}
+
+.btn-outline-secondary {
+	background-color: #fff;
+	color: #000000;
+} */
+
+.profile-icon {
+	font-size: 2rem;
+	color: #007bff;
+	background-color: white;
+	border-radius: 50%;
+	padding: 5px;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
 .player-input-fields {
 	max-width: 400px;
 	margin-left: auto;
@@ -10,59 +175,10 @@
 	margin-right: auto;
 }
 
-.login-card {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
-.registration-card {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-}
+/* PROFILE VIEW */
 
-.twofa-card {
-	max-width: 400px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.background-gradient {
-	min-height: 100vh;
-	width: 100%;
-	background: #d7b8f3;
-	background: linear-gradient(to right, rgba(215, 184, 243, 1), rgba(187, 217, 255, 1));
-	/* background: linear-gradient(to right, rgba(44, 30, 63, 1), rgba(28, 41, 56, 1)); Darker gradient */
-	background-attachment: fixed;
-	background-size: cover;
-}
-
-.btn-check:checked + .btn-outline-primary {
-	background-color: #0d6efd;
-	color: #fff;
-}
-.btn-check:not(:checked) + .btn-outline-primary {
-	background-color: #fff;
-	color: #0d6efd;
-}
-
-.btn-outline-secondary {
-	background-color: #fff;
-	color: #000000;
-}
-
-.profile-icon {
-	font-size: 2rem;
-	color: #007bff;
-	background-color: white;
-	border-radius: 50%;
-	padding: 5px;
-	box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-
+/* 
 .profile-card {
 	max-width: 1000px;
 	margin-left: auto;
@@ -82,7 +198,7 @@
 
 .profile-card .small {
 	font-size: 0.875em;
-}
+} */
 
 .account-status {
 	display: flex;
@@ -99,6 +215,13 @@
 .status-item strong {
 	margin-bottom: 0.25rem;
 }
+
+
+/* GAME VIEW */
+
+
+/* NOTIFICATIONS */
+
 
 .notification {
 	position: fixed;

@@ -14,10 +14,10 @@ class Paddle:
         self.position_top = dimention / 2 - paddle_size / 2
     @property
     def position_bot(self):
-        return self.position_top + paddle_size
+        return self.position_top + self.size
     @property
     def position_center(self):
-        return self.position_top + paddle_size / 2
+        return self.position_top + self.size / 2
     def move_paddle(self, direction: int):
         if direction < 0 and self.position_top >= - direction:
             self.position_top += direction
@@ -29,7 +29,7 @@ class Paddle:
         else:
             ball_position = ball_coords.get('x')
         if self.position_top <= ball_position <= self.position_bot:
-            return (ball_position - self.position_center) / (paddle_size / 2)
+            return (ball_position - self.position_center) / (self.size / 2)
         return None
 
 class Ball:
@@ -57,6 +57,8 @@ class Ball:
         return {'x': self._position_x, 'y': self._position_y}
 
     def paddle_hit(self, paddle: Paddle):
+        if paddle == None:
+            return
         paddle_hit = paddle.check_hit(self.position)
         if paddle_hit != None:
             self._direction_x *= -1
@@ -66,7 +68,7 @@ class Ball:
             self._direction_y *= -1
 
 
-    def movement(self, left_paddle: Paddle, right_paddle: Paddle, top_paddle: Paddle, bottom_paddle: Paddle):
+    def movement(self, left_paddle: Paddle = None, right_paddle: Paddle = None, top_paddle: Paddle= None, bottom_paddle: Paddle = None):
         # Ball movement
         self._position_x += self._direction_x * self.speed
         self._position_y += self._direction_y * self.speed
@@ -82,11 +84,11 @@ class Ball:
         # Paddle collisions
         if not self.left and self._position_x == 1:
             self.paddle_hit(left_paddle)
-        elif not self.right and self._position_x == self._screen_size.get('x') - 2:
+        elif not self.right and self._position_x == self._screen_size.get('width') - 2:
             self.paddle_hit(right_paddle)
         elif not self.top and self._position_y == 1:
             self.paddle_hit(top_paddle)
-        elif not self.bot and self._position_y == self._screen_size.get('y') - 2:
+        elif not self.bot and self._position_y == self._screen_size.get('height') - 2:
             self.paddle_hit(bottom_paddle)
 
 class GameLogic:
@@ -94,19 +96,17 @@ class GameLogic:
         self.game_id = game_id
         # Init game maze
         self._screen_size = {'height': screen_height, 'width': screen_width}
+        self._paddle_size = paddle_size
         # Init paddles
-        self._player1: Paddle = Paddle('Left', self._screen_size.get('height'), paddle_size) # left player
-        self._player2: Paddle = Paddle('Right', self._screen_size.get('width'), paddle_size) # right player
+        self._player1: Paddle = Paddle('Left', self._screen_size.get('height'), self._paddle_size) # left player
+        self._player2: Paddle = Paddle('Right', self._screen_size.get('width'), self._paddle_size) # right player
         # Init ball
         self._ball: Ball = Ball({'N': True, 'S': True, 'W': False, 'E': False}, self._screen_size) # Set walls to True
 
-        self._start_time = None
-        self._last_tick = None
+        self._start_time = time.time()
+        self._last_tick = 0
         self._player1_ready = False
         self._player2_ready = False
-
-    def run_tick(self):
-        self._ball.movement()
 
     def move_player1(self, direction: int):
         self._player1.move_paddle(direction)
@@ -123,32 +123,49 @@ class GameLogic:
             self.start()
 
     def start(self):
-        if time.time() - self._last_tick > 1 * self._ball.speed:
-            self._start_time = time.time() + 3
-            self._ball.movement()
+        self._start_time = time.time() + 3
 
     def get_state(self):
-        # Move ball
-        if self._start_time == 0 and time.time() - self._last_tick > self._ball.speed:
-            self._last_tick = time.time()
-            self._ball.movement()
-        if self._start_time - time.time() > 0:
-            self._start_time = 0
+        print('state sent')
+        # Check if users are ready
+        if not self._player2_ready or not self._player1_ready:
             return {
                 'game_id': self.game_id,
-                '_start_time': self._start_time - time.time(),
+                'phase': 'Waiting players',
+                'countdown': 3, # adjust this to your value
             }
-
-        # Prepare data
+        # Move ball
+        if self._start_time == 0 and time.perf_counter() - self._last_tick > self._ball.speed:
+            print('move ball')
+            self._last_tick = time.perf_counter()
+            self._ball.movement(self._player1, self._player2)
+        # Send countdown
+        if self._start_time !=0 and self._start_time - time.time() > 0:
+            print('send countdown')
+            return {
+                'game_id': self.game_id,
+                'phase': 'Countdown',
+                'countdown': self._start_time - time.time(),
+            }
+        elif self._start_time !=0:
+            print('send countdown else')
+            self._start_time = 0
+            self._last_tick = 0
+        # Send game data
+        ## Prepare data
         player_1 = self._player1
         player_2 = self._player2
         ball = self._ball
         data = {
             'game_id': self.game_id,
-            '_start_time': self._start_time,
+            'phase': 'running',
+            'player1Pos': player_1.position_top,
+            'player2Pos': player_2.position_top,
+            'ball': {'x': ball._position_x, 'y': ball._position_y},
+            'countdown': self._start_time,
             'player_1': {
                 'side': player_1.side,
-                'size': player_1.side,
+                'size': player_1.size,
                 'top_position': player_1.position_top,
                 'bot_position': player_1.position_bot
             },
@@ -163,3 +180,10 @@ class GameLogic:
             },
         }
         return data
+
+    def get_init_data(self):
+        data = {
+            'maze': self._screen_size,
+            'no_players': 2,
+            'paddle_size': self._paddle_size
+        }
