@@ -1,4 +1,6 @@
 import { urlLocationHandler, loadTemplate } from '../router.js';
+import * as UserService from '../services/api/userService.js';
+import * as Notification from '../services/notification.js';
 
 export async function initRegisterView() {
 	const content = await loadTemplate('register');
@@ -17,12 +19,13 @@ export async function initRegisterView() {
 	if (registrationForm) {
 		registrationForm.addEventListener('submit', function(e) {
 			e.preventDefault();
-			handleRegistration();
+			registerUser();
 		});
 	}
 }
 
-async function handleRegistration() {
+
+async function registerUser() {
 	const firstName = document.getElementById('first_name_registration').value;
 	const lastName = document.getElementById('last_name_registration').value;
 	const username = document.getElementById('username_registration').value;
@@ -35,28 +38,37 @@ async function handleRegistration() {
 		password: password,
 		first_name: firstName,
 		last_name: lastName,
-		//avatar: "",
 		active: true
 	};
 
 	try {
-		const response = await fetch('http://localhost:8000/users/create/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				// 'Authorization': 'Bearer <token>' // Uncomment and replace <token> if needed
-			},
-			body: JSON.stringify(userData)
-		});
+		const response = await UserService.registerUser(userData);
 
-		if (response.ok) {
-			const data = await response.json();
-			console.log('User registered successfully:', data);
+		if (response.success) {
+			const data = response.data;
+			Notification.showNotification(["Registration successful"]);
+			window.history.pushState({}, "", "/");
+			urlLocationHandler();
 		} else {
-			const errorData = await response.json();
-			console.error('Registration failed:', errorData);
+			displayRegistrationError(response.error);
 		}
 	} catch (error) {
-		console.error('Error during registration:', error);
+		console.error('Failed to login', error);
+		displayRegistrationError(error);
 	}
+}
+
+function displayRegistrationError(error) {
+	const loginError = document.getElementById('registrationError');
+	loginError.style.display = 'block';
+	let errorMessages = [];
+
+	if (error.message.includes("400")) {
+		errorMessages.push(`Username already taken`);
+	} else {
+		errorMessages.push(`Something went wrong.`);
+	}
+	errorMessages.push(`Please try again.`);
+	
+	loginError.innerHTML = errorMessages.join('<br>');
 }
