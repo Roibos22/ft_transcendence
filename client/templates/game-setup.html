@@ -1,71 +1,74 @@
 <div class="container" id="gameSetupView">
+	<div class="main-card">
+		<div class="card-body">
+			<!-- HEADING -->
+			<h2 class="text-center mb-4 fs-1 fw-bold">Welcome to ElePong!</h2>
 
-	<!-- HEADING -->
-	<h1 class="text-center">Welcome to Pong!</h1>
+			<!-- Profile Icon -->
+			<div class="position-absolute top-0 start-0 m-3">
+				<a href="/profile" class="text-decoration-none">
+					<span class="profile-link">Profile</span>
+				</a>
+			</div>
 
-	<!-- Profile Icon -->
-	<div class="position-absolute top-0 start-0 m-3">
-		<a href="/profile" class="text-decoration-none">
-			<span class="profile-link">Profile</span>
-		</a>
-	</div>
+			<!-- SEGMENTED PICKER GAME MODE -->
+			<div class="d-flex flex-column align-items-center mt-3 mb-3">
+				<div class="d-flex justify-content-center btn-group-game-mode">
+					<button id="btn_singleplayer" class="btn btn-setting btn-game-mode mx-1">Single Player</button>
+					<button id="btn_multiplayer" class="btn btn-setting btn-game-mode mx-1">Multi Player</button>
+					<button id="btn_online" class="btn btn-setting btn-game-mode mx-1">Online</button>
+				</div>
+			</div>
 
-	<!-- SEGMENTED PICKER GAME MODE -->
-	<div class="d-flex flex-column align-items-center mt-3 mb-3">
-		<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-			<input type="radio" class="btn-check" name="btnradio" id="btn_singleplayer" autocomplete="off" checked>
-			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_singleplayer">Single Player</label>
-			<input type="radio" class="btn-check" name="btnradio" id="btn_multiplayer" autocomplete="off">
-			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_multiplayer">Multi Player</label>
-			<input type="radio" class="btn-check" name="btnradio" id="btn_online" autocomplete="off">
-			<label class="btn btn-outline-primary" style="width: 150px;" for="btn_online">Online</label>
-		</div>
-	</div>
+			<!-- PLAYER INPUT FIELDS -->
+			<form id="playerForm">
+				<div id="playerInputs" class="player-input-fields">
+					<div class="player-input-group mb-3">
+						<div class="input-group">
+							<input type="text" class="form-control player-name-input form-input" id="player1" placeholder="Player 1" autocomplete=off>
+						</div>
+					</div>
+				</div>
+			</form>
 
-	<!-- PLAYER INPUT FIELDS -->
-	<form id="playerForm">
-		<div id="playerInputs" class="player-input-fields">
-			<div class="player-input-group mb-3">
-				<div class="input-group">
-					<input type="text" class="form-control player-name-input" id="player1" placeholder="Player 1">
+			<!-- BUTTONS -->
+			<div class="d-flex flex-column align-items-center">
+				<button type="button" id="addPlayer" class="btn btn-action fw-bold">Add Player</button>
+				<div class="mt-4 text-center">
+					<p class="mb-0">
+						<a id ="startGameButton" href="/game" class="btn btn-action fw-bold">Start Game</a>
+					</p>
+				</div>
+			</div>
+
+			<!-- TOURNAMENT SETTINGS -->
+			<div id="settingsView" class="container-md settings-input-fields mt-4">
+				<!-- <h5 class="text-center mt-4 mb-4">Tournament Settings</h5> -->
+			
+				<!-- POINTS TO WIN -->
+				<div class="mb-3 settings-group points-to-win">
+					<label class="form-label text-center fw-bold">Points to win:</label>
+					<div class="btn-container d-flex flex-wrap justify-content-center btn-group-points-to-win" role="group" aria-label="Points to win">
+						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="3">3</button>
+						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="5">5</button>
+						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="10">10</button>
+						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="15">15</button>
+						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="20">20</button>
+					</div>
+				</div>
+		
+				<!-- Number of Games Buttons -->
+				<div class="mb-3 settings-group number-of-games">
+					<label class="form-label text-center fw-bold">Number of Games:</label>
+					<div class="btn-container d-flex flex-wrap justify-content-center btn-group-number-of-games" role="group" aria-label="Number of Games">
+						<button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="1">1</button>
+						<button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="2">2</button>
+						<button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="3">3</button>
+						<button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="4">4</button>
+						<button type="button" class="btn btn-setting" data-setting="numberOfGames" data-value="5">5</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</form>
-
-	<!-- BUTTONS -->
-	<div class="d-flex flex-column align-items-center">
-		<button type="button" id="addPlayer" class="btn btn-primary mb-2" style="width: 150px;">Add Player</button>
-		<div class="mt-4 text-center">
-			<p class="mb-0">
-				<a href="/game" class="btn btn-success">Start Game</a>
-			</p>
-		</div>
 	</div>
-
-	<!-- TOURNAMENT SETTINGS -->
-	<div id="settingsView" class="container-md settings-input-fields mt-4">
-		<h5 class="text-center mt-4 mb-4"">Tournament Settings</h5>
-
-		<!-- POINTS TO WIN -->
-		<div class="mb-3">
-			<label for="pointsToWin" class="form-label">Points to win:</label>
-			<div class="input-group">
-				<button class="btn btn-outline-secondary" type="button">-</button>
-				<span id="pointsToWinDisplay" class="form-control text-center">5</span>
-				<button class="btn btn-outline-secondary" type="button">+</button>
-			</div>
-		</div>
-		
-		<!-- NUMBER OF GAMES -->
-		<div class="mb-3">
-			<label for="numberOfGames" class="form-label">Number of games:</label>
-			<div class="input-group">
-				<button class="btn btn-outline-secondary" type="button">-</button>
-				<span id="numberOfGamesDisplay" class="form-control text-center">1</span>
-				<button class="btn btn-outline-secondary" type="button">+</button>
-			</div>
-		</div>
-	</div>
-
 </div>
