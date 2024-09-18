@@ -19,7 +19,7 @@ export async function initGameOnlineView() {
 function connectWebSocket() {
 	const authToken = Cookies.getCookie("accessToken");
 	const wsUrl = 'ws://localhost:8000/ws/matchmaking/';
-  
+
 	try {
 	  // Create a WebSocket connection with custom headers ->>> INVALID PROTOCOL
 	  const socket = new WebSocket(wsUrl, {
@@ -27,15 +27,15 @@ function connectWebSocket() {
 		  'Authorization': `Bearer ${authToken}`
 		}
 	  });
-  
+
 	  socket.addEventListener('open', (event) => {
 		console.log('WebSocket connection opened');
 	  });
-  
+
 	  socket.addEventListener('message', (event) => {
 		console.log('Message from server:', event.data);
 	  });
-  
+
 	  socket.addEventListener('close', (event) => {
 		if (event.wasClean) {
 		  console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
@@ -43,11 +43,11 @@ function connectWebSocket() {
 		  console.error('Connection died');
 		}
 	  });
-  
+
 	  socket.addEventListener('error', (error) => {
 		console.error('WebSocket error:', error);
 	  });
-  
+
 	  return socket;
 	} catch (error) {
 	  console.error('Error establishing WebSocket connection:', error);
@@ -91,18 +91,18 @@ async function connectWebSocketWithHeaderToken() {
 	try {
 	  // Create a WebSocket connection
 	  const socket = new WebSocket(wsUrl);
-  
+
 	  // Set up event listeners
 	  socket.addEventListener('open', (event) => {
 		console.log('WebSocket connection opened');
 		// Send the authentication token immediately after connection is established
 		socket.send(JSON.stringify({ token: authToken }));
 	  });
-  
+
 	  socket.addEventListener('message', (event) => {
 		console.log('Message from server:', event.data);
 	  });
-  
+
 	  socket.addEventListener('close', (event) => {
 		if (event.wasClean) {
 		  console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
@@ -110,11 +110,11 @@ async function connectWebSocketWithHeaderToken() {
 		  console.error('Connection died');
 		}
 	  });
-  
+
 	  socket.addEventListener('error', (error) => {
 		console.error('WebSocket error:', error);
 	  });
-  
+
 	  return socket;
 	} catch (error) {
 	  console.error('Error establishing WebSocket connection:', error);
@@ -130,8 +130,8 @@ function connectWebSocketWithMessageToken() {
 		console.log('WebSocket connection opened (Message Token Method)');
 
 		socket.send(JSON.stringify({
-			type: 'Authorization',
-			token: `Bearer ${authToken}`
+            action: 'join_game',
+			token: `${authToken}`
 		}));
 	});
 
@@ -169,19 +169,19 @@ async function connectWebSocketWithHeaderTokenHTTP() {
 		  'Connection': 'Upgrade'
 		}
 	  });
-  
+
 	  if (response.ok) {
 		// If the server accepts the connection, create a WebSocket
 		const socket = new WebSocket(wsUrl);
-  
+
 		socket.addEventListener('open', (event) => {
 		  console.log('WebSocket connection opened (Header Token Method)');
 		});
-  
+
 		socket.addEventListener('message', (event) => {
 		  console.log('Message from server:', event.data);
 		});
-  
+
 		socket.addEventListener('close', (event) => {
 		  if (event.wasClean) {
 			console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
@@ -189,11 +189,11 @@ async function connectWebSocketWithHeaderTokenHTTP() {
 			console.error('Connection died');
 		  }
 		});
-  
+
 		socket.addEventListener('error', (error) => {
 		  console.error('WebSocket error (Header Token Method):', error);
 		});
-  
+
 		return socket;
 	  } else {
 		throw new Error('Failed to establish WebSocket connection');

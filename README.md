@@ -7,13 +7,13 @@
 - **Web App**: Javascript, HTML, CSS, Bootstrap
 - **Backend**: Django, REST
 - **Database**: PostgreSQL
-- **Authentication**: OAuth2, JWT, 2FA
+- **Authentication**: JWT, 2FA
 - **Containerization**: Docker, Docker Compose
 - **Real-time Communication**: WebSockets
 - **CLI app**: Python3
 
 ## 🚀 Features
-- **User Authentication**: Secure login system with OAuth2 integration and 2FA.
+- **User Authentication**: Secure login system with JWT integration and 2FA.
 - **Game Feature**: Implemented a multiplayer game (e.g., Pong) that users can play against each other.
 - **User Profiles**: Customizable profiles with avatars, status messages, friends, played games and settings.
 - **Friend System**: Add, remove, and block friends.

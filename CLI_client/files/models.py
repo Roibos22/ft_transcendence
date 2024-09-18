@@ -3,8 +3,10 @@ import json
 from constants import url
 import urllib.parse
 from colorama import Fore, Back, Style
+import websockets
+import curses
 
-class User():
+class User:
     id:int=None
     username:str=None
     public_name:str=None
@@ -177,4 +179,110 @@ class User():
             print(f'Error: {response}')
             print(Fore.GREEN + '---------------------')
         # answers = answers['form']
+
+class Websocket:
+    def __init__(self, uri, token):
+        self.uri = uri
+        self.token = token
+        self.websocket = None
+
+    async def  connect(self):
+        self.websocket = await websockets.connect(self.uri, extra_headers={'Authorization': f'Bearer {self.token}'})
+    async def send(self, data):
+        try:
+            await self.websocket.send(json.dumps(data))
+        except websockets.exceptions.ConnectionClosed:
+            print('Wesocket: no connection on send')
+    async def recieve(self):
+        try:
+            data: json = await self.websocket.recv()
+            if data:
+                return json.loads(data)
+        except websockets.exceptions.ConnectionClosed:
+            print('Wesocket: no connection on recv')
+            return None
+    async def close(self):
+        if self.websocket:
+            await self.websocket.close()
+
+
+
+class Game:
+    def __init__(self, data: dict, websocket):
+        self.websocket: Websocket = websocket
+        self._game_width = data['maze']['width']
+        self._game_height = data['maze']['height']
+        self._paddle_size = data['paddle_size']
+        self._no_players = data['no_players']
+        self._player_no = data['player_no']
+
+    def retrieve_data(self):
+        pass
+
+    def start(self):
+        curses.wrapper(self.main)
+    def main(self, stdscr):
+        self._stdscr = stdscr
+        curses.curs_set(0)
+        curses.noecho()
+        stdscr.keypad(True)
+        self._stdscr.clear()
+        self._stdscr.nodelay(1)
+        self._stdscr.timeout(100)
+
+    def check_window(self):
+        max_y, max_x = self._stdscr.getmaxyx()
+
+    # Check if terminal is at the required size
+        if max_y != self._game_height or max_x != self._game_width:
+            # If not, display a message and wait for resizing
+            self._stdscr.clear()
+            self._stdscr.addstr(0, 0, f"Please resize your terminal to {self._game_width}x{self._game_height}.")
+            self._stdscr.refresh()
+
+            # Wait for the user to resize the terminal
+            while max_y != self._game_height or max_x != self._game_width:
+                max_y, max_x = self._stdscr.getmaxyx()
+                self._stdscr.clear()
+                self._stdscr.addstr(0, 0, f"Current size: {max_x}x{max_y}. Please resize your terminal to {self._game_width}x{self._game_height}.")
+                self._stdscr.refresh()
+
+    def draw_vert_paddle(self, paddle: dict):
+        pos_bot: int = int(paddle.get('bot_position'))
+        pos_top: int = int(paddle.get('top_position'))
+        x: int = 1 if paddle.get('side') == 'Left' else self._game_width - 2
+        for i in range(pos_top, pos_bot):
+            max_y, max_x = self._stdscr.getmaxyx()
+            # print(f'Max_y: {max_y}, max_x: {max_x}, paddle_top: {pos_top}, paddle_bot: {pos_bot}, current_y: {i}')
+            if 0 <= i < max_y and 0 <= x < max_x:
+                self._stdscr.addch(i, x, '|')
+            if x == self._game_width - 1:
+                if 0 <= i < max_y and 0 <= x - 1 < max_x:
+                    self._stdscr.addch(i, x - 1, '|')
+            else:
+                if 0 <= i < max_y and 0 <= x + 1 < max_x:
+                    self._stdscr.addch(i, x + 1, '|')
+        self._stdscr.refresh()
+
+    def draw_ball(self, ball_pos:dict):
+        ball_y: int = int(ball_pos.get('y'))
+        ball_x: int = int(ball_pos.get('x'))
+        if 0 <= ball_y <= self._game_height - 1 and 0 <= ball_x <= self._game_width - 1:
+            self._stdscr.addch(ball_y, ball_x, '0')
+        self._stdscr.refresh()
+
+    async def move_paddle(self, key):
+        if key == curses.KEY_UP:
+            print("key up")
+            self.websocket.send({
+                "action": "move_player",
+                "direction": 1
+            })
+        elif key == curses.KEY_DOWN:
+            print("key up")
+            self.websocket.send({
+                "action": "move_player",
+                "direction": -1
+            })
+
 

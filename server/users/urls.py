@@ -19,5 +19,4 @@ urlpatterns = [
     path('profile/<int:user_id>/delete/', delete_user, name='delete_user'), # I actually don't need user_id?
 	path('profile/<int:user_id>/update/', update_user, name='update_user') # I actually don't need user_id?
 
-    # path('o/', include(oauth2_urls)),
 ]

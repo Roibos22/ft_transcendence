@@ -12,9 +12,10 @@ matchmaking_queue = {}
 
 class MatchmakingConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        from users.models import User
-    
-        print("Matchmaking consumer: Client Connected but not yet authenticated!")
+        from django.contrib.auth.models import AnonymousUser
+        self.user = AnonymousUser()
+
+        print("Matchmaking consumer: Client connected to websocket")
         await self.accept()
 
     async def receive(self, text_data):
@@ -30,8 +31,9 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
         from game.models import Game
         from jwt import decode as jwt_decode
         from django.conf import settings
-        from django.contrib.auth.models import AnonymousUser
         from jwt import InvalidSignatureError, ExpiredSignatureError, DecodeError
+        from django.contrib.auth.models import AnonymousUser
+
 
         token = data.get('token')
         if token:

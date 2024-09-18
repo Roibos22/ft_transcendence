@@ -1,8 +1,8 @@
 import random
 import time
 screen_width = 100 #?
-screen_height = 50 #?
-paddle_size = 10 #?
+screen_height = 25 #?
+paddle_size = 4 #?
 ball_speed = 1 #?
 
 class Paddle:
@@ -99,7 +99,7 @@ class GameLogic:
         self._paddle_size = paddle_size
         # Init paddles
         self._player1: Paddle = Paddle('Left', self._screen_size.get('height'), self._paddle_size) # left player
-        self._player2: Paddle = Paddle('Right', self._screen_size.get('width'), self._paddle_size) # right player
+        self._player2: Paddle = Paddle('Right', self._screen_size.get('height'), self._paddle_size) # right player
         # Init ball
         self._ball: Ball = Ball({'N': True, 'S': True, 'W': False, 'E': False}, self._screen_size) # Set walls to True
 
@@ -181,9 +181,11 @@ class GameLogic:
         }
         return data
 
-    def get_init_data(self):
+    def get_init_data(self, player_no):
         data = {
             'maze': self._screen_size,
             'no_players': 2,
-            'paddle_size': self._paddle_size
+            'paddle_size': self._paddle_size,
+            'player_no': player_no
         }
+        return data
