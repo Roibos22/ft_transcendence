@@ -131,7 +131,8 @@ class GameLogic:
         if not self._player2_ready or not self._player1_ready:
             return {
                 'game_id': self.game_id,
-                'start_time': 3, # adjust this to your value
+                'phase': 'Waiting players',
+                'countdown': 3, # adjust this to your value
             }
         # Move ball
         if self._start_time == 0 and time.perf_counter() - self._last_tick > self._ball.speed:
@@ -143,7 +144,8 @@ class GameLogic:
             print('send countdown')
             return {
                 'game_id': self.game_id,
-                'start_time': self._start_time - time.time(),
+                'phase': 'Countdown',
+                'countdown': self._start_time - time.time(),
             }
         elif self._start_time !=0:
             print('send countdown else')
@@ -156,7 +158,11 @@ class GameLogic:
         ball = self._ball
         data = {
             'game_id': self.game_id,
-            'start_time': self._start_time,
+            'phase': 'running',
+            'player1Pos': player_1.position_top,
+            'player2Pos': player_2.position_top,
+            'ball': {'x': ball._position_x, 'y': ball._position_y},
+            'countdown': self._start_time,
             'player_1': {
                 'side': player_1.side,
                 'size': player_1.size,
