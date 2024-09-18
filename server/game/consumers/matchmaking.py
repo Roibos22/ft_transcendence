@@ -33,7 +33,7 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
         from django.contrib.auth.models import AnonymousUser
         from jwt import InvalidSignatureError, ExpiredSignatureError, DecodeError
 
-        token = data['token']
+        token = data.get('token')
         if token:
             try:
                 data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
@@ -44,9 +44,9 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
         else:
             self.user = AnonymousUser()
 
-        if self.user is None or not self.user.is_authenticated and data.get("2fa_complete"):
+        if not self.user.is_authenticated or not data.get("2fa_complete"):
             await self.close()
-            print("LiveGame consumer: User not authenticated")
+            print("Matchmaking consumer: User not authenticated")
             return
 
         print("Matchmaking Consumer: User Authenticated!")
@@ -56,7 +56,6 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
         matchmaking_queue[self.user.id].append(self)
 
         if len(matchmaking_queue) >= 2:
-            print("test")
             player1_id, player1_connections = matchmaking_queue.popitem()
             player2_id, player2_connections= matchmaking_queue.popitem()
 
