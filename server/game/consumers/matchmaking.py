@@ -13,19 +13,18 @@ matchmaking_queue = {}
 class MatchmakingConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         from users.models import User
-        from game.models import Game
 
         user:User = self.scope['user']
         if user is None or not user.is_authenticated:
             await self.close()  # Close the connection if not authenticated
             print("Matchmaking consumer: User not authenticated")
             return
-        
+
         print("Matchmaking consumer: User Connected!")
         await self.accept()
 
         async with matchmaking_queue_lock:
-            
+
             if user.id not in matchmaking_queue:
                 matchmaking_queue[user.id] = []
             matchmaking_queue[user.id].append(self)
