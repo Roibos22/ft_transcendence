@@ -2,6 +2,18 @@ import { loadTemplate } from '../router.js';
 import { PongGame } from '../conponents_online/PongGame.js';
 import * as Cookies from '../services/cookies.js';
 
+export class OnlineGameView {
+	constructor() {
+		this.game = null;
+	}
+
+	async init() {
+		const content = await loadTemplate('online-game');
+		document.getElementById('app').innerHTML = content;
+		this.game = new PongGame();
+	}
+}
+
 export async function initGameOnlineView() {
 	const content = await loadTemplate('online-game');
 	document.getElementById('app').innerHTML = content;

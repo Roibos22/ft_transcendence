@@ -39,14 +39,17 @@ export const initState = {
 		mode: GameModes.SINGLE,
 	},
 	currentMatch: {
-		player1: {},
-		player2: {},
-		winner: null
+		player1Name: "Player 1",
+		player2Name: "Player 2",
+		player1Score: 0,
+		player2Score: 0,
+		winner: "",
 	},
 	gameData: {
 		phase: GamePhases.WAITING_TO_START,
-		player1pos: 0,
-		player2pos: 0,
+		player1Pos: 0,
+		player2Pos: 0,
+		countdown: -1,
 		ball: {
 			x: 0,
 			y: 0,

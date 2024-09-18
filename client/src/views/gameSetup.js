@@ -79,10 +79,6 @@ export class GameSetupView {
 			});
 		});
 
-		playerInput.addEventListener('input', function() {
-			PlayerUtils.updatePlayers();
-		});
-
 		startGameButton.addEventListener('click', () => {
 			PlayerUtils.updatePlayers();
 		});

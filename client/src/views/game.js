@@ -24,7 +24,7 @@ export class GameView {
         document.getElementById('app').innerHTML = content;
 
 		this.setupcontent();
-		this.startGame();
+		// this.startGame();
 	}
 
 	setupcontent() {
@@ -46,15 +46,11 @@ export class GameView {
 	}
 
 	update() {
-		console.log("State:", state.data);
-		const player1Name = state.get("currentMatchInfo", "players", "player1", "name");
-		const player2Name = state.get("currentMatchInfo", "players", "player2", "name");
-		const player1Score = state.get("currentMatchInfo", "players", "player1", "score");
-		const player2Score = state.get("currentMatchInfo", "players", "player2", "score");
+		const { player1Name, player2Name, player1Score, player2Score } = state.get('currentMatch');
 
 		this.content.scoreCard.player1Name.textContent = player1Name;
 		this.content.scoreCard.player2Name.textContent = player2Name;
-		this.content.scoreCard.player1Score.textContent = player1Score;
-		this.content.scoreCard.player2Score.textContent = player2Score;
+		this.content.scoreCard.player1Score.textContent = `${player1Score}`;
+		this.content.scoreCard.player2Score.textContent = `${player2Score}`;
 	}
 }
