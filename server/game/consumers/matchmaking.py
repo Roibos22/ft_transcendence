@@ -46,7 +46,7 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
         else:
             self.user = AnonymousUser()
 
-        if self.user is None or not self.user.is_authenticated and data.get("2fa_complete"):
+        if (self.user is None or not self.user.is_authenticated) and data.get("2fa_complete"):
             await self.close()
             print("LiveGame consumer: User not authenticated")
             return
