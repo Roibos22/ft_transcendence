@@ -37,6 +37,3 @@ class GameLogic():
             new_player_pos = self.player2_pos + (direction * PLAYER_STEP)
             if new_player_pos >= PLAYER_SIZE and new_player_pos <= 100:
                 self.player2_pos = new_player_pos
-
-            
-
