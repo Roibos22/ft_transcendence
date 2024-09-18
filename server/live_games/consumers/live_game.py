@@ -10,13 +10,9 @@ game_sessions = {}
 class LiveGameConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-
+        
+        self.user_is_authenticated = False
         await self.accept()
-
-        await self.run()
-
-    async def run(self):
-        self.periodic_task = asyncio.create_task(self.send_game_updates())
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -24,17 +20,17 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
 
         if action == 'authenticate':
             await self.handle_authenticate(data)
-        elif action == 'get_state':
-            await self.handle_get_state()
-        elif action == 'player_ready':
-            await self.handle_player_ready()
-        elif action == 'move_player':
-            await self.handle_move(data)
-            # await self.send(text_data='MOVE RECIEVED')
-        elif action == 'get_init_data':
-            await self.send_init_data()
-        elif action == 'message':
-            await self.handle_receive_message(data)
+        elif self.user_is_authenticated:
+            if action == 'get_state':
+                await self.handle_get_state()
+            elif action == 'player_ready':
+                await self.handle_player_ready()
+            elif action == 'move_player':
+                await self.handle_move(data)
+            elif action == 'get_init_data':
+                await self.send_init_data()
+            elif action == 'message':
+                await self.handle_receive_message(data)
 
     async def send_init_data(self):
         await self.send(text_data=json.dumps({"game_data": game_sessions[self.game_id].get_init_data(self.user_player_no)}))
@@ -48,47 +44,63 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         from django.contrib.auth.models import AnonymousUser
         from jwt import InvalidSignatureError, ExpiredSignatureError, DecodeError
 
-        token = data['token']
+        token = data.get('token')
         if token:
             try:
                 data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+                print(json.dumps(data))
                 self.user = await self.get_user(data['user_id'])
             except (TypeError, KeyError, InvalidSignatureError, ExpiredSignatureError, DecodeError):
                 self.user = AnonymousUser()
         else:
             self.user = AnonymousUser()
 
-        # if self.user is None or not self.user.is_authenticated:
-        #     await self.close()
-        #     print("LiveGame consumer: User not authenticated")
-        #     return
+        if not self.user.is_authenticated or not data.get("2fa_complete"):
+            await self.close()
+            print("LiveGame consumer: User not authenticated")
+            return
 
-        # self.game_id = self.scope['url_route']['kwargs']['game_id']
-        # self.game_group_name = f'game_{self.game_id}'
-        # game = await sync_to_async(Game.objects.get)(id=self.game_id)
-        # players_username = await database_sync_to_async(
-        #     lambda: (game.player1.username,game.player2.username)
-        # )()
+        print("LiveGame Consumer: User Authenticated!")
 
-        # if self.user.username == players_username[0]:
-        #     self.user_player_no = 1
-        # elif self.user.username == players_username[1]:
-        #     self.user_player_no = 2
-        # else:
-        #     print("LiveGame consumer: User is not part of this game")
-        #     await self.close()
-        #     return
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        self.game_group_name = f'game_{self.game_id}'
+        game = await sync_to_async(Game.objects.get)(id=self.game_id)
+        players_username = await database_sync_to_async(
+            lambda: (game.player1.username,game.player2.username)
+        )()
 
-        # await self.channel_layer.group_add(
-        #     self.game_group_name,
-        #     self.channel_name
-        # )
+        if self.user.username == players_username[0]:
+            self.user_player_no = 1
+        elif self.user.username == players_username[1]:
+            self.user_player_no = 2
+        else:
+            print("LiveGame consumer: User is not part of this game")
+            await self.close()
+            return
 
-        # if (self.game_id not in game_sessions):
-        #     game_sessions[self.game_id] = GameLogic(self.game_id)
+        await self.channel_layer.group_add(
+            self.game_group_name,
+            self.channel_name
+        )
+
+        if (self.game_id not in game_sessions):
+            game_sessions[self.game_id] = GameLogic(self.game_id)
 
         print("LiveGame consumer: User Connected! Username: ", self.user.username)
+        self.user_is_authenticated = True
+        self.periodic_task = asyncio.create_task(self.send_game_updates())
 
+    @database_sync_to_async
+    def get_user(self, user_id):
+        from django.contrib.auth.models import AnonymousUser
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+        """Return the user based on user id."""
+        try:
+            return User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return AnonymousUser()
 
     async def handle_get_state(self):
         await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
