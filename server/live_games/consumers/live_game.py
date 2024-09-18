@@ -1,10 +1,9 @@
-import random
-import string
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 import json
 from asgiref.sync import sync_to_async
-from live_games.game_logic.game_logic import GameLogic
+from live_games.game import GameLogic
+import asyncio
 
 game_sessions = {}
 
@@ -23,10 +22,18 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game_group_name = f'game_{self.game_id}'
         game = await sync_to_async(Game.objects.get)(id=self.game_id)
-        player1_username = await database_sync_to_async(lambda: game.player1.username)()
-        player2_username = await database_sync_to_async(lambda: game.player2.username)()
+        players_username = await database_sync_to_async(
+            lambda: (game.player1.username,game.player2.username)
+        )()
 
-        # remove player if not part of game...
+        if self.user.username == players_username[0]:
+            self.user_player_no = 1
+        elif self.user.username == players_username[1]:
+            self.user_player_no = 2
+        else:
+            print("LiveGame consumer: User is not part of this game")
+            await self.close()
+            return
 
         await self.channel_layer.group_add(
             self.game_group_name,
@@ -34,32 +41,41 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         )
 
         if (self.game_id not in game_sessions):
-            game_sessions[self.game_id] = GameLogic(player1_username, player2_username)
+            game_sessions[self.game_id] = GameLogic(self.game_id)
 
         print("LiveGame consumer: User Connected! Username: ", self.user.username)
 
         await self.accept()
 
-        # check if user in game
-
-        # create single instance of game class
+        self.periodic_task = asyncio.create_task(self.send_game_updates())
 
     async def receive(self, text_data):
-        import json
         data = json.loads(text_data)
+        action = data.get('action')
 
-        if data.get('action') == 'message':
+        if action == 'message':
             await self.handle_receive_message(data)
-        elif data.get('action') == 'get_state':
+        elif action == 'get_state':
             await self.handle_get_state()
-        elif data.get('action') == 'move':
+        elif action == 'player_ready':
+            await self.handle_player_ready()
+        elif action == 'move_player':
             await self.handle_move(data)
 
     async def handle_get_state(self):
-        await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state_dict()}))
+        await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
+
+    async def handle_player_ready(self):
+        if self.user_player_no == 1:
+            game_sessions[self.game_id].set_player1_ready()
+        elif self.user_player_no == 2:
+            game_sessions[self.game_id].set_player2_ready()
 
     async def handle_move(self, data):
-        game_sessions[self.game_id].move_player(self.user.username, int(data['direction']))
+        if self.user_player_no == 1:
+            game_sessions[self.game_id].move_player1(int(data['direction']))
+        elif self.user_player_no == 2:
+            game_sessions[self.game_id].move_player2(int(data['direction']))
 
     async def handle_receive_message(self, message):
         await self.channel_layer.group_send(
@@ -73,6 +89,16 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event["message"]
         await self.send(text_data=json.dumps({"message": message}))
+
+    async def send_game_updates(self):
+        try:
+            while True:
+                await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
+                await asyncio.sleep(1)
+
+        except asyncio.CancelledError:
+            pass
+
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
