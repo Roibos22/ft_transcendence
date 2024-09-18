@@ -20,7 +20,8 @@ class State {
             }
             path = path[key];
         });
-        return deepCopy(path);
+        return path;
+        // return deepCopy(path);
     }
 
     set(...args) {

@@ -27,23 +27,20 @@ export const initState = {
 	user: {
 		username: "",
 		displayName: "",
-		authToken: "",
-		refreshToken: ""
-	},
-	userData: {
+		onlineStatus: false
 	},
 	gameSettings: {
-		displayType: GameTypes.TWO_D,
-		pointsToWin: 5,
 		numberOfGames: 1,
+		displayType: GameTypes.TWO_D,
 		mode: GameModes.SINGLE,
+		pointsToWin: 5,
 	},
 	currentMatch: {
 		player1Name: "Player 1",
 		player2Name: "Player 2",
 		player1Score: 0,
 		player2Score: 0,
-		winner: "",
+		winner: ""
 	},
 	gameData: {
 		phase: GamePhases.WAITING_TO_START,
@@ -53,11 +50,12 @@ export const initState = {
 		ball: {
 			x: 0,
 			y: 0,
-		},
+		}
 	},
 	tournament: {
 		players: [],
+		results: [],
 		matches: [],
-		currentMatchIndex: 0,
+		currentMatchIndex: 0
 	},
 };

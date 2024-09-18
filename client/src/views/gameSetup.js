@@ -2,7 +2,6 @@ import { GameModes } from '../constants.js';
 import { loadTemplate } from '../router.js';
 import state from '../State.js';
 import * as Cookies from '../services/cookies.js';
-import * as PlayerUtils from '../utils/playerUtils.js';
 import { buttonIdToGameMode } from '../utils/utils.js';
 
 export class GameSetupView {
@@ -26,24 +25,28 @@ export class GameSetupView {
 				multiPlayer: document.getElementById('btn_multiplayer'),
 				online: document.getElementById('btn_online')
 			},
-			multiPlayerOptions:{
-				playerInputsContainer: document.getElementById('playerInputs'),
-				addPlayerButton: document.getElementById('addPlayer')
+			displayNameInputs: {
+				player1: document.getElementById('player1input'),
+				player2: document.getElementById('player2input'),
+				player2container: document.getElementById('player2container')
 			},
 			settingsButtons: {
 				settingsContainer: document.getElementById('settingsView'),
 				pointsToWinButtons: document.querySelectorAll('[data-setting="pointsToWin"]'),
 				numberOfGamesButtons: document.querySelectorAll('[data-setting="numberOfGames"]')
 			},
-			playerInput: document.getElementById('playerForm'),
-			startGameButton: document.getElementById('startGameButton')
+			startGameButtons: {
+				start: document.getElementById('startGameButton'),
+				oneVone: document.getElementById('online1v1Button'),
+				tournament: document.getElementById('joinTournamentButton')
+			}
+				
 		};
 	}
 
 	addEventListeners() {
 		const gameModeButtons = this.UIelements.gameModeButtons;
-		const { playerInput, startGameButton } = this.UIelements;
-		const { addPlayerButton, playerInputsContainer } = this.UIelements.multiPlayerOptions;
+		const { start } = this.UIelements.startGameButtons;
 		const { pointsToWinButtons, numberOfGamesButtons } = this.UIelements.settingsButtons;
 
 		Object.values(gameModeButtons).forEach(button => {
@@ -52,18 +55,6 @@ export class GameSetupView {
 				state.set('gameSettings', 'mode', buttonIdToGameMode(id));
 			});
 		});
-
-		if (addPlayerButton) {
-			addPlayerButton.addEventListener('click', PlayerUtils.addPlayer);
-		}
-
-		if (playerInputsContainer) {
-			playerInputsContainer.addEventListener('click', (e) => {
-				if (e.target.classList.contains('btn-danger')) {
-					PlayerUtils.deletePlayer(e.target);
-				}
-			});
-		}
 
 		Object.values(pointsToWinButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
@@ -79,8 +70,9 @@ export class GameSetupView {
 			});
 		});
 
-		startGameButton.addEventListener('click', () => {
-			PlayerUtils.updatePlayers();
+		start.addEventListener('click', () => {
+			console.log('state', state.data);
+			this.updatePlayers();
 		});
 	}
 
@@ -98,18 +90,24 @@ export class GameSetupView {
 		const numberOfGames = state.get('gameSettings', 'numberOfGames');
 
 		const gameModeButtons = this.UIelements.gameModeButtons;
-		const { addPlayerButton, playerInputsContainer } = this.UIelements.multiPlayerOptions;
-		const { startGameButton } = this.UIelements;
+		const player1Input = this.UIelements.displayNameInputs.player1;
+		const player2container = this.UIelements.displayNameInputs.player2container;
+		const { start, oneVone, tournament } = this.UIelements.startGameButtons;
 		const { pointsToWinButtons, numberOfGamesButtons, settingsContainer } = this.UIelements.settingsButtons;
 
 		gameModeButtons.multiPlayer.classList.toggle('active', gameMode === GameModes.MULTI);
 		gameModeButtons.singlePlayer.classList.toggle('active', gameMode === GameModes.SINGLE);
 		gameModeButtons.online.classList.toggle('active', gameMode === GameModes.ONLINE);
 
-		addPlayerButton.style.display = gameMode === GameModes.MULTI ? 'block' : 'none';
-		startGameButton.href = gameMode === GameModes.ONLINE ? '/online-game' : '/game';
+		//set player1 placeholder
+		player1Input.placeholder = gameMode === GameModes.ONLINE ? state.get('user', 'username') : 'Player 1';
+		player2container.classList.toggle('d-none', gameMode !== GameModes.MULTI);
+
 		settingsContainer.style.display = gameMode === GameModes.ONLINE ? 'none' : 'block';
-		playerInputsContainer.style.display =  gameMode === GameModes.MULTI ? 'block' : 'none';
+	
+		start.classList.toggle('d-none', gameMode === GameModes.ONLINE);
+		oneVone.classList.toggle('d-none', gameMode !== GameModes.ONLINE);
+		tournament.classList.toggle('d-none', gameMode !== GameModes.ONLINE);
 	
 		Object.values(pointsToWinButtons).forEach(button => {
 			const value = parseInt(button.dataset.value);
@@ -119,5 +117,18 @@ export class GameSetupView {
 			const value = parseInt(button.dataset.value);
 			button.classList.toggle('active', numberOfGames === value);
 		});
+	}
+
+	updatePlayers() {
+		const { player1, player2 } = this.UIelements.displayNameInputs;
+
+		player1.value = player1.value || player1.placeholder;
+		player2.value = player2.value || player2.placeholder;
+
+		state.set('currentMatch', 'player1Name', player1.value);
+		if (state.get('gameSettings', 'mode') === GameModes.MULTI) {
+			state.set('currentMatch', 'player2Name', player2.value);
+		}
+		state.set('user', 'displayName', player1.value);
 	}
 }
