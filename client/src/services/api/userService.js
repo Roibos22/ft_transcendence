@@ -15,6 +15,19 @@ export async function loginUser(username, password) {
 	}
 }
 
+export async function registerUser(userData) {
+	try {
+		const data = await API.fetchWithoutAuth(`${API.API_BASE_URL}/users/create/`, {
+			method: 'POST',
+			body: JSON.stringify(userData)
+		});
+		return { success: true, data };
+	} catch (error) {
+		console.error('Registration error:', error);
+		return { success: false, error };
+	}
+}
+
 export async function fetchUserData() {
 	try {
 		const username = Cookies.getCookie("username");
