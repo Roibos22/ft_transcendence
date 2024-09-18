@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     # OAuth 2.0
-    'oauth2_provider',
+    # 'oauth2_provider',
     # 2FA
     'django_otp',  # Core OTP support
     'django_otp.plugins.otp_totp',  # Time-based OTP support (Google Authenticator, etc.)
@@ -56,7 +56,6 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication'
     ),
 }
 
@@ -149,6 +148,7 @@ DATABASES = {
     }
 }
 
+ASSETS_ROOT = '/app/avatars/'
 
 AUTH_USER_MODEL = 'users.User'
 
