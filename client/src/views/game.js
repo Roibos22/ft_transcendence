@@ -1,6 +1,6 @@
 import { PongGame } from '../components/PongGame.js';
 import { Tournament } from '../components/Tournament.js';
-import { loadTemplate } from '../router.js';
+import Router from '../router.js';
 import state from '../State.js';
 
 export class GameView {
@@ -20,7 +20,7 @@ export class GameView {
 	}
 
 	async init() {
-        const content = await loadTemplate('game');
+        const content = await Router.loadTemplate('game');
         document.getElementById('app').innerHTML = content;
 
 		this.setupcontent();

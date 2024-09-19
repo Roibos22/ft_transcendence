@@ -26,6 +26,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             elif action == 'player_ready':
                 await self.handle_player_ready()
             elif action == 'move_player':
+                print("LiveGame Consumer: Move Player" + str(data))
                 await self.handle_move(data)
             elif action == 'get_init_data':
                 await self.send_init_data()

@@ -1,4 +1,4 @@
-import { loadTemplate } from '../router.js';
+import Router from '../router.js';
 import * as Notification from '../services/notification.js';
 import * as UserService from '../services/api/userService.js';
 import state from '../State.js';
@@ -11,7 +11,7 @@ export class ProfileView {
 	}
 
 	async init() {
-		const content = await loadTemplate(this.template);
+		const content = await Router.loadTemplate(this.template);
 		document.getElementById('app').innerHTML = content;
 
 		this.UIelements = this.getUIElements();

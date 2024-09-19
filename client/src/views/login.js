@@ -1,4 +1,4 @@
-import { urlLocationHandler, loadTemplate } from '../router.js';
+import Router from '../router.js';
 import * as Cookies from '../services/cookies.js';
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';
@@ -10,7 +10,7 @@ export class LoginView {
 	}
 
 	async init() {
-		const content = await loadTemplate(this.template);
+		const content = await Router.loadTemplate(this.template);
         document.getElementById('app').innerHTML = content;
 		
 		this.UIelements = this.getUIElements();
@@ -37,7 +37,7 @@ export class LoginView {
 		this.UIelements.showRegistrationLink.addEventListener('click', (e) => {
 			e.preventDefault();
 			window.history.pushState({}, "", "/register");
-			urlLocationHandler();
+			Router.urlLocationHandler();
 		});
 	}
 
@@ -55,7 +55,7 @@ export class LoginView {
 				Cookies.setCookie("username", data.username, 24);
 				Notification.showNotification(["Login successful"]);
 				window.history.pushState({}, "", "/game-setup");
-				urlLocationHandler();
+				Router.handleLocationChange();
 			} else {
 				displayLoginError(response.error);
 			}

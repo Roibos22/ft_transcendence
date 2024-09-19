@@ -1,4 +1,4 @@
-import { urlLocationHandler, loadTemplate } from '../router.js';
+import Router from '../router.js';
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';
 
@@ -9,7 +9,7 @@ export class RegisterView {
 	}
 
 	async init() {
-		const content = await loadTemplate(this.template);
+		const content = await Router.loadTemplate(this.template);
 		document.getElementById('app').innerHTML = content;
 
 		this.UIelements = this.getUIElements();
@@ -40,7 +40,7 @@ export class RegisterView {
 		this.UIelements.showLoginLink.addEventListener('click', (e) => {
 			e.preventDefault();
 			window.history.pushState({}, "", "/");
-			urlLocationHandler();
+			Router.urlLocationHandler();
 		});
 	}
 
@@ -59,7 +59,7 @@ export class RegisterView {
 			if (response.success) {
 				Notification.showNotification(["Registration successful"]);
 				window.history.pushState({}, "", "/");
-				urlLocationHandler();
+				Router.urlLocationHandler();
 			} else {
 				displayRegistrationError(response.error);
 			}

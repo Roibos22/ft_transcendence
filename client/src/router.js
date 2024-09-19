@@ -1,56 +1,59 @@
 import { currentView } from './constants.js';
 import { urlRoutes } from './utils/routeUtils.js';
 
-export const urlLocationHandler = async () => {
-	let location = window.location.pathname;
-	if (location.length == 0) {
-		location = "/";
-	}
-	const route = urlRoutes[location] || urlRoutes["404"];
-	
-	const html = await fetch(route.template).then((response) => response.text());
-	document.getElementById("app").innerHTML = html;
-	document.title = route.title;
-	
-	initCurrentView();
-};
-
-export async function initCurrentView() {
-	const currentPath = window.location.pathname;
-    const ViewClass = urlRoutes[currentPath].view;
-
-    if (!ViewClass) {
-        window.history.pushState({}, "", "/404");
-        return;
+class Router {
+    constructor() {
+        this.routes = urlRoutes;
+        this.init();
     }
 
-    delete currentView.view;
-    currentView.view = new ViewClass();
+    init() {
+        window.onpopstate = this.handleLocationChange.bind(this);
+        document.addEventListener("click", (e) => this.handleLinkClick(e));
+        this.handleLocationChange();  // Initial route load
+    }
 
-    await currentView.view.init();
-}
+    async handleLocationChange() {
+        let location = window.location.pathname;
+        if (location.length === 0) {
+            location = "/";
+        }
+        const route = this.routes[location] || this.routes["404"];
+        
+        const html = await fetch(route.template).then(response => response.text());
+        document.getElementById("app").innerHTML = html;
+        document.title = route.title;
 
-const urlRoute = (event) => {
-	event = event || window.event;
-	event.preventDefault();
-	window.history.pushState({}, "", event.target.href);
-	urlLocationHandler();
-};
+        this.initCurrentView(location);
+    }
 
-document.addEventListener("click", (e) => {
-	const { target } = e;
-	if (!target.matches("nav a, a[href^='/']")) {
-		return;
+    handleLinkClick(event) {
+        const { target } = event;
+        if (target.matches("nav a, a[href^='/']")) {
+            event.preventDefault();
+            window.history.pushState({}, "", target.href);
+            this.handleLocationChange();
+        }
+    }
+
+	async initCurrentView(location) {
+		const ViewClass = this.routes[location].view;
+	
+		if (!ViewClass) {
+			window.history.pushState({}, "", "/404");
+			return;
+		}
+	
+		delete currentView.view;
+		currentView.view = new ViewClass();
+	
+		await currentView.view.init();
 	}
-	e.preventDefault();
-	urlRoute(e);
-});
 
-export async function loadTemplate(name) {
-	const response = await fetch(`/templates/${name}.html`);
-	return await response.text();
+	async loadTemplate(name) {
+        const response = await fetch(`/templates/${name}.html`);
+        return await response.text();
+    }
 }
 
-window.onpopstate = urlLocationHandler;
-window.route = urlRoute;
-urlLocationHandler();
+export default new Router();

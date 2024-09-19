@@ -1,5 +1,5 @@
 import { GameModes } from '../constants.js';
-import { loadTemplate } from '../router.js';
+import Router from '../router.js';
 import state from '../State.js';
 import * as Cookies from '../services/cookies.js';
 import { buttonIdToGameMode } from '../utils/utils.js';
@@ -10,7 +10,7 @@ export class GameSetupView {
 	}
 
 	async init() {
-		const content = await loadTemplate('game-setup');
+		const content = await Router.loadTemplate('game-setup');
 		document.getElementById('app').innerHTML = content;
 
 		this.UIelements = this.getUIElements();
