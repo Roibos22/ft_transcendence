@@ -1,5 +1,4 @@
 import { PongGame } from '../components/PongGame.js';
-import { Tournament } from '../components/Tournament.js';
 import Router from '../router.js';
 import state from '../State.js';
 
@@ -24,7 +23,7 @@ export class GameView {
         document.getElementById('app').innerHTML = content;
 
 		this.setupcontent();
-		// this.startGame();
+		this.startGame();
 	}
 
 	setupcontent() {
@@ -41,8 +40,6 @@ export class GameView {
 
 	startGame() {
 		this.game = new PongGame();
-		this.game.tournament = new Tournament(this.game);
-		this.game.startGame();
 	}
 
 	update() {
@@ -52,5 +49,7 @@ export class GameView {
 		this.content.scoreCard.player2Name.textContent = player2Name;
 		this.content.scoreCard.player1Score.textContent = `${player1Score}`;
 		this.content.scoreCard.player2Score.textContent = `${player2Score}`;
+
+		this.game.update();
 	}
 }

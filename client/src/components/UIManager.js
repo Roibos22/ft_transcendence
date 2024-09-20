@@ -20,14 +20,7 @@ export class UIManager {
             return;
         }
 
-        const currentMatch = tournament.currentMatch;
-        if (!currentMatch || !currentMatch.players || currentMatch.players.length < 2) {
-            console.error("Invalid current match data");
-            return;
-        }
-
-		const player1 = currentMatch.players[0];
-		const player2 = currentMatch.players[1];
+		const { player1Name, player2Name, player1Score, player2Score } = state.get('currentMatch');
 	
 		this.view.scoreCard.player1Name.innerHTML = player1.name;
 		this.view.scoreCard.player2Name.innerHTML = player2.name;

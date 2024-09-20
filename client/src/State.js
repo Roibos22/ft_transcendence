@@ -21,7 +21,6 @@ class State {
             path = path[key];
         });
         return path;
-        // return deepCopy(path);
     }
 
     set(...args) {

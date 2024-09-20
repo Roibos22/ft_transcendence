@@ -2,15 +2,9 @@ import { GameModes, GamePhases } from '../constants.js';
 import { incrementCurrentMatchIndex } from '../utils/utils.js';
 import state from '../State.js';
 
-export class Input {
+export default class Input {
 	constructor(game) {
 		this.game = game;
-		this.keys = {
-			w: false,
-			s: false,
-			ArrowUp: false,
-			ArrowDown: false
-		};
 	}
 
 	init() {
@@ -26,10 +20,22 @@ export class Input {
 	}
 
 	handleKeyDown(e) {
-		if (e.key in this.keys) {
-			this.keys[e.key] = true;
-		} else if (e.key === 'Enter') {
-			this.handleEnterKey();
+		switch(e.key) {
+			case 'w':
+				this.game.engine.player1.moveUp();
+				break;
+			case 's':
+				this.game.engine.player1.moveDown();
+				break;
+			case 'ArrowUp':
+				this.game.engine.player2.moveUp();
+				break;
+			case 'ArrowDown':
+				this.game.engine.player2.moveDown();
+				break;
+			case 'Enter':
+				this.handleEnterKey();
+
 		}
 	}
 

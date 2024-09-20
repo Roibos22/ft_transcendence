@@ -37,7 +37,7 @@ export class LoginView {
 		this.UIelements.showRegistrationLink.addEventListener('click', (e) => {
 			e.preventDefault();
 			window.history.pushState({}, "", "/register");
-			Router.urlLocationHandler();
+			Router.handleLocationChange();
 		});
 	}
 

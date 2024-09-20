@@ -40,7 +40,7 @@ export class RegisterView {
 		this.UIelements.showLoginLink.addEventListener('click', (e) => {
 			e.preventDefault();
 			window.history.pushState({}, "", "/");
-			Router.urlLocationHandler();
+			Router.handleLocationChange();
 		});
 	}
 
@@ -59,7 +59,7 @@ export class RegisterView {
 			if (response.success) {
 				Notification.showNotification(["Registration successful"]);
 				window.history.pushState({}, "", "/");
-				Router.urlLocationHandler();
+				Router.handleLocationChange();
 			} else {
 				displayRegistrationError(response.error);
 			}
