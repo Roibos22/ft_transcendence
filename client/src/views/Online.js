@@ -10,19 +10,27 @@ export class OnlineGameView {
 		this.game = null
 	}
 
+	// async init() {
+	// 	const content = await Router.loadTemplate('online-game');
+	// 	document.getElementById('app').innerHTML = content;
+	// 	const canvas = document.getElementById('gameCanvas');
+	// 	this.game2d = new PongGame(canvas);
+	// 	this.matchMakingSocket = new Socket('matchmaking', {});
+	// 	this.matchMakingSocket.socket.addEventListener('message', (event) => {
+	// 		const data = JSON.parse(event.data);
+	// 		if (data.type === 'game_joined') {
+	// 			this.matchMakingSocket.socket.close();
+	// 			this.initGameSocket(data.game_id);
+	// 		}
+	// 	});
+	// }
+
 	async init() {
 		const content = await Router.loadTemplate('online-game');
 		document.getElementById('app').innerHTML = content;
 		const canvas = document.getElementById('gameCanvas');
 		this.game2d = new PongGame(canvas);
-		this.matchMakingSocket = new Socket('matchmaking', {});
-		this.matchMakingSocket.socket.addEventListener('message', (event) => {
-			const data = JSON.parse(event.data);
-			if (data.type === 'game_joined') {
-				this.matchMakingSocket.socket.close();
-				this.initGameSocket(data.game_id);
-			}
-		});
+		this.initGameSocket(data.game_id);
 	}
 	
 	initGameSocket(gameId) {
