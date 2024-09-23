@@ -1,20 +1,20 @@
 import Router from '../router.js';
 import OnlineInputHandler from '../conponents_online/OnlineInputHandler.js';
 import Socket from '../services/Socket.js';
+import { PongGame } from '../components/PongGame.js';
 
 export class OnlineGameView {
 	constructor() {
 		this.matchMakingSocket = null;
 		this.gameSocket = null;
-		this.inputHandler = null;
-		this.game2d = null;
-		this.game3d = null;
+		this.game = null
 	}
 
 	async init() {
 		const content = await Router.loadTemplate('online-game');
 		document.getElementById('app').innerHTML = content;
-		// this.game2d = new PongGame();
+		const canvas = document.getElementById('gameCanvas');
+		this.game2d = new PongGame(canvas);
 		this.matchMakingSocket = new Socket('matchmaking', {});
 		this.matchMakingSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
@@ -38,6 +38,3 @@ export class OnlineGameView {
 	}
 }
 
-
-// "type": "game_joined",
-// "game_id": game.id

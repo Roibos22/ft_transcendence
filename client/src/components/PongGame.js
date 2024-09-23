@@ -18,8 +18,9 @@ export class PongGame {
 	init() {
 		const canvas = document.getElementById('gameCanvas');
 
-		// this.twoD = new TwoD(canvas);
+		this.twoD = new TwoD(canvas);
 		// this.threeD = new ThreeD(canvas);
+
 		this.inputHandler = new InputHandler();
 		// this.engine = state.get('gameSettings', 'mode') === '' ? new Engine() : null;
 	}
