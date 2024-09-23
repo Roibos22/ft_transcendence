@@ -27,8 +27,7 @@ SECRET_KEY = 'django-insecure-7f^-%ra#sj3m)1h=)@!!6dud8d9@fk+b!*!lyqp$va@u*(7^vh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['server', 'localhost']
-
+ALLOWED_HOSTS = ['server', 'localhost', 'localhost.com']
 
 # Application definition
 
@@ -132,7 +131,6 @@ TEMPLATES = [
 
 # WSGI_APPLICATION = 'transcendence_server.wsgi.application'
 ASGI_APPLICATION = 'transcendence_server.asgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
