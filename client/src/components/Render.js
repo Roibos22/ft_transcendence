@@ -1,4 +1,4 @@
-import { GameStates } from '../utils/shared.js';
+import { GamePhases } from '../constants.js';
 
 export class Render {
 	constructor(game) {
@@ -25,13 +25,13 @@ export class Render {
 		ctx.textAlign = 'center';
 
 		switch (this.game.state.currentState) {
-			case GameStates.WAITING_TO_START:
+			case GamePhases.WAITING_TO_START:
 				this.drawTopText('Press Enter to Start');
 				break;
-			case GameStates.COUNTDOWN:
+			case GamePhases.COUNTDOWN:
 				this.drawTopText(this.game.state.countdownValue.toString());
 				break;
-			case GameStates.MATCH_ENDED:
+			case GamePhases.MATCH_ENDED:
 				const currentMatch = this.game.tournament.getCurrentMatch();
 				const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
 				this.drawTopText(`${winner.name} wins the match!`);
@@ -41,7 +41,7 @@ export class Render {
 					this.drawBottomText(`Press Enter to start next match:\n${nextMatchText}`);
 				}
 				break;
-			case GameStates.FINISHED:
+			case GamePhases.FINISHED:
 				this.drawTopText('Tournament Completed!');
 				const finalMatch = this.game.tournament.getCurrentMatch();
 				const tournamentWinner = finalMatch.players[0].score > finalMatch.players[1].score ? finalMatch.players[0] : finalMatch.players[1];

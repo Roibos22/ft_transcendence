@@ -1,89 +1,59 @@
-import { initLoginView } from './views/login.js';
-import { initRegisterView } from './views/register.js';
-import { initGameSetupView } from './views/gameSetup.js';
-import { initGameView } from './views/game.js';
-import { initProfileView } from './views/profile.js';
-import { initGameOnlineView } from './views/onlineGame.js';
+import { currentView } from './constants.js';
+import { urlRoutes } from './utils/routeUtils.js';
 
-const urlRoutes = {
-	"/": {
-		template: "../templates/login.html",
-		title: "Login"
-	},
-	"/register": {
-		template: "../templates/register.html",
-		title: "Register"
-	},
-	"/game-setup": {
-		template: "../templates/game-setup.html",
-		title: "Setup"
-	},
-	"/game": {
-		template: "../templates/game.html",
-		title: "Game"
-	},
-	"/profile": {
-		template: "../templates/profile.html",
-		title: "Profile"
-	},
-	"/online-game": {
-		template: "../templates/online-game.html",
-		title: "Game"
-	}
-};
+class Router {
+    constructor() {
+        this.routes = urlRoutes;
+        this.init();
+    }
 
-export const urlLocationHandler = async () => {
-	let location = window.location.pathname;
-	if (location.length == 0) {
-		location = "/";
-	}
-	const route = urlRoutes[location] || urlRoutes["404"];
+    init() {
+        window.onpopstate = this.handleLocationChange.bind(this);
+        document.addEventListener("click", (e) => this.handleLinkClick(e));
+        this.handleLocationChange();  // Initial route load
+    }
+
+    async handleLocationChange() {
+        let location = window.location.pathname;
+        if (location.length === 0) {
+            location = "/";
+        }
+        const route = this.routes[location] || this.routes["404"];
+        
+        const html = await fetch(route.template).then(response => response.text());
+        document.getElementById("app").innerHTML = html;
+        document.title = route.title;
+
+        this.initCurrentView(location);
+    }
+
+    handleLinkClick(event) {
+        const { target } = event;
+        if (target.matches("nav a, a[href^='/']")) {
+            event.preventDefault();
+            window.history.pushState({}, "", target.href);
+            this.handleLocationChange();
+        }
+    }
+
+	async initCurrentView(location) {
+		const ViewClass = this.routes[location].view;
 	
-	const html = await fetch(route.template).then((response) => response.text());
-	document.getElementById("app").innerHTML = html;
-	document.title = route.title;
+		if (!ViewClass) {
+			window.history.pushState({}, "", "/404");
+			return;
+		}
 	
-	initCurrentView();
-};
-
-export function initCurrentView() {
-	const currentPath = window.location.pathname;
-	if (currentPath === '/' || currentPath === '/login') {
-		initLoginView();
-	} else if (currentPath === '/register') {
-		initRegisterView();
-	} else if (currentPath === '/game-setup') {
-		initGameSetupView();
-	} else if (currentPath === '/game') {
-		initGameView();
-	} else if (currentPath === '/profile') {
-		initProfileView();
-	} else if (currentPath === '/online-game') {
-		initGameOnlineView();
+		delete currentView.view;
+		currentView.view = new ViewClass();
+	
+		await currentView.view.init();
 	}
+
+	async loadTemplate(name) {
+        const response = await fetch(`/templates/${name}.html`);
+        return await response.text();
+    }
 }
 
-const urlRoute = (event) => {
-	event = event || window.event;
-	event.preventDefault();
-	window.history.pushState({}, "", event.target.href);
-	urlLocationHandler();
-};
-
-document.addEventListener("click", (e) => {
-	const { target } = e;
-	if (!target.matches("nav a, a[href^='/']")) {
-		return;
-	}
-	e.preventDefault();
-	urlRoute(e);
-});
-
-export async function loadTemplate(name) {
-	const response = await fetch(`/templates/${name}.html`);
-	return await response.text();
-}
-
-window.onpopstate = urlLocationHandler;
-window.route = urlRoute;
-urlLocationHandler();
+export default new Router();

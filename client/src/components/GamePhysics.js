@@ -14,16 +14,6 @@ export class GamePhysics {
 		this.paddleSpeed = 8;
 	}
 
-	resetPaddles() {
-		this.leftPaddleY = this.game.canvas.height / 2 - this.paddleHeight / 2;
-		this.rightPaddleY = this.game.canvas.height / 2 - this.paddleHeight / 2;
-	}
-
-	movePaddles() {
-		this.leftPaddleY = Math.max(Math.min(this.leftPaddleY, this.game.canvas.height - this.paddleHeight), 0);
-		this.rightPaddleY = Math.max(Math.min(this.rightPaddleY, this.game.canvas.height - this.paddleHeight), 0);
-	}
-
 	moveBall() {
 		this.ballX += this.ballSpeedX;
 		this.ballY += this.ballSpeedY;

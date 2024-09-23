@@ -1,53 +1,36 @@
+import state from '../State.js';
+
 export class UIManager {
-	constructor(game) {
-		this.game = game;
+	constructor(view) {
+		this.view = view;
 	}
 
-	updateUI() {
-		this.updateScoreHeader()
+	updateUI(path) {
+		if (path !== '/game')
+			return;
+		this.updateScoreCard()
 		this.updateMatchList();
 		this.updateTable();
 	}
 
-	updateScoreHeader() {
-
-        if (!this.game.tournament) {
+	updateScoreCard() {
+		const tournament = state.get('tournament');
+        if (!tournament) {
             console.error("Tournament not initialized");
             return;
         }
 
-        const currentMatch = this.game.tournament.getCurrentMatch();
-        if (!currentMatch || !currentMatch.players || currentMatch.players.length < 2) {
-            console.error("Invalid current match data");
-            return;
-        }
-
-		//const currentMatch = this.game.tournament.getCurrentMatch();
-		const player1 = currentMatch.players[0];
-		const player2 = currentMatch.players[1];
+		const { player1Name, player2Name, player1Score, player2Score } = state.get('currentMatch');
 	
-		this.game.playerInfo.innerHTML = `
-			<div class="container px-0" style="max-width: 1000px;">
-				<div class="card mb-3">
-					<div class="card-header bg-dark text-white text-center">
-						<h5 class="mb-0">Current Match</h5>
-					</div>
-					<div class="card-body">
-						<div class="d-flex justify-content-between align-items-center flex-wrap">
-							<span class="h5 mb-0 me-2">${player1.name}</span>
-							<span class="badge bg-primary fs-6 me-2">${player1.score}</span>
-							<span class="badge bg-secondary fs-6 mx-2">VS</span>
-							<span class="badge bg-primary fs-6 ms-2">${player2.score}</span>
-							<span class="h5 mb-0 ms-2">${player2.name}</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		`;
+		this.view.scoreCard.player1Name.innerHTML = player1.name;
+		this.view.scoreCard.player2Name.innerHTML = player2.name;
+		this.view.scoreCard.player1Score.innerHTML = player1.score;
+		this.view.scoreCard.player2Score.innerHTML = player2.score;
 	}
 
 	updateMatchList() {
-		const matchesList = this.game.tournament.matches.map((match, index) => {
+		const tournament = state.get('tournament');
+		const matchesList = tournament.matches.map((match, index) => {
 			const player1 = match.players[0].name;
 			const player2 = match.players[1].name;
 			let matchClass = 'list-group-item';
@@ -59,7 +42,7 @@ export class UIManager {
 						<span>${player1} vs ${player2}</span>
 						<span class="badge bg-secondary ms-3 fs-6">${match.players[0].score}:${match.players[1].score}</span>
 					</div>`;
-			} else if (index === this.game.tournament.currentMatchIndex) {
+			} else if (index === tournament.currentMatchIndex) {
 				matchClass += ' active';
 				matchContent = `
 					<div class="d-flex justify-content-between align-items-center">
@@ -76,7 +59,7 @@ export class UIManager {
 			return `<li class="${matchClass}">${matchContent}</li>`;
 		}).join('');
 	
-		this.game.tournamentInfoMatches.innerHTML = `
+		this.view.tournamentInfoMatches.innerHTML = `
 			<div class="card">
 				<div class="card-header bg-dark text-white text-center">
 					<h5 class="mb-0">Matches</h5>
