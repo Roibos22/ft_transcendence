@@ -13,7 +13,8 @@ export default class Socket {
 
     init() {
         this.authToken = Cookies.getCookie("accessToken");
-        this.socket = new WebSocket(`wss://localhost:8443/ws/${this.url}/${this.data.gameId  || ''}/`);
+        const gameIndex = this.data.gameId ? this.data.gameId + "/" : '';
+        this.socket = new WebSocket(`wss://localhost:8443/ws/${this.url}/${gameIndex}`);
     }
 
     send(data) {
