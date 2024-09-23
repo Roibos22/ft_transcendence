@@ -21,23 +21,26 @@ services:
       dockerfile: Dockerfile
     image: server
     restart: unless-stopped
-    ports:
-      - "8000:8000"
     volumes:
       - content:/app/avatars
     networks:
       - backend
 
-  client:
-    container_name: client
+  nginx:
+    container_name: nginx
     build:
-      context: ./client
-      dockerfile: Dockerfile
-    image: nginx_client
+      context: ./
+      dockerfile: ./nginx/Dockerfile
     ports:
-      - "3000:3000"
-    volumes:
-      - ./client:/usr/share/nginx/html/
+      - "8080:80"
+      - "8443:443"
+    # volumes:
+    #   - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    #   - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - server
+    networks:
+      - backend
 
   # cli_client:
   #   container_name: cli_client
@@ -52,8 +55,6 @@ services:
 volumes:
   postgres-data:
   content:
-
-
 
 networks:
   backend:
