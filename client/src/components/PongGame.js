@@ -4,6 +4,9 @@ import InputHandler from "./InputHandler.js";
 
 export class PongGame {
 	constructor() {
+		this.canvas = null;
+		this.field = null;
+
 		this.twoD = null;
 		this.threeD = null;
 
@@ -16,9 +19,13 @@ export class PongGame {
 	}
 
 	init() {
-		const canvas = document.getElementById('gameCanvas');
+		this.canvas = document.getElementById('gameCanvas');
+		this.field = {
+			width: 1000,
+			height: 500,
+		};
 
-		this.twoD = new TwoD(canvas);
+		this.twoD = new TwoD(this);
 		// this.threeD = new ThreeD(canvas);
 
 		this.inputHandler = new InputHandler();
@@ -26,7 +33,7 @@ export class PongGame {
 	}
 
 	update() {
-		this.twoD.update();
+		// this.twoD.update();
 		// this.threeD.update();
 	}
 }

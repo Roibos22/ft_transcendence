@@ -1,17 +1,19 @@
 import state from '../State.js';
 
 export default class TwoD {
-    constructor(canvas) {
-        this.canvas = canvas;
+    constructor(game) {
+        this.canvas = game.canvas;
         this.ctx = null;
+        this.game = game;
 
         this.init();
     }
 
     init() {
         this.ctx = this.canvas.getContext('2d');
-        this.canvas.width = 1000;
-        this.canvas.height = 500;
+        this.canvas.width = this.game.field.width;
+        this.canvas.height = this.game.field.height;
+
         this.startGame();
     }
 
@@ -20,14 +22,14 @@ export default class TwoD {
 			cancelAnimationFrame(this.animationFrameId);
 			this.animationFrameId = null;
 		}
-		this.update();
+		this.gameLoop();
 	}
 
     drawPaddles() {
         const paddleHeight = 100;
         const paddleWidth = 10;
-        const leftPaddleY = (state.get('gameData', 'player1pos') || this.canvas.height / 2) - paddleHeight / 2;
-        const rightPaddleY = (state.get('gameData', 'player2pos') || this.canvas.height / 2) - paddleHeight / 2;
+        const leftPaddleY = (state.get('gameData', 'player1Pos') || this.canvas.height / 2) - paddleHeight / 2;
+        const rightPaddleY = (state.get('gameData', 'player2Pos') || this.canvas.height / 2) - paddleHeight / 2;
 
         this.ctx.fillStyle = 'white';
         this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
@@ -50,9 +52,10 @@ export default class TwoD {
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    update() {
+    gameLoop() {
         this.drawBackground();
         this.drawPaddles();
         this.drawBall();
+        this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
     }
 }
