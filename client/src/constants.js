@@ -52,10 +52,12 @@ export const initState = {
 			y: 0,
 		}
 	},
-	tournament: {
-		players: [],
-		results: [],
-		matches: [],
-		currentMatchIndex: 0
-	},
+	tournament: null
+	// {
+	// 	players: [],
+	// 	results: [],
+	// 	matches: [],
+	// 	currentMatch: {},
+	// 	currentMatchIndex: 0
+	// },
 };
