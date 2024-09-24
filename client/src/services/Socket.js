@@ -11,11 +11,11 @@ export default class Socket {
 		this.addEventListenersDebug();
 	}
 
-	init() {
-		this.authToken = Cookies.getCookie("accessToken");
-		const gameIndex = this.data.gameId ? this.data.gameId + "/" : '';
-		this.socket = new WebSocket(`wss://localhost:8443/ws/${this.url}/${gameIndex}`);
-	}
+    init() {
+        this.authToken = Cookies.getCookie("accessToken");
+        const gameIndex = this.data.gameId ? this.data.gameId + '/' : '';
+        this.socket = new WebSocket(`wss://localhost:8443/ws/${this.url}/${gameIndex}`);
+    }
 
 	send(data) {
 		this.socket.send(data);

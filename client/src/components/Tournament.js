@@ -2,8 +2,7 @@ import { GamePhases } from '../constants.js';
 import state from '../State.js';
 
 export class Tournament {
-	constructor(game) {
-		this.game = game;
+	constructor() {
 		this.generateMatches();
 	}
 
@@ -69,7 +68,7 @@ export class Tournament {
 		this.game.uiManager.updateUI();
 	}
 
-	getStandings() {
+	static getStandings() {
 		return state.get('tournament', 'players')
 			.sort((a, b) => b.points - a.points || (b.wins - b.losses) - (a.wins - a.losses))
 			.map((player, index) => ({

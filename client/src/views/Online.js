@@ -1,6 +1,7 @@
 import Router from '../router.js';
 import OnlineInputHandler from '../conponents_online/OnlineInputHandler.js';
 import Socket from '../services/Socket.js';
+import { UIManager } from '../components/UIManager.js';
 import { PongGame } from '../components/PongGame.js';
 import * as Cookies from '../services/cookies.js';
 
@@ -8,13 +9,14 @@ export class OnlineGameView {
 	constructor() {
 		this.gameSocket = null;
 		this.game = null
+		this.UIManager = null;
 	}
 
 	async init() {
 		const content = await Router.loadTemplate('online-game');
 		document.getElementById('app').innerHTML = content;
-		const canvas = document.getElementById('gameCanvas');
-		this.game2d = new PongGame(canvas);
+		this.game2d = new PongGame();
+		this.UIManager = new UIManager();
 		this.initGameSocket(Cookies.getCookie("gameId"));
 		this.inputHandler = new OnlineInputHandler(this.gameSocket);
 		console.log("Online Game initialized");
@@ -38,6 +40,14 @@ export class OnlineGameView {
 			//     this.game2d.update(data);
 			// }
 		});
+	}
+
+	update() {
+		this.UIManager.update();
+	}
+
+	update() {
+		this.UIManager.update();
 	}
 }
 

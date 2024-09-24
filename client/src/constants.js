@@ -11,8 +11,7 @@ export const GameModes = {
 
 export const GameTypes = {
 	TWO_D: '2D',
-	THREE_D: '3D',
-	CLI: 'CLI'
+	THREE_D: '3D'
 };
 
 export const GamePhases = {
@@ -52,10 +51,13 @@ export const initState = {
 			y: 0,
 		}
 	},
-	tournament: {
-		players: [],
-		results: [],
-		matches: [],
-		currentMatchIndex: 0
-	},
+	tournament:
+	 null
+	// {
+	// 	players: ["player1", "player2", "player3", "player4"],
+	// 	results: [],
+	// 	matches: [],
+	// 	currentMatch: {},
+	// 	currentMatchIndex: 0
+	// },
 };

@@ -11,11 +11,11 @@
 						</div>
 						<div class="card-body">
 							<div class="d-flex justify-content-between align-items-center flex-wrap">
-								<span class="h5 mb-0 me-2" id="scorecard-p1name"></span>
-								<span class="badge bg-primary fs-6 me-2" id="scorecard-p1score"></span>
+								<span class="h5 mb-0 me-2" id="player1Name"></span>
+								<span class="badge bg-primary fs-6 me-2" id="player1Score"></span>
 								<span class="badge bg-secondary fs-6 mx-2">VS</span>
-								<span class="badge bg-primary fs-6 ms-2" id="scorecard-p2score"></span>
-								<span class="h5 mb-0 ms-2" id="scorecard-p2score"></span>
+								<span class="badge bg-primary fs-6 ms-2" id="player2Score"></span>
+								<span class="h5 mb-0 ms-2" id="player2Name"></span>
 							</div>
 						</div>
 					</div>
@@ -27,7 +27,8 @@
 	<!-- GAME CANVAS -->
 	<div class="row mb-3">
 		<div class="col-12 text-center">
-			<canvas id="gameCanvas" class="img-fluid rounded" width="1000" height="500"></canvas>
+			<canvas id="gameCanvas2D" class="img-fluid rounded" width="1000" height="500"></canvas>
+			<canvas id="gameCanvas3D" class="img-fluid rounded" width="1000" height="500"></canvas>
 		</div>
 	</div>
 
@@ -51,7 +52,22 @@
 					<div class="card-header bg-dark text-white text-center rounded-top">
 					<h5 class="mb-0">Standings</h5>
 				</div>
-				<div class="card-body rounded-bottom"></div>
+				<div class="card-body rounded-bottom">
+					<div class="table-responsive">
+						<table class="table table-striped mb-0 text-center">
+							<thead>
+								<tr>
+									<th>Rank</th>
+									<th>Name</th>
+									<th>Wins</th>
+									<th>Losses</th>
+									<th>Points</th>
+								</tr>
+							</thead>
+							<tbody id="standingsTable"></tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 			</div>
 		</div>
