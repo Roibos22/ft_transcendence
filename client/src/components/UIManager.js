@@ -15,7 +15,6 @@ export class UIManager {
 			standings: null,
 			standingsTable: null,
 		}
-
 		this.init();
 	}
 

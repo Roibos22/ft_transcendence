@@ -1,6 +1,7 @@
 import Router from '../router.js';
 import OnlineInputHandler from '../conponents_online/OnlineInputHandler.js';
 import Socket from '../services/Socket.js';
+import { UIManager } from '../components/UIManager.js';
 import { PongGame } from '../components/PongGame.js';
 
 export class OnlineGameView {

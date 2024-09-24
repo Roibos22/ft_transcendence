@@ -1,7 +1,6 @@
 import { PongGame } from '../components/PongGame.js';
 import { UIManager } from '../components/UIManager.js';
 import Router from '../router.js';
-import state from '../State.js';
 
 export class GameView {
 	constructor() {

@@ -57,11 +57,11 @@ export class LoginView {
 				window.history.pushState({}, "", "/game-setup");
 				Router.handleLocationChange();
 			} else {
-				displayLoginError(response.error);
+				this.displayLoginError(response.error);
 			}
 		} catch (error) {
 			console.error('Failed to login', error);
-			displayLoginError(error);
+			this.displayLoginError(error);
 		}
 	}
 	
