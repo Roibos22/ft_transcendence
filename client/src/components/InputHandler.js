@@ -2,15 +2,15 @@ import { GameModes, GamePhases } from '../constants.js';
 import { incrementCurrentMatchIndex } from '../utils/utils.js';
 import state from '../State.js';
 
-export default class Input {
+export default class InputHandler {
 	constructor(game) {
 		this.game = game;
 	}
 
 	init() {
+		document.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
 		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
 		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
-		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
 	}
 
 	preventDefaultScroll(e) {

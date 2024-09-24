@@ -1,34 +1,62 @@
 import state from '../State.js';
+import { standingsTableRow } from '../utils/utils.js';
+import { Tournament } from './Tournament.js';
 
 export class UIManager {
-	constructor(view) {
-		this.view = view;
+	constructor() {
+		this.content = {
+			scoreCard: {
+				player1Name: null,
+				player2Name: null,
+				player1Score: null,
+				player2Score: null,
+			},
+			fixtures: null,
+			standings: null,
+			standingsTable: null,
+		}
+		this.init();
 	}
 
-	updateUI(path) {
-		if (path !== '/game')
-			return;
+	init() {
+		this.content.scoreCard = {
+			player1Name: document.getElementById('player1Name'),
+			player2Name: document.getElementById('player2Name'),
+			player1Score: document.getElementById('player1Score'),
+			player2Score: document.getElementById('player2Score'),
+		};
+		this.content.fixtures = document.getElementById('fixtures');
+		this.content.standings = document.getElementById('standings');
+		this.content.standingsTable = document.getElementById('standingsTable');
+		this.update();
+	}
+
+	update() {
 		this.updateScoreCard()
-		this.updateMatchList();
-		this.updateTable();
+		if (state.get('tournament')) {
+			this.updateMatchList();
+			this.updateTable();
+		} else {
+			this.hideTournamentInfo();
+		}
+	}
+
+	hideTournamentInfo() {
+		this.content.fixtures.style.display = 'none';
+		this.content.standings.style.display = 'none';
 	}
 
 	updateScoreCard() {
-		const tournament = state.get('tournament');
-        if (!tournament) {
-            console.error("Tournament not initialized");
-            return;
-        }
-
 		const { player1Name, player2Name, player1Score, player2Score } = state.get('currentMatch');
 	
-		this.view.scoreCard.player1Name.innerHTML = player1.name;
-		this.view.scoreCard.player2Name.innerHTML = player2.name;
-		this.view.scoreCard.player1Score.innerHTML = player1.score;
-		this.view.scoreCard.player2Score.innerHTML = player2.score;
+		this.content.scoreCard.player1Name.innerHTML = player1Name;
+		this.content.scoreCard.player2Name.innerHTML = player2Name;
+		this.content.scoreCard.player1Score.innerHTML = player1Score;
+		this.content.scoreCard.player2Score.innerHTML = player2Score;
 	}
 
 	updateMatchList() {
+		this.content.fixtures.style.display = 'block';
 		const tournament = state.get('tournament');
 		const matchesList = tournament.matches.map((match, index) => {
 			const player1 = match.players[0].name;
@@ -72,44 +100,11 @@ export class UIManager {
 	}
 
 	updateTable() {
-		const standings = this.game.tournament.getStandings();
-		const standingsTable = `
-			<div class="table-responsive">
-				<table class="table table-striped mb-0 text-center">
-					<thead>
-						<tr>
-							<th>Rank</th>
-							<th>Name</th>
-							<th>Wins</th>
-							<th>Losses</th>
-							<th>Points</th>
-						</tr>
-					</thead>
-					<tbody>
-						${standings.map(player => `
-							<tr>
-								<td>${player.rank}</td>
-								<td>${player.name}</td>
-								<td>${player.wins}</td>
-								<td>${player.losses}</td>
-								<td>${player.points}</td>
-							</tr>
-						`).join('')}
-					</tbody>
-				</table>
-			</div>
-		`;
+		this.content.standings.style.display = 'block';
+		const standings = Tournament.getStandings();
+		const tableEntries = standings.map(playerStats => standingsTableRow(playerStats))
 	
-		this.game.tournamentInfoStandings.innerHTML = `
-			<div class="card">
-				<div class="card-header bg-dark text-white text-center">
-					<h5 class="mb-0">Standings</h5>
-				</div>
-				<div class="card-body p-0">
-					${standingsTable}
-				</div>
-			</div>
-		`;
+		this.standingsTable.innerHTML = `${tableEntries.join('')}`;
 	}
 
 }
