@@ -17,6 +17,7 @@ export class OnlineGameLoadingView {
 		//const canvas = document.getElementById('gameCanvas');
 		//this.game2d = new PongGame(canvas);
 		this.matchMakingSocket = new Socket('matchmaking', {});
+		this.matchMakingSocket.addEventListenersMatchmaking();
 		this.matchMakingSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
 			if (data.type === 'game_joined') {
