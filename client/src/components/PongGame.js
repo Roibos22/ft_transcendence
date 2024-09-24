@@ -23,19 +23,20 @@ export class PongGame {
 	init() {
 		this.field = {
 			width: 1000,
-			height: 500,
+			height: 250,
 		};
 
 		this.twoD = new TwoD(this);
 		// this.threeD = new ThreeD(canvas);
-
-		this.inputHandler = state.get("gameSettings", "mode") === GameModes.ONLINE 
-								? new OnlineInputHandler()
-								: new InputHandler();
+		this.inputHandler = new OnlineInputHandler();
+		// this.inputHandler = state.get("gameSettings", "mode") === GameModes.ONLINE 
+		// 						? new OnlineInputHandler()
+		// 						: new InputHandler();
 
 		// this.engine = state.get('gameSettings', 'mode') === '' ? new Engine() : null;
 	}
 
 	update() {
+		this.twoD.updateCanvas();
 	}
 }
