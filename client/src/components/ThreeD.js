@@ -52,10 +52,11 @@ export default class ThreeD {
     }
 
     addFloor() {
-        const floorGeometry = new THREE.PlaneGeometry(500, 1000, 10, 10);
+        const floorGeometry = new THREE.PlaneGeometry(this.game.field.width, this.game.field.height, 10, 10);
         const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x33CB99, side: THREE.DoubleSide });
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
         floor.rotation.x = Math.PI / 2;
+        floor.rotation.z = Math.PI / 2;
         floor.receiveShadow = true;
         this.scene.add(floor);
     }
@@ -66,7 +67,7 @@ export default class ThreeD {
     }
 
     show() {
-        this.canvas.style.display = 'block';
+        this.canvas.style.display = 'inline';
     }
 
     hide() {

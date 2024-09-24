@@ -61,7 +61,7 @@ export default class TwoD {
     }
 
     drawBackground() {
-        this.ctx.fillStyle = 'black';
+        this.ctx.fillStyle = '#33CB99';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
