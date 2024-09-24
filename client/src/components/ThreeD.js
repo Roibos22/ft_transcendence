@@ -12,6 +12,10 @@ export default class ThreeD {
         this.clock = null
         this.audioListener = null
 
+        this.init()
+    }
+
+    init() {
         this.setupCanvas();
         this.setupCamera();
         this.addFloor();

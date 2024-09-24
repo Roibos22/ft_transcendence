@@ -62,7 +62,7 @@ export class UIManager {
 	}
 
 	updateMatchList() {
-		this.content.fixtures.style.display = 'block';
+		this.content.fixtures.style.display = 'inline';
 		const tournament = state.get('tournament');
 		const matchesList = tournament.matches.map((match, index) => {
 			const player1 = match.players[0].name;
@@ -106,7 +106,7 @@ export class UIManager {
 	}
 
 	updateTable() {
-		this.content.standings.style.display = 'block';
+		this.content.standings.style.display = 'inline';
 		const standings = Tournament.getStandings();
 		const tableEntries = standings.map(playerStats => standingsTableRow(playerStats))
 	

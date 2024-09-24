@@ -8,7 +8,7 @@ export default class InputHandler {
 	}
 
 	init() {
-		document.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
+		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
 		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
 		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
 	}
