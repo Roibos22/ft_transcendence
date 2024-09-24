@@ -13,7 +13,7 @@ export class OnlineGameView {
 	}
 
 	async init() {
-		const content = await Router.loadTemplate('online-game');
+		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
 		this.game2d = new PongGame();
 		this.UIManager = new UIManager();

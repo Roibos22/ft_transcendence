@@ -111,4 +111,12 @@ export default class TwoD {
             this.ctx.fillText(line.trim(), this.canvas.width / 2, startY + (index * lineHeight));
         });
     }
+
+    show() {
+        this.canvas.style.display = 'inline';
+    }
+
+    hide() {
+        this.canvas.style.display = 'none';
+    }
 }
