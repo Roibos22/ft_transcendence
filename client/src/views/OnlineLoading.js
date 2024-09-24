@@ -2,6 +2,7 @@ import Router from '../router.js';
 import OnlineInputHandler from '../conponents_online/OnlineInputHandler.js';
 import Socket from '../services/Socket.js';
 import { PongGame } from '../components/PongGame.js';
+import * as Cookies from '../services/cookies.js';
 
 export class OnlineGameLoadingView {
 	constructor() {
@@ -13,9 +14,6 @@ export class OnlineGameLoadingView {
 	async init() {
 		const content = await Router.loadTemplate('online-game-loading');
 		document.getElementById('app').innerHTML = content;
-
-		window.history.pushState({}, "", "/online-game");
-		Router.handleLocationChange();
 		//const canvas = document.getElementById('gameCanvas');
 		//this.game2d = new PongGame(canvas);
 		this.matchMakingSocket = new Socket('matchmaking', {});
@@ -23,9 +21,10 @@ export class OnlineGameLoadingView {
 			const data = JSON.parse(event.data);
 			if (data.type === 'game_joined') {
 				this.matchMakingSocket.socket.close();
-				// window.history.pushState({}, "", "/online-game");
-				// Router.handleLocationChange();
-				this.initGameSocket(data.game_id);
+				Cookies.setCookie("gameId", data.game_id, 24);
+				window.history.pushState({}, "", "/online-game");
+				Router.handleLocationChange();
+				//this.initGameSocket(data.game_id);
 			}
 		});
 	}

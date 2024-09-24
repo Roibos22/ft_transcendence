@@ -5,7 +5,7 @@ import { PongGame } from '../components/PongGame.js';
 
 export class OnlineGameView {
 	constructor() {
-		this.matchMakingSocket = null;
+		//this.matchMakingSocket = null;
 		this.gameSocket = null;
 		this.game = null
 	}
@@ -30,7 +30,8 @@ export class OnlineGameView {
 		document.getElementById('app').innerHTML = content;
 		const canvas = document.getElementById('gameCanvas');
 		this.game2d = new PongGame(canvas);
-		this.initGameSocket(data.game_id);
+		console.log("Online game created");
+		//this.initGameSocket(data.game_id);
 	}
 	
 	initGameSocket(gameId) {
