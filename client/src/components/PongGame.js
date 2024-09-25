@@ -1,4 +1,3 @@
-
 import TwoD from "./TwoD.js";
 import ThreeD from "./ThreeD.js";
 import InputHandler from "./InputHandler.js";
@@ -8,9 +7,10 @@ import OnlineInputHandler from "../conponents_online/OnlineInputHandler.js";
 
 export class PongGame {
 	constructor() {
+
 		this.field = {
 			width: 1000,
-			height: 500,
+			height: 250,
 		};
 
 		this.twoD = null;
@@ -23,11 +23,6 @@ export class PongGame {
 	}
 
 	init() {
-		this.field = {
-			width: 1000,
-			height: 250,
-		};
-
 		this.twoD = new TwoD(this);
 		this.threeD = new ThreeD(this);
 
