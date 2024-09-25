@@ -1,56 +1,38 @@
 import random
 import time
-screen_width = 100 #?
-screen_height = 25 #?
-paddle_size = 4 #?
-ball_speed = 1 #?
 
 class Paddle:
-    def __init__(self, side, dimention, paddle_size):
-        self.dimention = dimention
-        self.size = paddle_size
-        self.power = 1 # why?
-        self.side = side
-        self.position_top = dimention / 2 - paddle_size / 2
-    @property
-    def position_bot(self):
-        return self.position_top + self.size
-    @property
-    def position_center(self):
-        return self.position_top + self.size / 2
+    def __init__(self, side, map_height, paddle_size):
+        self._map_height = map_height
+        self._paddle_size = paddle_size
+        self._side = side
+        self._y_position = int(map_height / 2 - paddle_size / 2)
+
     def move_paddle(self, direction: int):
-        if direction < 0 and self.position_top >= - direction:
-            self.position_top += direction
-        elif direction > 0 and self.position_bot <= self.dimention + direction:
-            self.position_top += direction
-    def check_hit(self, ball_coords: dict):
-        if self.side == 'Left' or self.side == 'Right':
-            ball_position = ball_coords.get('y')
+        if direction < 0 and self._y_position + direction > 0:
+            self._y_position += direction
+        elif direction > 0 and self._y_position + direction < self._map_height - self._paddle_size:
+            self._y_position += direction
+
+    def check_hit(self, ball_y_position):
+        if ball_y_position > self._y_position and ball_y_position < self._y_position + self._paddle_size:
+            return ball_y_position - (self._y_position + (self._paddle_size / 2))
         else:
-            ball_position = ball_coords.get('x')
-        if self.position_top <= ball_position <= self.position_bot:
-            return (ball_position - self.position_center) / (self.size / 2)
-        return None
+            None
 
 class Ball:
 
-    def __init__(self, walls: dict, screen_size: dict):
-        self.top = walls.get('N', False)
-        self.bot = walls.get('S', False)
-        self.left = walls.get('W', False)
-        self.right = walls.get('E', False)
-
-        self._screen_size = screen_size
-
-        self._position_x = round(self._screen_size.get('width') / 2)
-        self._position_y = round(self._screen_size.get('height') / 2)
-
-        self.speed = ball_speed
-
+    def __init__(self, start_x, start_y, map_width, map_height, ball_speed):
+        self._position_x = start_x
+        self._position_y = start_y
+        self._map_width = map_width
+        self._map_height = map_height
+        self._speed = ball_speed
         self._direction_x = random.choice([1, -1])
         self._direction_y = random.choice([1, -1])
 
-        self.color = 1 # why?
+
+    # CONTINUE HERE
 
     @property
     def position(self):
@@ -68,8 +50,7 @@ class Ball:
             self._direction_y *= -1
 
 
-    def movement(self, left_paddle: Paddle = None, right_paddle: Paddle = None, top_paddle: Paddle= None, bottom_paddle: Paddle = None):
-        # Ball movement
+    def movement(self, left_paddle, right_paddle):
         self._position_x += self._direction_x * self.speed
         self._position_y += self._direction_y * self.speed
         # Wall collisions
@@ -93,23 +74,26 @@ class Ball:
 
 class GameLogic:
     def __init__(self, game_id):
-        self.game_id = game_id
-        # Init game maze
-        self._screen_size = {'height': screen_height, 'width': screen_width}
-        self._paddle_size = paddle_size
-        # Init paddles
-        self._player1: Paddle = Paddle('Left', self._screen_size.get('height'), self._paddle_size) # left player
-        self._player2: Paddle = Paddle('Right', self._screen_size.get('height'), self._paddle_size) # right player
-        # Init ball
-        self._ball: Ball = Ball({'N': True, 'S': True, 'W': False, 'E': False}, self._screen_size) # Set walls to True
 
-        self._start_time = time.time()
-        self._last_tick = 0
+        self._game_id
+        self._map_width = 100
+        self._map_height = 50 
+        self._paddle_size = 4
+        self._ball_speed = 1
+        self._countdown = 3
         self._player1_ready = False
         self._player2_ready = False
+        self._phase = "Waiting players"
+        self._start_time = -1
+        self._last_tick = 0
+        self._player1: Paddle = Paddle('Left', self._map_height, self._paddle_size)
+        self._player2: Paddle = Paddle('Right', self._map_height, self._paddle_size)
+
+        self._ball: Ball = Ball({'N': True, 'S': True, 'W': False, 'E': False}, self._screen_size)
 
     def move_player1(self, direction: int):
         self._player1.move_paddle(direction)
+
     def move_player2(self, direction: int):
         self._player2.move_paddle(direction)
 
@@ -117,68 +101,40 @@ class GameLogic:
         self._player1_ready = True
         if self._player2_ready:
             self.start()
+
     def set_player2_ready(self):
         self._player2_ready = True
         if self._player1_ready:
             self.start()
 
     def start(self):
-        self._start_time = time.time() + 3
+        self._start_time = time.time() + self._countdown
+        self._phase = "countdown"
+
+    def update_countdown(self):
+        new_countdown = self._start_time - time.time()
+        if new_countdown > 0:
+            self._countdown = new_countdown
+        else:
+            self._countdown = 0
+            self.phase = "running"
 
     def get_state(self):
-        print('state sent')
-        # Check if users are ready
-        if not self._player2_ready or not self._player1_ready:
-            return {
-                'game_id': self.game_id,
-                'phase': 'Waiting players',
-                'countdown': 3, # adjust this to your value
-            }
-        # Move ball
-        if self._start_time == 0 and time.perf_counter() - self._last_tick > self._ball.speed:
-            print('move ball')
-            self._last_tick = time.perf_counter()
-            self._ball.movement(self._player1, self._player2)
-        # Send countdown
-        if self._start_time !=0 and self._start_time - time.time() > 0:
-            print('send countdown')
-            return {
-                'game_id': self.game_id,
-                'phase': 'Countdown',
-                'countdown': self._start_time - time.time(),
-            }
-        elif self._start_time !=0:
-            print('send countdown else')
-            self._start_time = 0
-            self._last_tick = 0
-        # Send game data
-        ## Prepare data
-        player_1 = self._player1
-        player_2 = self._player2
-        ball = self._ball
+
+        if self._countdown > 0:
+            self.update_countdown()
+
         data = {
-            'game_id': self.game_id,
-            'phase': 'running',
-            'player1Pos': player_1.position_top,
-            'player2Pos': player_2.position_top,
-            'ball': {'x': ball._position_x, 'y': ball._position_y},
+            'game_id': self._game_id,
+            'phase': self._phase,
+            'player1': self._player1._y_position,
+            'player2': self._player2._y_position,
+            'player1_ready': self._player1_ready,
+            'player2_ready': self._player2_ready,
+            'ball': self._ball.position,
             'countdown': self._start_time,
-            'player_1': {
-                'side': player_1.side,
-                'size': player_1.size,
-                'top_position': player_1.position_top,
-                'bot_position': player_1.position_bot
-            },
-            'player_2': {
-                'side': player_2.side,
-                'size': player_2.size,
-                'top_position': player_2.position_top,
-                'bot_position': player_2.position_bot
-            },
-            'ball': {
-                'position': {'x': ball._position_x, 'y': ball._position_y},
-            },
         }
+
         return data
 
     def get_init_data(self, player_no):
