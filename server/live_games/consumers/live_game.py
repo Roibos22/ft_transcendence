@@ -134,9 +134,14 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
     async def send_game_updates(self):
         try:
             while True:
+<<<<<<< HEAD
                 game_state = {"game_state": game_sessions[self.game_id].get_state()}
                 await self.send(text_data=json.dumps(game_state))
                 await asyncio.sleep(0.)
+=======
+                await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
+                await asyncio.sleep(0.1)
+>>>>>>> b0d6c6bcad16a5b269faeeabb2ff98597b9eee0d
 
         except asyncio.CancelledError:
             pass
