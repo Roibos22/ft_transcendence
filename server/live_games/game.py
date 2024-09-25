@@ -24,7 +24,7 @@ class Paddle:
         elif direction > 0 and self.position_bot <= self.dimention + direction:
             self.position_top += direction
     def check_hit(self, ball_coords: dict):
-        if self.side == 'Left' or 'Right':
+        if self.side == 'Left' or self.side == 'Right':
             ball_position = ball_coords.get('y')
         else:
             ball_position = ball_coords.get('x')
