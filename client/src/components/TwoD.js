@@ -61,7 +61,7 @@ export default class TwoD {
     }
 
     drawBackground() {
-        this.ctx.fillStyle = 'black';
+        this.ctx.fillStyle = '#33CB99';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -110,5 +110,13 @@ export default class TwoD {
         lines.forEach((line, index) => {
             this.ctx.fillText(line.trim(), this.canvas.width / 2, startY + (index * lineHeight));
         });
+    }
+
+    show() {
+        this.canvas.style.display = 'inline';
+    }
+
+    hide() {
+        this.canvas.style.display = 'none';
     }
 }
