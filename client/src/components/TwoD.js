@@ -53,7 +53,8 @@ export default class TwoD {
 		this.logState();
 		this.drawBackground();
 		this.drawPaddles();
-		//this.drawBall(state);
+		this.drawBall();
+		this.drawText();
 	}
 
 	drawPaddles() {
@@ -66,7 +67,6 @@ export default class TwoD {
 
 		const currentTime = Date.now();
 		if (currentTime - this.lastLogTime2 >= 1000) { // Check if 1 second has passed
-			console.log("State: ", state.data);
 			console.log("State Pos: ", player1PosState);
 			console.log("leftPaddleY: ", leftPaddleY);
 			this.lastLogTime2 = currentTime; // Update the last log time
@@ -77,22 +77,27 @@ export default class TwoD {
 		this.ctx.fillRect(this.canvas.width - paddleWidth, rightPaddleY, paddleWidth, paddleHeight);
 	}
 	
-	drawBall(state) {
-		const ball = state.ball;
+	drawBall() {
+		var ball = state.data.gameData.ball;
 		const ballRadius = 5;
 	
-		if (ball && ball.position) {
+		if (ball && state.data.gameData.countdown === 0) {
 			this.ctx.beginPath();
-			this.ctx.arc(ball.position.x, ball.position.y, ballRadius, 0, Math.PI * 2);
+			this.ctx.arc(ball.x + 500, ball.y + 125, ballRadius, 0, Math.PI * 2);
 			this.ctx.fillStyle = 'white';
 			this.ctx.fill();
 			this.ctx.closePath();
 		}
 	}
+
+	// drawCountdown() {
+	// 	this.ctx.font = `12 Arial`;
+	// 	this.ctx.fillText(state.get('countdown'), this.canvas.width / 2, this.canvas.height / 2);
+	// }
 	
 
-    drawBackground() {
-        this.ctx.fillStyle = '#33CB99';
+	drawBackground() {
+		this.ctx.fillStyle = '#33CB99';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
@@ -104,7 +109,7 @@ export default class TwoD {
 		const currentMatch = state.get('currentMatch');
 
 		const gamePhase = state.get('gameData', 'phase');
-
+		//console.log(gamePhase, state.get('gameData', 'phase'));
 		switch (gamePhase) {
 			case GamePhases.WAITING_TO_START:
 				this.drawTopText('Press Enter to Start');
@@ -138,16 +143,16 @@ export default class TwoD {
 		this.ctx.fillStyle = 'white';
 		this.ctx.textAlign = 'center';
 
-        lines.forEach((line, index) => {
-            this.ctx.fillText(line.trim(), this.canvas.width / 2, startY + (index * lineHeight));
-        });
-    }
+		lines.forEach((line, index) => {
+			this.ctx.fillText(line.trim(), this.canvas.width / 2, startY + (index * lineHeight));
+		});
+	}
 
-    show() {
-        this.canvas.style.display = 'inline';
-    }
+	show() {
+		this.canvas.style.display = 'inline';
+	}
 
-    hide() {
-        this.canvas.style.display = 'none';
-    }
+	hide() {
+		this.canvas.style.display = 'none';
+	}
 }

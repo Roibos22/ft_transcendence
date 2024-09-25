@@ -26,6 +26,9 @@ export default class OnlineInputHandler {
 				case 'ArrowDown':
 					this.socket.send(JSON.stringify({ action: 'move_player', direction: '1' }));
 					break;
+				case 'Enter':
+					this.socket.send(JSON.stringify({ action: 'player_ready' }));
+					break;
 			}
 		}
 		

@@ -5,6 +5,8 @@ import { UIManager } from '../components/UIManager.js';
 import { PongGame } from '../components/PongGame.js';
 import * as Cookies from '../services/cookies.js';
 import state from "../State.js";
+import { GamePhases } from "../constants.js";
+
 
 export class OnlineGameView {
 	constructor() {
@@ -26,8 +28,9 @@ export class OnlineGameView {
 	initGameSocket(gameId) {
 		this.gameSocket = new Socket('live_game', { gameId });
 		this.gameSocket.addEventListenersGame();
-
 		// Add message event listener
+		state.reset();
+		console.log(state.data);
 		this.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
 			//console.log("Game socket received message:", data);
@@ -42,28 +45,34 @@ export class OnlineGameView {
 	updateState(newState) {
 
 		// make object
-		// const oldData = state.get("gameData");
-		// const newData = {
-		// 	...oldData,
-		// 	phase: gameState.phase,
-		// 	player1Pos: gameState.player1Pos,
-		// 	player2Pos: gameState.player2Pos,
-		// 	countdown: gameState.countdown,
-		// 	// ball: {
-		// 	// 	x: gameState.ball.x,
-		// 	// 	y: 0,
-		// 	// }
-		// }
+		//console.log("BEFORE: ", state.data);
+		//console.log("newState: ", newState);
+		const oldData = state.get("gameData");
+		//console.log("oldData: ", oldData);
+		var newData = {
+			...oldData,
+			phase: newState.phase,
+			countdown: newState.countdown,
+		}
+		// console.log("newData: ", newData);
 
-		//state.set('gameData', newData);
-		state.set('gameData', 'player1Pos', newState.player1Pos);
-		state.set('gameData', 'player2Pos', newState.player2Pos);
-		// state.set('gameData', 'countdown', gameState.countdown);
-		//state.set('gameData', 'ball', 'x', gameState.ball.position.x);
-		//state.set('gameData', 'ball', 'y', gameState.ball.position.y);
+		if (newData.phase === "running") {
+			newData = {
+				...newData,
+				player1Pos: newState.player1Pos,
+				player2Pos: newState.player2Pos,
+				ball: {
+					x: newState.ball.position.x || 0,
+					y: newState.ball.position.y || 0
+				}
+			}
+			//console.log("newData2: ", newData);
+		}
 
-		//if (!state.data.player1) state.set('player1', {});
-		//if (!state.data.player2) state.set('player2', {});
+		//console.log("BEFORE: ", JSON.parse(JSON.stringify(state.data)));
+		state.set('gameData', newData);
+		//console.log("UPDATED STATE: ", state.data);
+		//console.log("Direct access: ", state.get("gameData"));
 
 		// state.set('player1', 'side', gameState.player_1.side);
 		// state.set('player1', 'size', gameState.player_1.size);

@@ -31,6 +31,7 @@ export class PongGame {
 								: new InputHandler();
 
 		// this.engine = state.get('gameSettings', 'mode') === '' ? new Engine() : null;
+		// state.reset();
 		this.update();
 	}
 

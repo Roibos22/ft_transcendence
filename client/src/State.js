@@ -41,6 +41,7 @@ class State {
 
 	reset() {
 		this.init();
+		console.log("State reseted", this.data);
 	}
 }
 
