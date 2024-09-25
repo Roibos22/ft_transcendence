@@ -55,7 +55,7 @@ export const initState = {
 		}
 	},
 	tournament:
-	 null
+		null
 	// {
 	// 	players: ["player1", "player2", "player3", "player4"],
 	// 	results: [],
