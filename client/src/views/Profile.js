@@ -1,7 +1,7 @@
 import Router from '../router.js';
 import * as Notification from '../services/notification.js';
 import * as UserService from '../services/api/userService.js';
-import state from '../State.js';
+import State from '../State.js';
 
 export class ProfileView {
 	constructor() {
@@ -19,7 +19,7 @@ export class ProfileView {
 
 		try {
 			const userData = await UserService.fetchUserData();
-			state.set('userData', userData);
+			State.set('userData', userData);
 		}
 		catch (error) {
 			Notification.showErrorNotification(["Failed to load profile", "Please try again later"]);
@@ -69,7 +69,7 @@ export class ProfileView {
 	}
 
 	update() {
-		this.userData = state.get('userData');
+		this.userData = State.get('userData');
 		this.populateProfile();
 		this.updateOnlineStatus();
 		this.updateAvatar();

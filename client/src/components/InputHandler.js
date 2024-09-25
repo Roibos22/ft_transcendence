@@ -1,6 +1,6 @@
 import { GameModes, GamePhases } from '../constants.js';
 import { incrementCurrentMatchIndex } from '../utils/utils.js';
-import state from '../State.js';
+import State from '../State.js';
 
 export default class InputHandler {
 	constructor(game) {
@@ -22,16 +22,16 @@ export default class InputHandler {
 	handleKeyDown(e) {
 		switch(e.key) {
 			case 'w':
-				this.game.engine.player1.moveUp();
+				this.game.engine.setPlayerDirection(1, -1);
 				break;
 			case 's':
-				this.game.engine.player1.moveDown();
+				this.game.engine.setPlayerDirection(1, 1);
 				break;
 			case 'ArrowUp':
-				this.game.engine.player2.moveUp();
+				this.game.engine.setPlayerDirection(2, -1);
 				break;
 			case 'ArrowDown':
-				this.game.engine.player2.moveDown();
+				this.game.engine.setPlayerDirection(2, 1);
 				break;
 			case 'Enter':
 				this.handleEnterKey();
@@ -40,37 +40,44 @@ export default class InputHandler {
 	}
 
 	handleKeyUp(e) {
-		if (e.key in this.keys) {
-			this.keys[e.key] = false;
+		switch(e.key) {
+			case 'w':
+			case 's':
+				this.game.engine.setPlayerDirection(1, 0);
+				break;
+			case 'ArrowUp':
+			case 'ArrowDown':
+				this.game.engine.setPlayerDirection(2, 0);
+				break;
 		}
 	}
 
 	handleEnterKey() {
 		if (this.game.state.waitingForEnter) {
-			if (state.get('gameData', 'phase') === GamePhases.MATCH_ENDED) {
+			if (State.get('gameData', 'phase') === GamePhases.MATCH_ENDED) {
 				incrementCurrentMatchIndex();
-				this.game.state.startNextMatch();
-				this.game.state.startCountdown();
-			} else if (state.get('gameData', 'phase') === GamePhases.FINISHED) {
+				this.game.State.startNextMatch();
+				this.game.State.startCountdown();
+			} else if (State.get('gameData', 'phase') === GamePhases.FINISHED) {
 				console.log("TOURNAMENT COMPLETED");
 				// Add logic to restart the tournament or return to main menu
 			} else {
-				this.game.state.startCountdown();
+				this.game.State.startCountdown();
 			}
-			this.game.state.waitingForEnter = false;
+			this.game.State.waitingForEnter = false;
 		}
 	}
 
 	update() {
-		if (state.get('gameSettings', 'mode') === GameModes.SINGLE) {
+		if (State.get('gameSettings', 'mode') === GameModes.SINGLE) {
 			this.updateSinglePlayerMode();
-		} else if (state.get('gameSettings', 'mode') === GameModes.MULTI) {
+		} else if (State.get('gameSettings', 'mode') === GameModes.MULTI) {
 			this.updateMultiPlayerMode();
 		}
 	}
 
 	updateSinglePlayerMode() {
-		if (state.get('gameData', 'phase') === GamePhases.RUNNING || state.get('gameData', 'phase') === GamePhases.COUNTDOWN) {
+		if (State.get('gameData', 'phase') === GamePhases.RUNNING || State.get('gameData', 'phase') === GamePhases.COUNTDOWN) {
 			if (this.keys.ArrowUp) {
 				this.game.physics.leftPaddleY = Math.max(
 					0, 
@@ -87,7 +94,7 @@ export default class InputHandler {
 	}
 
 	updateMultiPlayerMode() {
-		if (state.get('gameData', 'phase') === GamePhases.RUNNING || state.get('gameData', 'phase') === GamePhases.COUNTDOWN) {
+		if (State.get('gameData', 'phase') === GamePhases.RUNNING || State.get('gameData', 'phase') === GamePhases.COUNTDOWN) {
 			if (this.keys.w) {
 				this.game.physics.leftPaddleY = Math.max(
 					0, 

@@ -1,4 +1,4 @@
-import state from '../State.js';
+import State from '../State.js';
 import { GameModes } from '../constants.js';
 
 export function deepCopy(obj) {
@@ -20,11 +20,11 @@ export function deepCopy(obj) {
 }
 
 export function incrementCurrentMatchIndex() {
-    const currentMatchIndex = state.get('tournament.currentMatchIndex');
-    state.set('tournament.currentMatchIndex', currentMatchIndex + 1);
+    const currentMatchIndex = State.get('tournament.currentMatchIndex');
+    State.set('tournament.currentMatchIndex', currentMatchIndex + 1);
 
-    const matches = state.get('tournament.matches');
-    state.set('tournament.currentMatch', matches[currentMatchIndex + 1]);
+    const matches = State.get('tournament.matches');
+    State.set('tournament.currentMatch', matches[currentMatchIndex + 1]);
 }
 
 export function buttonIdToGameMode(id) {

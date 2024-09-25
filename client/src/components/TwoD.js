@@ -1,4 +1,4 @@
-import state from '../State.js';
+import State from '../State.js';
 import { GamePhases } from '../constants.js';
 
 export default class TwoD {
@@ -32,7 +32,7 @@ export default class TwoD {
         this.drawBackground();
         this.drawPaddles();
         this.drawBall();
-        if (state.get('gameData', 'phase') !== GamePhases.RUNNING) {
+        if (State.get('gameData', 'phase') !== GamePhases.RUNNING) {
             this.drawText();
         }
         this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
@@ -41,8 +41,8 @@ export default class TwoD {
     drawPaddles() {
         const paddleHeight = 100;
         const paddleWidth = 10;
-        const leftPaddleY = (state.get('gameData', 'player1Pos') || this.canvas.height / 2) - paddleHeight / 2;
-        const rightPaddleY = (state.get('gameData', 'player2Pos') || this.canvas.height / 2) - paddleHeight / 2;
+        const leftPaddleY = (State.get('gameData', 'player1Pos') || this.canvas.height / 2) - paddleHeight / 2;
+        const rightPaddleY = (State.get('gameData', 'player2Pos') || this.canvas.height / 2) - paddleHeight / 2;
 
         this.ctx.fillStyle = 'white';
         this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
@@ -50,7 +50,7 @@ export default class TwoD {
     }
 
     drawBall() {
-        const { ball } = state.get('gameData');
+        const { ball } = State.get('gameData');
         const ballRadius = 5;
 
         this.ctx.beginPath();
@@ -70,16 +70,17 @@ export default class TwoD {
         this.ctx.textAlign = 'center';
         this.ctx.font = '36px Arial';
 
-        const currentMatch = state.get('currentMatch');
+        const currentMatch = State.get('currentMatch');
 
-        const gamePhase = state.get('gameData', 'phase');
+        const gamePhase = State.get('gameData', 'phase');
 
         switch (gamePhase) {
             case GamePhases.WAITING_TO_START:
                 this.drawTopText('Press Enter to Start');
                 break;
             case GamePhases.COUNTDOWN:
-                this.drawTopText(state.get("gameData", "countdown").toString());
+                const countdown = State.get('gameData', 'countdown');
+                this.drawTopText(countdown === 0 ? 'GO!' : countdown);
                 break;
             case GamePhases.MATCH_ENDED:
                 const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
