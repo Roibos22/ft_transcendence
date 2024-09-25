@@ -52,7 +52,8 @@ export class GameSetupView {
 		Object.values(gameModeButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
 				const id = e.target.id;
-				State.set('gameSettings', 'mode', buttonIdToGameMode(id));
+				const gameMode = buttonIdToGameMode(id);
+				State.set('gameSettings', 'mode', gameMode);
 			});
 		});
 
@@ -71,7 +72,6 @@ export class GameSetupView {
 		});
 
 		start.addEventListener('click', () => {
-			console.log('State', State.data);
 			this.updatePlayers();
 		});
 	}

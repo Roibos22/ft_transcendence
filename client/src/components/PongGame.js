@@ -1,8 +1,9 @@
 
 import TwoD from "./TwoD.js";
-import ThreeD from "./ThreeD.js";
+import ThreeD from "./ThreeD/ThreeD.js";
 import InputHandler from "./InputHandler.js";
 import State from "../State.js";
+import Engine from "./Engine.js";
 import { GameModes, GameTypes } from "../constants.js";
 import OnlineInputHandler from "../conponents_online/OnlineInputHandler.js";
 
@@ -28,7 +29,7 @@ export class PongGame {
 
 		this.inputHandler = State.get("gameSettings", "mode") === GameModes.ONLINE 
 								? new OnlineInputHandler()
-								: new InputHandler();
+								: new InputHandler(this);
 
 		this.engine = State.get('gameSettings', 'mode') === GameModes.MULTI ? new Engine() : null;
 		this.update();
