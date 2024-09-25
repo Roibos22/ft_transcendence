@@ -1,4 +1,3 @@
-
 import TwoD from "./TwoD.js";
 import ThreeD from "./ThreeD.js";
 import InputHandler from "./InputHandler.js";
@@ -8,9 +7,10 @@ import OnlineInputHandler from "../conponents_online/OnlineInputHandler.js";
 
 export class PongGame {
 	constructor() {
+
 		this.field = {
 			width: 1000,
-			height: 500,
+			height: 250,
 		};
 
 		this.twoD = null;
@@ -31,11 +31,13 @@ export class PongGame {
 								: new InputHandler();
 
 		// this.engine = state.get('gameSettings', 'mode') === '' ? new Engine() : null;
+		// state.reset();
 		this.update();
 	}
 
 	update() {
 		state.get("gameSettings", "displayType") === GameTypes.TWO_D ? this.twoD.show() : this.twoD.hide();
 		state.get("gameSettings", "displayType") === GameTypes.THREE_D ? this.threeD.show() : this.threeD.hide();
+		this.twoD.updateCanvas();
 	}
 }
