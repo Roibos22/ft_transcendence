@@ -103,7 +103,7 @@ export class GameSetupView {
 		player1Input.placeholder = gameMode === GameModes.ONLINE ? state.get('user', 'username') : 'Player 1';
 		player2container.classList.toggle('d-none', gameMode !== GameModes.MULTI);
 
-		settingsContainer.style.display = gameMode === GameModes.ONLINE ? 'none' : 'block';
+		settingsContainer.style.display = gameMode === GameModes.ONLINE ? 'none' : 'inline';
 	
 		start.classList.toggle('d-none', gameMode === GameModes.ONLINE);
 		oneVone.classList.toggle('d-none', gameMode !== GameModes.ONLINE);

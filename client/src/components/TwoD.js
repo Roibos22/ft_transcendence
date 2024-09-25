@@ -91,8 +91,8 @@ export default class TwoD {
 	}
 	
 
-	drawBackground() {
-		this.ctx.fillStyle = 'black';
+    drawBackground() {
+        this.ctx.fillStyle = '#33CB99';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
@@ -138,8 +138,16 @@ export default class TwoD {
 		this.ctx.fillStyle = 'white';
 		this.ctx.textAlign = 'center';
 
-		lines.forEach((line, index) => {
-			this.ctx.fillText(line.trim(), this.canvas.width / 2, startY + (index * lineHeight));
-		});
-	}
+        lines.forEach((line, index) => {
+            this.ctx.fillText(line.trim(), this.canvas.width / 2, startY + (index * lineHeight));
+        });
+    }
+
+    show() {
+        this.canvas.style.display = 'inline';
+    }
+
+    hide() {
+        this.canvas.style.display = 'none';
+    }
 }

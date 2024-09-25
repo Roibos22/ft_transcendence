@@ -5,6 +5,7 @@ import { Tournament } from './Tournament.js';
 export class UIManager {
 	constructor() {
 		this.content = {
+			displayToggle: null,
 			scoreCard: {
 				player1Name: null,
 				player2Name: null,
@@ -19,6 +20,11 @@ export class UIManager {
 	}
 
 	init() {
+		this.content.displayToggle = document.getElementById('viewToggle');
+		this.content.displayToggle.addEventListener('change', () => {
+			state.set('gameSettings', 'displayType', this.content.displayToggle.checked ? '3D' : '2D');
+		});
+
 		this.content.scoreCard = {
 			player1Name: document.getElementById('player1Name'),
 			player2Name: document.getElementById('player2Name'),
@@ -56,7 +62,7 @@ export class UIManager {
 	}
 
 	updateMatchList() {
-		this.content.fixtures.style.display = 'block';
+		this.content.fixtures.style.display = 'inline';
 		const tournament = state.get('tournament');
 		const matchesList = tournament.matches.map((match, index) => {
 			const player1 = match.players[0].name;
@@ -100,7 +106,7 @@ export class UIManager {
 	}
 
 	updateTable() {
-		this.content.standings.style.display = 'block';
+		this.content.standings.style.display = 'inline';
 		const standings = Tournament.getStandings();
 		const tableEntries = standings.map(playerStats => standingsTableRow(playerStats))
 	
