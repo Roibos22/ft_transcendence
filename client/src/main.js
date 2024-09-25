@@ -1,9 +1,5 @@
-import { initCurrentView, urlLocationHandler } from './router.js';
+import Router from './router.js';
 
-function initMain() {
-	document.addEventListener('DOMContentLoaded', function() {
-		initCurrentView();
-	});
-}
-
-initMain();
+document.addEventListener('DOMContentLoaded', async function() {
+	Router.handleLocationChange();
+});

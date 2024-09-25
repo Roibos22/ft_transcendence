@@ -19,7 +19,7 @@ from .middleware import JWTAuthMiddlewareStack
 from django.urls import re_path
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcendence_server.settings')
-django.setup() # ?
+django.setup()
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),

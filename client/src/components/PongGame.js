@@ -1,63 +1,41 @@
-import { Input } from './InputHandler.js';
-import { Render } from './Render.js';
-import { GamePhysics } from './GamePhysics.js';
-import { GameState } from './GameState.js';
-import { UIManager } from './UIManager.js';
-import { AIPlayer } from './AIPlayer.js';
-import { GameModes, GameStates } from '../utils/shared.js';
+
+import TwoD from "./TwoD.js";
+import ThreeD from "./ThreeD.js";
+import InputHandler from "./InputHandler.js";
+import state from "../State.js";
+import { GameModes, GameTypes } from "../constants.js";
+import OnlineInputHandler from "../conponents_online/OnlineInputHandler.js";
 
 export class PongGame {
-	constructor(settings) {
-		this.tournamentSettings = settings;
+	constructor() {
+		this.field = {
+			width: 1000,
+			height: 500,
+		};
 
-		this.initElements()
-		this.initModules()
-
+		this.twoD = null;
+		this.threeD = null;
+		this.inputHandler = null;
+		this.engine = null;
 		this.tournament = null;
+
+		this.init();
 	}
 
-	initModules() {
-		this.input = new Input(this);
-		this.input.init();
-		this.render = new Render(this);
-		this.physics = new GamePhysics(this);
-		this.state = new GameState(this);
-		this.uiManager = new UIManager(this);
-		this.aiPlayer = new AIPlayer(this);
+	init() {
+		this.twoD = new TwoD(this);
+		this.threeD = new ThreeD(this);
+
+		this.inputHandler = state.get("gameSettings", "mode") === GameModes.ONLINE 
+								? new OnlineInputHandler()
+								: new InputHandler();
+
+		// this.engine = state.get('gameSettings', 'mode') === '' ? new Engine() : null;
+		this.update();
 	}
 
-	initElements() {
-		this.canvas = document.getElementById('gameCanvas');
-		this.ctx = this.canvas.getContext('2d');
-		this.gameView = document.getElementById('gameView');
-		this.playerInfo = document.getElementById('playerInfo');
-		this.tournamentInfo = document.getElementById('tournamentInfo');
-		this.tournamentInfoMatches = document.getElementById('tournamentInfoMatches');
-		this.tournamentInfoStandings = document.getElementById('tournamentInfoStandings');
-		this.pointsToWinDisplay = document.getElementById('pointsToWinDisplay');
-		this.numberOfGamesDisplay = document.getElementById('numberOfGamesDisplay');
-	}
-
-	startGame() {
-		if (this.animationFrameId) {
-			cancelAnimationFrame(this.animationFrameId);
-			this.animationFrameId = null;
-		}
-		this.state.startNextMatch();
-		this.gameLoop();
-	}
-
-	gameLoop() {
-		this.input.update();
-		if (this.state.currentState === GameStates.RUNNING) {
-			this.physics.moveBall();
-			this.physics.checkCollision();
-			if (this.tournamentSettings.mode === GameModes.SINGLE) {
-				this.aiPlayer.update();
-			}
-		}
-		this.physics.movePaddles();
-		this.render.draw();
-		this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
+	update() {
+		state.get("gameSettings", "displayType") === GameTypes.TWO_D ? this.twoD.show() : this.twoD.hide();
+		state.get("gameSettings", "displayType") === GameTypes.THREE_D ? this.threeD.show() : this.threeD.hide();
 	}
 }
