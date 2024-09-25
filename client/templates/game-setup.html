@@ -13,30 +13,44 @@
 
 			<!-- SEGMENTED PICKER GAME MODE -->
 			<div class="d-flex flex-column align-items-center mt-3 mb-3">
-				<div class="d-flex justify-content-center btn-group-game-mode">
-					<button id="btn_singleplayer" class="btn btn-setting btn-game-mode mx-1">Single Player</button>
-					<button id="btn_multiplayer" class="btn btn-setting btn-game-mode mx-1">Multi Player</button>
-					<button id="btn_online" class="btn btn-setting btn-game-mode mx-1">Online</button>
+				<div class="d-flex flex-wrap flex-md-nowrap justify-content-center btn-group-game-mode">
+					<div class="col-12 col-md-auto p-1">
+						<button id="btn_singleplayer" class="btn btn-setting btn-game-mode w-100">Single Player</button>
+					</div>
+					<div class="col-12 col-md-auto p-1">
+						<button id="btn_multiplayer" class="btn btn-setting btn-game-mode w-100">Multi Player</button>
+					</div>
+					<div class="col-12 col-md-auto p-1">
+						<button id="btn_online" class="btn btn-setting btn-game-mode w-100">Online <i class="bi bi-globe"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+			  
+
+			<!-- PLAYER INPUT FIELDS -->
+			<div id="player1Input" class="player-input-fields">
+				<div class="player-input-group mb-3">
+					<div class="input-group mb-3">
+						<input type="text" class="form-control player-name-input form-input" id="player1input" placeholder="Player 1" autocomplete=off>
+					</div>
+					<div class="input-group mb-1" id="player2container">
+						<input type="text" class="form-control player-name-input form-input" id="player2input" placeholder="Player 2" autocomplete=off>
+					</div>
 				</div>
 			</div>
 
-			<!-- PLAYER INPUT FIELDS -->
-			<form id="playerForm">
-				<div id="playerInputs" class="player-input-fields">
-					<div class="player-input-group mb-3">
-						<div class="input-group">
-							<input type="text" class="form-control player-name-input form-input" id="player1" placeholder="Player 1" autocomplete=off>
-						</div>
-					</div>
-				</div>
-			</form>
-
 			<!-- BUTTONS -->
 			<div class="d-flex flex-column align-items-center">
-				<button type="button" id="addPlayer" class="btn btn-action fw-bold">Add Player</button>
 				<div class="mt-4 text-center">
 					<p class="mb-0">
 						<a id ="startGameButton" href="/game" class="btn btn-action fw-bold">Start Game</a>
+					</p>
+					<p class="mb-3">
+						<a id="online1v1Button" href="/online-game" class="btn btn-action fw-bold">Start 1v1</a>
+					</p>
+					<p class="mb-0">
+						<a id="joinTournamentButton" href="/game" class="btn btn-action fw-bold">Join Tournament</a>
 					</p>
 				</div>
 			</div>

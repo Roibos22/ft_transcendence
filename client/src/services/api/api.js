@@ -1,6 +1,6 @@
 import * as Cookies from '../cookies.js';
 
-export const API_BASE_URL = 'http://localhost:8000';
+export const API_BASE_URL = 'https://localhost:8443/api';
 
 export async function fetchWithAuth(url, options = {}) {
 	const accessToken = Cookies.getCookie("accessToken");
