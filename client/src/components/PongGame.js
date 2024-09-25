@@ -11,7 +11,7 @@ export class PongGame {
 
 		this.field = {
 			width: 1000,
-			height: 250,
+			height: 500,
 		};
 
 		this.twoD = null;
@@ -36,8 +36,8 @@ export class PongGame {
 	}
 
 	update() {
-		state.get("gameSettings", "displayType") === GameTypes.TWO_D ? this.twoD.show() : this.twoD.hide();
-		state.get("gameSettings", "displayType") === GameTypes.THREE_D ? this.threeD.show() : this.threeD.hide();
+		State.get("gameSettings", "displayType") === GameTypes.TWO_D ? this.twoD.show() : this.twoD.hide();
+		State.get("gameSettings", "displayType") === GameTypes.THREE_D ? this.threeD.show() : this.threeD.hide();
 		this.twoD.updateCanvas();
 	}
 }

@@ -18,7 +18,7 @@ export default class TwoD {
 		this.lastLogTime2 = 0;
 		this.canvas.width = this.game.field.width;
 		this.canvas.height = this.game.field.height;
-		console.log("Player 1 Pos at init: ", state.data.gameData.player1Pos);
+		console.log("Player 1 Pos at init: ", State.data.gameData.player1Pos);
 		//console.log();
 		//this.startGame();
 	}
@@ -35,7 +35,7 @@ export default class TwoD {
 	// 	this.drawBackground();
 	// 	this.drawPaddles();
 	// 	this.drawBall();
-	// 	if (state.get('gameData', 'phase') !== GamePhases.RUNNING) {
+	// 	if (State.get('gameData', 'phase') !== GamePhases.RUNNING) {
 	// 		this.drawText();
 	// 	}
 	// 	this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
@@ -44,7 +44,7 @@ export default class TwoD {
 	logState() {
 		const currentTime = Date.now();
 		if (currentTime - this.lastLogTime >= 1000) { // Check if 1 second has passed
-			console.log("Update canvas called: ", state.data);
+			console.log("Update canvas called: ", State.data);
 			this.lastLogTime = currentTime; // Update the last log time
 		}
 	}
@@ -60,8 +60,8 @@ export default class TwoD {
 	drawPaddles() {
 		const paddleHeight = 50;
 		const paddleWidth = 10;
-		const player1PosState = state.data.gameData.player1Pos * 10;
-		const player2PosState = state.data.gameData.player2Pos * 10;
+		const player1PosState = State.data.gameData.player1Pos * 10;
+		const player2PosState = State.data.gameData.player2Pos * 10;
 		const leftPaddleY = (player1PosState || this.canvas.height / 2);
 		const rightPaddleY = (player2PosState || this.canvas.height / 2);
 
@@ -76,12 +76,12 @@ export default class TwoD {
 		this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
 		this.ctx.fillRect(this.canvas.width - paddleWidth, rightPaddleY, paddleWidth, paddleHeight);
 	}
-	
+
 	drawBall() {
-		var ball = state.data.gameData.ball;
+		var ball = State.data.gameData.ball;
 		const ballRadius = 5;
 	
-		if (ball && state.data.gameData.countdown === 0) {
+		if (ball && State.data.gameData.countdown === 0) {
 			this.ctx.beginPath();
 			this.ctx.arc(ball.x + 500, ball.y + 125, ballRadius, 0, Math.PI * 2);
 			this.ctx.fillStyle = 'white';
@@ -92,7 +92,7 @@ export default class TwoD {
 
 	// drawCountdown() {
 	// 	this.ctx.font = `12 Arial`;
-	// 	this.ctx.fillText(state.get('countdown'), this.canvas.width / 2, this.canvas.height / 2);
+	// 	this.ctx.fillText(State.get('countdown'), this.canvas.width / 2, this.canvas.height / 2);
 	// }
 	
 
@@ -106,16 +106,16 @@ export default class TwoD {
 		this.ctx.textAlign = 'center';
 		this.ctx.font = '36px Arial';
 
-		const currentMatch = state.get('currentMatch');
+		const currentMatch = State.get('currentMatch');
 
-		const gamePhase = state.get('gameData', 'phase');
-		//console.log(gamePhase, state.get('gameData', 'phase'));
+		const gamePhase = State.get('gameData', 'phase');
+		//console.log(gamePhase, State.get('gameData', 'phase'));
 		switch (gamePhase) {
 			case GamePhases.WAITING_TO_START:
 				this.drawTopText('Press Enter to Start');
 				break;
 			case GamePhases.COUNTDOWN:
-				this.drawTopText(state.get("gameData", "countdown").toString());
+				this.drawTopText(State.get("gameData", "countdown").toString());
 				break;
 			case GamePhases.MATCH_ENDED:
 				const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
