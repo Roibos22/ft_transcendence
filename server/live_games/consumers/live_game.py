@@ -136,11 +136,10 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             while True:
                 game_state = {"game_state": game_sessions[self.game_id].get_state()}
                 await self.send(text_data=json.dumps(game_state))
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(0.16) # 60 fps
 
         except asyncio.CancelledError:
             pass
-
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(

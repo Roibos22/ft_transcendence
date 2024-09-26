@@ -1,5 +1,6 @@
 import random
 import time
+import asyncio
 
 class Paddle:
     def __init__(self, side, map_height, paddle_size):
@@ -14,6 +15,7 @@ class Paddle:
         elif direction > 0 and self._y_position + direction < self._map_height - self._paddle_size:
             self._y_position += direction
 
+    # im not using the hit position yet
     def check_hit(self, ball_y_position):
         if ball_y_position > self._y_position and ball_y_position < self._y_position + self._paddle_size:
             return ball_y_position - (self._y_position + (self._paddle_size / 2))
@@ -22,65 +24,53 @@ class Paddle:
 
 class Ball:
 
-    def __init__(self, start_x, start_y, map_width, map_height, ball_speed):
-        self._position_x = start_x
-        self._position_y = start_y
+    def __init__(self, map_width, map_height, ball_speed):
         self._map_width = map_width
         self._map_height = map_height
+        self._start_x = int(map_width / 2) 
+        self._start_y = int(map_height / 2)
+        self._position_x = self._start_x
+        self._position_y = self._start_y
         self._speed = ball_speed
         self._direction_x = random.choice([1, -1])
         self._direction_y = random.choice([1, -1])
-
-
-    # CONTINUE HERE
 
     @property
     def position(self):
         return {'x': self._position_x, 'y': self._position_y}
 
-    def paddle_hit(self, paddle: Paddle):
-        if paddle == None:
-            return
-        paddle_hit = paddle.check_hit(self.position)
-        if paddle_hit != None:
-            self._direction_x *= -1
-        if paddle_hit > 0 and self._direction_y <= 0:
-            self._direction_y *= -1
-        elif paddle_hit < 0 and self._direction_y >= 0:
-            self._direction_y *= -1
+    def reset_ball_position_to_center(self):
+        self._position_x = self._start_x
+        self._position_y = self._start_y
 
-
-    def movement(self, left_paddle, right_paddle):
-        self._position_x += self._direction_x * self.speed
-        self._position_y += self._direction_y * self.speed
+    def movement(self, left_paddle: Paddle, right_paddle: Paddle):
+        self._position_x += self._direction_x * self._speed
+        self._position_y += self._direction_y * self._speed
         # Wall collisions
-        if self.top and self._position_y <= 1:
+        if self._position_y <= 1 or self._position_y >= self._map_height:
             self._direction_y *= -1
-        if self.bot and self._position_y >= self._screen_size.get('height') - 2:
-            self._direction_y *= -1
-        if self.left and self._position_x <= 1:
-            self._direction_x *= -1
-        if self.right and self._position_x >= self._screen_size.get('width') - 2:
-            self._direction_x *= -1
         # Paddle collisions
-        if not self.left and self._position_x == 1:
-            self.paddle_hit(left_paddle)
-        elif not self.right and self._position_x == self._screen_size.get('width') - 2:
-            self.paddle_hit(right_paddle)
-        elif not self.top and self._position_y == 1:
-            self.paddle_hit(top_paddle)
-        elif not self.bot and self._position_y == self._screen_size.get('height') - 2:
-            self.paddle_hit(bottom_paddle)
+        if self._position_x <= 1:
+            if left_paddle.check_hit(self._position_y) != None:
+                self._direction_x *= -1
+            else:
+                self.reset_ball_position_to_center()
+        if self._position_x >= self._map_width:
+            if right_paddle.check_hit(self._position_y) != None:
+                self._direction_x *= -1
+            else:
+                self.reset_ball_position_to_center()
 
 class GameLogic:
     def __init__(self, game_id):
 
-        self._game_id
-        self._map_width = 100
-        self._map_height = 50 
+        self._game_id = game_id
+        self._map_width = 1000
+        self._map_height = 500 
         self._paddle_size = 4
         self._ball_speed = 1
-        self._countdown = 3
+        self._initial_countdown_value = 3
+        self._current_countdown = self._initial_countdown_value
         self._player1_ready = False
         self._player2_ready = False
         self._phase = "Waiting players"
@@ -88,8 +78,7 @@ class GameLogic:
         self._last_tick = 0
         self._player1: Paddle = Paddle('Left', self._map_height, self._paddle_size)
         self._player2: Paddle = Paddle('Right', self._map_height, self._paddle_size)
-
-        self._ball: Ball = Ball({'N': True, 'S': True, 'W': False, 'E': False}, self._screen_size)
+        self._ball: Ball = Ball(self._map_width, self._map_height, self._ball_speed)
 
     def move_player1(self, direction: int):
         self._player1.move_paddle(direction)
@@ -100,29 +89,35 @@ class GameLogic:
     def set_player1_ready(self):
         self._player1_ready = True
         if self._player2_ready:
-            self.start()
+            asyncio.create_task(self.render_game())
 
     def set_player2_ready(self):
         self._player2_ready = True
         if self._player1_ready:
-            self.start()
+            asyncio.create_task(self.render_game())
 
-    def start(self):
-        self._start_time = time.time() + self._countdown
+    async def render_game(self):
+        self._start_time = time.time() + self._initial_countdown_value
         self._phase = "countdown"
+        await self.render_countdown()
+        self._phase = "running"
+        await self.render_ball_movement()
 
-    def update_countdown(self):
-        new_countdown = self._start_time - time.time()
-        if new_countdown > 0:
-            self._countdown = new_countdown
-        else:
-            self._countdown = 0
-            self.phase = "running"
+    async def render_countdown(self):
+        while self._current_countdown > 0:
+            new_countdown = self._start_time - time.time()
+            if new_countdown > 0:
+                self._current_countdown = new_countdown
+            else:
+                self._current_countdown = 0
+            await asyncio.sleep(0.016) # 60 fps
+
+    async def render_ball_movement(self):
+        while self._phase == "running":
+            self._ball.movement(self._player1, self._player2)
+            await asyncio.sleep(0.016) # 60 fps
 
     def get_state(self):
-
-        if self._countdown > 0:
-            self.update_countdown()
 
         data = {
             'game_id': self._game_id,
@@ -132,7 +127,7 @@ class GameLogic:
             'player1_ready': self._player1_ready,
             'player2_ready': self._player2_ready,
             'ball': self._ball.position,
-            'countdown': self._start_time,
+            'countdown': self._current_countdown,
         }
 
         return data
