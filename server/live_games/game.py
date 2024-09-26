@@ -62,9 +62,11 @@ class Ball:
                 self.reset_ball_position_to_center()
 
 class GameLogic:
-    def __init__(self, game_id):
+    def __init__(self, game_id, player1_username, player2_username):
 
         self._game_id = game_id
+        self._player1_username = player1_username
+        self._player2_username = player2_username
         self._map_width = 1000
         self._map_height = 500 
         self._paddle_size = 4
@@ -118,25 +120,24 @@ class GameLogic:
             await asyncio.sleep(0.016) # 60 fps
 
     def get_state(self):
-
         data = {
             'game_id': self._game_id,
             'phase': self._phase,
-            'player1': self._player1._y_position,
-            'player2': self._player2._y_position,
+            'player1_pos': self._player1._y_position,
+            'player2_pos': self._player2._y_position,
             'player1_ready': self._player1_ready,
             'player2_ready': self._player2_ready,
             'ball': self._ball.position,
             'countdown': self._current_countdown,
         }
-
         return data
 
-    def get_init_data(self, player_no):
+    def get_init_data(self):
         data = {
-            'maze': self._screen_size,
-            'no_players': 2,
-            'paddle_size': self._paddle_size,
-            'player_no': player_no
+            'map_height': self._map_height,
+            'map_width': self._map_width,
+            'player1_username': self._player1_username,
+            'player2_username': self._player2_username,
+            'paddle_height': self._paddle_size
         }
         return data
