@@ -43,43 +43,26 @@ export class OnlineGameView {
 	}
 
 	updateState(newState) {
-
-		// make object
-		//console.log("BEFORE: ", state.data);
-		//console.log("newState: ", newState);
 		const oldData = state.get("gameData");
-		//console.log("oldData: ", oldData);
 		var newData = {
 			...oldData,
 			phase: newState.phase,
 			countdown: newState.countdown,
 		}
-		// console.log("newData: ", newData);
 
 		if (newData.phase === "running") {
 			newData = {
 				...newData,
-				player1Pos: newState.player1Pos,
-				player2Pos: newState.player2Pos,
+				player1Pos: newState.player1_pos,
+				player2Pos: newState.player2_pos,
 				ball: {
-					x: newState.ball.position.x || 0,
-					y: newState.ball.position.y || 0
+					x: newState.ball.x || 0,
+					y: newState.ball.y || 0
 				}
 			}
-			//console.log("newData2: ", newData);
 		}
 
-		//console.log("BEFORE: ", JSON.parse(JSON.stringify(state.data)));
 		state.set('gameData', newData);
-		//console.log("UPDATED STATE: ", state.data);
-		//console.log("Direct access: ", state.get("gameData"));
-
-		// state.set('player1', 'side', gameState.player_1.side);
-		// state.set('player1', 'size', gameState.player_1.size);
-		// state.set('player2', 'side', gameState.player_2.side);
-		// state.set('player2', 'size', gameState.player_2.size);
-
-		//console.log("Updated state:", state.data);
 	}
 
 	update() {

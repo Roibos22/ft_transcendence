@@ -38,6 +38,5 @@ export class PongGame {
 	update() {
 		State.get("gameSettings", "displayType") === GameTypes.TWO_D ? this.twoD.show() : this.twoD.hide();
 		State.get("gameSettings", "displayType") === GameTypes.THREE_D ? this.threeD.show() : this.threeD.hide();
-		this.twoD.updateCanvas();
 	}
 }
