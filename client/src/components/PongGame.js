@@ -1,7 +1,8 @@
 import TwoD from "./TwoD.js";
-import ThreeD from "./ThreeD.js";
+import ThreeD from "./ThreeD/ThreeD.js";
 import InputHandler from "./InputHandler.js";
-import state from "../State.js";
+import State from "../State.js";
+import Engine from "./Engine.js";
 import { GameModes, GameTypes } from "../constants.js";
 import OnlineInputHandler from "../conponents_online/OnlineInputHandler.js";
 
@@ -10,7 +11,7 @@ export class PongGame {
 
 		this.field = {
 			width: 1000,
-			height: 250,
+			height: 500,
 		};
 
 		this.twoD = null;
@@ -26,18 +27,16 @@ export class PongGame {
 		this.twoD = new TwoD(this);
 		this.threeD = new ThreeD(this);
 
-		this.inputHandler = state.get("gameSettings", "mode") === GameModes.ONLINE 
+		this.inputHandler = State.get("gameSettings", "mode") === GameModes.ONLINE 
 								? new OnlineInputHandler()
-								: new InputHandler();
+								: new InputHandler(this);
 
-		// this.engine = state.get('gameSettings', 'mode') === '' ? new Engine() : null;
-		// state.reset();
+		this.engine = State.get('gameSettings', 'mode') === GameModes.MULTI ? new Engine() : null;
 		this.update();
 	}
 
 	update() {
-		state.get("gameSettings", "displayType") === GameTypes.TWO_D ? this.twoD.show() : this.twoD.hide();
-		state.get("gameSettings", "displayType") === GameTypes.THREE_D ? this.threeD.show() : this.threeD.hide();
-		this.twoD.updateCanvas();
+		State.get("gameSettings", "displayType") === GameTypes.TWO_D ? this.twoD.show() : this.twoD.hide();
+		State.get("gameSettings", "displayType") === GameTypes.THREE_D ? this.threeD.show() : this.threeD.hide();
 	}
 }

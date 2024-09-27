@@ -1,5 +1,5 @@
 import { GamePhases } from '../constants.js';
-import state from '../State.js';
+import State from '../State.js';
 
 export class Tournament {
 	constructor() {
@@ -8,7 +8,7 @@ export class Tournament {
 
 	generateMatches() {
 		const matches = [];
-		const tournament = state.get('tournament');
+		const tournament = State.get('tournament');
 
 		for (let i = 0; i < tournament.numberOfGames; i++) {
 			for (let j = 0; j < tournament.players.length; j++) {
@@ -24,31 +24,31 @@ export class Tournament {
 			}
 		}
 
-		state.set('tournament', 'matches', matches);
+		State.set('tournament', 'matches', matches);
 	}
 
 	getCurrentMatch() {
-		return state.get('tournament', 'currentMatch');
+		return State.get('tournament', 'currentMatch');
 	}
 
 	getNextMatch() {
-		return state.get('tournament', 'matches')[state.get('tournament', 'currentMatchIndex') + 1];
+		return State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex') + 1];
 	}
 
 	completeMatch() {
-		const currentMatch = state.get('currentMatch');
+		const currentMatch = State.get('currentMatch');
 
 		const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
 		const loser = currentMatch.players[0] === winner ? currentMatch.players[1] : currentMatch.players[0];
 		
-		const players = state.get('tournament', 'players');
+		const players = State.get('tournament', 'players');
 
 		players.find(p => p.name === winner.name).wins++;
 		players.find(p => p.name === loser.name).losses++;
 		players.find(p => p.name === winner.name).points += 2;
 		players.find(p => p.name === loser.name).points += 0;
 
-		state.set('tournament', 'players', players);
+		State.set('tournament', 'players', players);
 
 		currentMatch.completed = true;
 	
@@ -57,19 +57,19 @@ export class Tournament {
 			this.game.animationFrameId = null;
 		}
 
-		const currentMatchIndex = state.get('tournament', 'currentMatchIndex');
+		const currentMatchIndex = State.get('tournament', 'currentMatchIndex');
 
-		if (currentMatchIndex >= state.get('matches').length - 1) {
-			state.set('gameData', 'phase', GamePhases.FINISHED);
+		if (currentMatchIndex >= State.get('matches').length - 1) {
+			State.set('gameData', 'phase', GamePhases.FINISHED);
 		} else {
-			state.set('gameData', 'phase', GamePhases.MATCH_ENDED);
+			State.set('gameData', 'phase', GamePhases.MATCH_ENDED);
 		}
-		this.game.state.waitingForEnter = true;
+		this.game.State.waitingForEnter = true;
 		this.game.uiManager.updateUI();
 	}
 
 	static getStandings() {
-		return state.get('tournament', 'players')
+		return State.get('tournament', 'players')
 			.sort((a, b) => b.points - a.points || (b.wins - b.losses) - (a.wins - a.losses))
 			.map((player, index) => ({
 				rank: index + 1,

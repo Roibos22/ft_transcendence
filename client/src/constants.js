@@ -28,6 +28,9 @@ export const initState = {
 		displayName: "",
 		onlineStatus: false
 	},
+	ThreeD: {
+		spritesLoaded: false,
+	},
 	gameSettings: {
 		numberOfGames: 1,
 		displayType: GameTypes.TWO_D,

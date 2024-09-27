@@ -17,6 +17,7 @@ export class GameView {
 	}
 
 	update() {
+		this.game.update();
 		this.UIManager.update();
 	}
 }

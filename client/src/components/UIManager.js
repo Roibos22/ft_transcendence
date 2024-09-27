@@ -1,4 +1,4 @@
-import state from '../State.js';
+import State from '../State.js';
 import { standingsTableRow } from '../utils/utils.js';
 import { Tournament } from './Tournament.js';
 
@@ -22,7 +22,7 @@ export class UIManager {
 	init() {
 		this.content.displayToggle = document.getElementById('viewToggle');
 		this.content.displayToggle.addEventListener('change', () => {
-			state.set('gameSettings', 'displayType', this.content.displayToggle.checked ? '3D' : '2D');
+			State.set('gameSettings', 'displayType', this.content.displayToggle.checked ? '3D' : '2D');
 		});
 
 		this.content.scoreCard = {
@@ -39,7 +39,7 @@ export class UIManager {
 
 	update() {
 		this.updateScoreCard()
-		if (state.get('tournament')) {
+		if (State.get('tournament')) {
 			this.updateMatchList();
 			this.updateTable();
 		} else {
@@ -53,7 +53,7 @@ export class UIManager {
 	}
 
 	updateScoreCard() {
-		const { player1Name, player2Name, player1Score, player2Score } = state.get('currentMatch');
+		const { player1Name, player2Name, player1Score, player2Score } = State.get('currentMatch');
 	
 		this.content.scoreCard.player1Name.innerHTML = player1Name;
 		this.content.scoreCard.player2Name.innerHTML = player2Name;
@@ -63,7 +63,7 @@ export class UIManager {
 
 	updateMatchList() {
 		this.content.fixtures.style.display = 'inline';
-		const tournament = state.get('tournament');
+		const tournament = State.get('tournament');
 		const matchesList = tournament.matches.map((match, index) => {
 			const player1 = match.players[0].name;
 			const player2 = match.players[1].name;

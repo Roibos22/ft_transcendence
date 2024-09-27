@@ -1,0 +1,8 @@
+Model Information:
+* title:	Mouse - Quirky Series
+* source:	https://sketchfab.com/3d-models/mouse-quirky-series-123aca873e4942d7a32540ef276da281
+* author:	Omabuarts Studio (https://sketchfab.com/omabuarts)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works
