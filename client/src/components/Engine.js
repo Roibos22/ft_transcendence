@@ -61,7 +61,7 @@ export default class Engine {
 
     checkCollision(position) {
         position = Math.max(position, 0);
-        position = Math.min(position, this.field.height);
+        position = Math.min(position, this.field.height - paddleHeight);
         return position;
     }
 
