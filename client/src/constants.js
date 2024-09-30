@@ -48,6 +48,8 @@ export const initState = {
 		phase: GamePhases.WAITING_TO_START,
 		player1Pos: 0,
 		player2Pos: 0,
+		player1Direction: 0,
+		player2Direction: 0,
 		countdown: -1,
 		ball: {
 			x: 0,

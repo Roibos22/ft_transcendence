@@ -4,15 +4,15 @@ import State from '../../State.js';
 
 export default class ThreeD {
     constructor(game) {
-        this.canvas = null
-        this.game = game
+        this.canvas = null;
+        this.game = game;
 
-        this.scene = null
-        this.camera = null
-        this.renderer = null
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
 
-        this.clock = null
-        this.audioListener = null
+        this.clock = new THREE.Clock();
+        this.audioListener = null;
 
         this.elephant = null;
 
@@ -116,19 +116,33 @@ export default class ThreeD {
     update() {
         if (!this.spritesLoaded) return;
 
-        const ball = State.get('gameData', 'ball');
+        const { ball, player1Pos, player2Pos, player1Direction, player2Direction} = State.get('gameData');
+
         this.elephant.model.position.set((ball.x - 500) * -1, 0, (ball.y - 250) * -1);
 
-        const player1Pos = State.get('gameData', 'player1Pos');
         this.mice.player1.model.position.set(500, 0, (player1Pos - 250) * -1);
+        this.mice.player1.model.rotation.y = -Math.PI/2 + player1Direction * -Math.PI/2;
 
-        const player2Pos = State.get('gameData', 'player2Pos');
-        this.mice.player2.model.position.set(-500, 0, (player1Pos - 250) * -1);
+        this.mice.player2.model.position.set(-500, 0, (player2Pos - 250) * -1);
+        this.mice.player2.model.rotation.y = Math.PI/2 + player2Direction * Math.PI/2;
+    }
+
+    getAnimationMixers() {
+        return [
+            this.elephant.mixer,
+            this.mice.player1.mixer,
+            this.mice.player2.mixer
+        ];
     }
 
     animate() {
         requestAnimationFrame(() => this.animate());
         this.update();
+        const mixers = this.getAnimationMixers();
+        const delta = this.clock.getDelta();
+        if (this.spritesLoaded && mixers) {
+            mixers.forEach(mixer => mixer.update(delta));
+        }
         this.renderer.render(this.scene, this.camera);
     }
 
