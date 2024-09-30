@@ -6,7 +6,7 @@ import Engine from "./Engine.js";
 import { GameModes, GameTypes } from "../constants.js";
 
 export class PongGame {
-	constructor() {
+	constructor(socket) {
 
 		this.field = {
 			width: 1000,
@@ -18,6 +18,7 @@ export class PongGame {
 		this.inputHandler = null;
 		this.engine = null;
 		this.tournament = null;
+		this.socket = socket;
 
 		this.init();
 	}
@@ -26,7 +27,6 @@ export class PongGame {
 		this.twoD = new TwoD(this);
 		this.threeD = new ThreeD(this);
 
-		console.log(State.get("gameSettings", "mode"));
 		this.inputHandler = new InputHandler(this);
 
 		this.engine = State.get('gameSettings', 'mode') === GameModes.MULTI ? new Engine() : null;

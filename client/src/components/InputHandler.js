@@ -1,16 +1,19 @@
 import State from "../State.js";
 import { GameModes, GameTypes } from "../constants.js";
+import * as Cookies from '../services/cookies.js';
 
 export default class InputHandler {
 	constructor(game) {
 		this.game = game;
-		this.socket = null;
+		this.socket = game.socket;
+		this.gameMode = Cookies.getCookie("gameMode");
+		//this.gameMode = State.get("gameSettings", "mode");
 		this.init();
 	}
 
 	init() {
 		console.log(State.get("gameSettings", "mode"));
-		switch(State.get("gameSettings", "mode")) {
+		switch(this.gameMode) {
 			case GameModes.SINGLE:
 				document.addEventListener('keydown', (e) => this.handleKeyDownSingle(e));
 				document.addEventListener('keyup', (e) => this.handleKeyUpSingle(e));

@@ -53,9 +53,8 @@ export class GameSetupView {
 			button.addEventListener('click', (e) => {
 				const id = e.target.id;
 				const gameMode = buttonIdToGameMode(id);
+				Cookies.setCookie("gameMode", gameMode, 24);
 				State.set('gameSettings', 'mode', gameMode);
-				console.log("Pressed for", gameMode);
-				console.log("New State Mode", State.get('gameSettings', 'mode'));
 			});
 		});
 
