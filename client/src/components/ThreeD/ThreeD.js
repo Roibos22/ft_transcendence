@@ -46,8 +46,8 @@ export default class ThreeD {
 
     setupCamera() {
         const aspect = this.canvas.width / this.canvas.height;
-        const frustumSize = 700; 
-        
+        const frustumSize = 700;
+
         this.camera = new THREE.OrthographicCamera(
             frustumSize * aspect / -2, // left
             frustumSize * aspect / 2,  // right
@@ -56,8 +56,8 @@ export default class ThreeD {
             -10000,                    // near
             10000                      // far
         );
-        
-        this.camera.position.set(10, 10, 10); 
+
+        this.camera.position.set(250, 250, -250);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         this.scene.add(this.camera);
     }
@@ -68,13 +68,13 @@ export default class ThreeD {
     }
 
     addFloor() {
-        const floorGeometry = new THREE.PlaneGeometry(this.game.field.width, this.game.field.height, 10, 10);
+        const floorGeometry = new THREE.PlaneGeometry(this.game.field.width, this.game.field.height);
         const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x33CB99, side: THREE.DoubleSide });
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        floor.rotation.x = Math.PI / 2;
-        floor.rotation.z = Math.PI / 2;
         floor.receiveShadow = true;
+        floor.rotation.x = Math.PI / 2;
         this.scene.add(floor);
+        console.log(floor.position);
     }
 
     newMouse() {
@@ -106,22 +106,24 @@ export default class ThreeD {
     }
 
     setupMice() {
-        this.mice.player1.model.position.set(0, 0, 500);
-        this.mice.player1.model.rotation.y = Math.PI;
-        this.mice.player2.model.position.set(0, 0, -500);
+        this.elephant.model.position.set(500, 0, 250);
+        this.mice.player1.model.position.set(500, 0, 0);
+        this.mice.player1.model.rotation.y = -Math.PI/2;
+        this.mice.player2.model.position.set(-500, 0, 0);
+        this.mice.player2.model.rotation.y = Math.PI/2;
     }
 
     update() {
         if (!this.spritesLoaded) return;
 
         const ball = State.get('gameData', 'ball');
-        this.elephant.model.position.set(ball.x, 0, ball.y);
+        this.elephant.model.position.set((ball.x - 500) * -1, 0, (ball.y - 250) * -1);
 
         const player1Pos = State.get('gameData', 'player1Pos');
-        this.mice.player1.model.position.set(player1Pos - 250, 0, 500);
+        this.mice.player1.model.position.set(500, 0, (player1Pos - 250) * -1);
 
         const player2Pos = State.get('gameData', 'player2Pos');
-        this.mice.player2.model.position.set(player2Pos - 250, 0, -500);
+        this.mice.player2.model.position.set(-500, 0, (player1Pos - 250) * -1);
     }
 
     animate() {

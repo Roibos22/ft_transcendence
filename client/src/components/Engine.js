@@ -9,11 +9,11 @@ export default class Engine {
             width: 1000,
             height: 500,
         };
-
+        this.paddleHeight = 50;
         this.player1Direction = 0;
         this.player2Direction = 0;
 
-        setInterval(() => this.update(), 1000 / 60);
+        setInterval(() => this.update(), 1000);
     }
 
     startCountdown() {
@@ -47,10 +47,9 @@ export default class Engine {
     moveBall() {
         const ball = State.get('gameData', 'ball');
 
-		// horizontal collision
-		if (ball.y - this.ballRadius < 0 || ball.y + this.ballRadius > this.field.height) {
-			this.ballSpeedY = -this.ballSpeedY;
-		}
+        ball.x += this.ballSpeedX;
+        ball.y += this.ballSpeedY;
+        
 
         State.set('gameData', 'ball', ball);
 	}
@@ -61,7 +60,7 @@ export default class Engine {
 
     checkCollision(position) {
         position = Math.max(position, 0);
-        position = Math.min(position, this.field.height - paddleHeight);
+        position = Math.min(position, this.field.height - this.paddleHeight);
         return position;
     }
 
@@ -78,8 +77,8 @@ export default class Engine {
 
     update() {
         this.moveBall();
-        this.movePlayer(1);
-        this.movePlayer(2);
+        // this.movePlayer(1);
+        // this.movePlayer(2);
     }
 
     checkIfScored() {

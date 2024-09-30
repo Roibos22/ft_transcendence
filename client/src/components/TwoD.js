@@ -46,13 +46,6 @@ export default class TwoD {
 		const player2PosState = State.data.gameData.player2Pos;
 		const leftPaddleY = (player1PosState || this.canvas.height / 2);
 		const rightPaddleY = (player2PosState || this.canvas.height / 2);
-
-		const currentTime = Date.now();
-		if (currentTime - this.lastLogTime2 >= 1000) { // Check if 1 second has passed
-			console.log("State Pos: ", player1PosState);
-			console.log("leftPaddleY: ", leftPaddleY);
-			this.lastLogTime2 = currentTime; // Update the last log time
-		}
 	
 		this.ctx.fillStyle = 'white';
 		this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
@@ -60,10 +53,10 @@ export default class TwoD {
 	}
 
 	drawBall() {
-		var ball = State.data.gameData.ball;
+		const ball = State.get('gameData', 'ball');
 		const ballRadius = 5;
 	
-		if (ball && State.data.gameData.countdown === 0) {
+		if (ball) {
 			this.ctx.beginPath();
 			this.ctx.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
 			this.ctx.fillStyle = 'white';
