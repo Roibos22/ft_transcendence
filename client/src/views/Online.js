@@ -31,6 +31,7 @@ export class OnlineGameView {
 		this.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
 			if (data.game_state) {
+				//console.log(data);
 				this.updateState(data.game_state);
 			}
 		});
@@ -38,6 +39,7 @@ export class OnlineGameView {
 
 	updateState(newState) {
 		const oldData = state.get("gameData");
+
 		var newData = {
 			...oldData,
 			gameId: newState.game_id,

@@ -7,17 +7,22 @@ export default class TwoD {
 		this.game = game;
 
 		this.init();
+		this.printGameStatus();
 	}
 
 	init() {
 		this.canvas = document.getElementById('gameCanvas2D');
 		this.ctx = this.canvas.getContext('2d');
 
-		this.lastLogTime = 0;
-		this.lastLogTime2 = 0;
 		this.canvas.width = this.game.field.width;
 		this.canvas.height = this.game.field.height;
 		this.startGame();
+	}
+
+	printGameStatus() {
+		setInterval(() => {
+			console.log(State);
+		}, 2000);
 	}
 
 	startGame() {
@@ -42,11 +47,6 @@ export default class TwoD {
 		const player2PosState = State.data.gameData.player2Pos;
 		const leftPaddleY = (player1PosState || this.canvas.height / 2);
 		const rightPaddleY = (player2PosState || this.canvas.height / 2);
-
-		const currentTime = Date.now();
-		if (currentTime - this.lastLogTime2 >= 1000) { // Check if 1 second has passed
-			this.lastLogTime2 = currentTime; // Update the last log time
-		}
 	
 		this.ctx.fillStyle = 'white';
 		this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);

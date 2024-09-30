@@ -12,7 +12,6 @@ export default class InputHandler {
 	}
 
 	init() {
-		console.log(State.get("gameSettings", "mode"));
 		switch(this.gameMode) {
 			case GameModes.SINGLE:
 				document.addEventListener('keydown', (e) => this.handleKeyDownSingle(e));
