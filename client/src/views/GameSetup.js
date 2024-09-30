@@ -54,6 +54,8 @@ export class GameSetupView {
 				const id = e.target.id;
 				const gameMode = buttonIdToGameMode(id);
 				State.set('gameSettings', 'mode', gameMode);
+				console.log("Pressed for", gameMode);
+				console.log("New State Mode", State.get('gameSettings', 'mode'));
 			});
 		});
 

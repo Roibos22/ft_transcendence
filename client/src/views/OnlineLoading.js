@@ -1,5 +1,4 @@
 import Router from '../router.js';
-import OnlineInputHandler from '../conponents_online/OnlineInputHandler.js';
 import Socket from '../services/Socket.js';
 import { PongGame } from '../components/PongGame.js';
 import * as Cookies from '../services/cookies.js';
@@ -39,7 +38,6 @@ export class OnlineGameLoadingView {
 				// }
 				console.log(data);
 			});
-		//this.inputHandler = new OnlineInputHandler(this.gameSocket);
 	}
 }
 

@@ -1,5 +1,4 @@
 import Router from '../router.js';
-import OnlineInputHandler from '../conponents_online/OnlineInputHandler.js';
 import Socket from '../services/Socket.js';
 import { UIManager } from '../components/UIManager.js';
 import { PongGame } from '../components/PongGame.js';
@@ -21,7 +20,7 @@ export class OnlineGameView {
 		this.game = new PongGame();
 		this.UIManager = new UIManager();
 		this.initGameSocket(Cookies.getCookie("gameId"));
-		this.inputHandler = new OnlineInputHandler(this.gameSocket);
+		this.game.inputHandler.socket = this.gameSocket;
 		console.log("Online Game initialized");
 	}
 	
@@ -29,7 +28,7 @@ export class OnlineGameView {
 		this.gameSocket = new Socket('live_game', { gameId });
 		this.gameSocket.addEventListenersGame();
 		// Add message event listener
-		state.reset();
+		// state.reset();
 		console.log(state.data);
 		this.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
@@ -43,11 +42,10 @@ export class OnlineGameView {
 	}
 
 	updateState(newState) {
-		console.log("STATE", newState)
 		const oldData = state.get("gameData");
 		var newData = {
 			...oldData,
-			gameId: game_id,
+			gameId: newState.game_id,
 			phase: newState.phase,
 			countdown: newState.countdown,
 			player1Pos: newState.player1_pos,
@@ -61,7 +59,6 @@ export class OnlineGameView {
 		}
 
 		state.set('gameData', newData);
-		console.log("GameData", state.get("gameData"));
 	}
 
 	update() {
