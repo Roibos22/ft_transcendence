@@ -33,9 +33,6 @@ export default class TwoD {
 		this.drawBackground();
 		this.drawPaddles();
 		this.drawBall();
-		if (State.get('gameData', 'phase') !== GamePhases.RUNNING) {
-			this.drawText();
-		}
 		this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
 	}
 
@@ -81,33 +78,6 @@ export default class TwoD {
 	drawBackground() {
 		this.ctx.fillStyle = '#33CB99';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-	}
-
-	drawText() {
-		this.ctx.fillStyle = 'white';
-		this.ctx.textAlign = 'center';
-		this.ctx.font = '36px Arial';
-
-		const currentMatch = State.get('currentMatch');
-
-		const gamePhase = State.get('gameData', 'phase');
-		switch (gamePhase) {
-			case GamePhases.WAITING_TO_START:
-				this.drawTopText('Press Enter to Start');
-				break;
-			case GamePhases.COUNTDOWN:
-				this.drawTopText(State.get("gameData", "countdown").toString());
-				break;
-			case GamePhases.MATCH_ENDED:
-				const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
-				this.drawTopText(`${winner.name} wins the match!`);
-				break;
-			case GamePhases.FINISHED:
-				this.drawTopText('Tournament Completed!');
-				const tournamentWinner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
-				this.drawBottomText(`${tournamentWinner.name} wins the tournament!`);
-				break;
-		}
 	}
 
 	drawTopText(text, fontSize = '36px') {
