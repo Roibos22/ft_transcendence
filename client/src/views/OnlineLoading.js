@@ -39,7 +39,6 @@ export class OnlineGameLoadingView {
 				// }
 				console.log(data);
 			});
-		this.inputHandler = new OnlineInputHandler(this.gameSocket);
 	}
 }
 

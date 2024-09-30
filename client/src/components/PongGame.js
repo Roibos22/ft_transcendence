@@ -26,7 +26,7 @@ export class PongGame {
 		this.threeD = new ThreeD(this);
 
 		if (this.socket) {
-			this.inputHandler = new OnlineInputHandler(socket);
+			this.inputHandler = new OnlineInputHandler(this);
 		}
 
 		this.update();

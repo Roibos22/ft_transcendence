@@ -21,6 +21,9 @@ export default class ThreeD {
             player2: null
         }
 
+        this.lastBallPos = { x: 0, y: 0 };
+        this.direction = 0;
+
         this.spritesLoaded = false;
 
         this.init();
@@ -91,7 +94,7 @@ export default class ThreeD {
             path: "../public/elephant/scene.gltf",
             scene: this.scene,
             scale: { x: 0.3, y: 0.3, z: 0.3 },
-            currentAnimation: 0
+            currentAnimation: 5
         });
         this.mice.player1 = this.newMouse();
         this.mice.player2 = this.newMouse();
@@ -113,18 +116,47 @@ export default class ThreeD {
         this.mice.player2.model.rotation.y = Math.PI/2;
     }
 
+    calculateElephantDirection(currentPosition) {
+        if (currentPosition.x === this.lastBallPos.x && currentPosition.y === this.lastBallPos.y) return;
+        const direction = {
+            x: currentPosition.x - this.lastBallPos.x,
+            y: currentPosition.y - this.lastBallPos.y
+        };
+        const angle = Math.atan2(direction.x, direction.y);
+        this.elephant.model.rotation.y = angle + Math.PI;
+        this.lastBallPos = currentPosition
+    }
+
+
     update() {
         if (!this.spritesLoaded) return;
 
-        const { ball, player1Pos, player2Pos, player1Direction, player2Direction} = State.get('gameData');
+        const { ball, player1Pos, player2Pos} = State.get('gameData');
+
+        this.calculateElephantDirection(ball);
 
         this.elephant.model.position.set((ball.x - 500) * -1, 0, (ball.y - 250) * -1);
-
         this.mice.player1.model.position.set(500, 0, (player1Pos - 250) * -1);
-        this.mice.player1.model.rotation.y = -Math.PI/2 + player1Direction * -Math.PI/2;
-
         this.mice.player2.model.position.set(-500, 0, (player2Pos - 250) * -1);
-        this.mice.player2.model.rotation.y = Math.PI/2 + player2Direction * Math.PI/2;
+    }
+
+    directionToAnimation(direction) {
+        return direction === 0 ? 0 : 7;
+    }
+
+    changePlayerDirection(player, direction) {
+        const mouse = this.mice[`player${player}`];
+        mouse.model.rotation.y = player === 1
+                                ? -Math.PI/2 + direction * -Math.PI/2
+                                : Math.PI/2 + direction * Math.PI/2;
+
+        const newAnimation = this.directionToAnimation(direction);
+        if (newAnimation === mouse.currentAnimation) return;
+        mouse.currentAnimation = newAnimation;
+        
+        const action = mouse.mixer.clipAction(mouse.animations[newAnimation]);
+        mouse.mixer.stopAllAction();
+        action.play();
     }
 
     getAnimationMixers() {
