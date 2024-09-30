@@ -1,5 +1,4 @@
 import State from '../State.js';
-import { GamePhases } from '../constants.js';
 
 export default class TwoD {
 	constructor(game) {
@@ -46,8 +45,6 @@ export default class TwoD {
 
 		const currentTime = Date.now();
 		if (currentTime - this.lastLogTime2 >= 1000) { // Check if 1 second has passed
-			console.log("State Pos: ", player1PosState);
-			console.log("leftPaddleY: ", leftPaddleY);
 			this.lastLogTime2 = currentTime; // Update the last log time
 		}
 	
@@ -69,34 +66,9 @@ export default class TwoD {
 		}
 	}
 
-	// drawCountdown() {
-	// 	this.ctx.font = `12 Arial`;
-	// 	this.ctx.fillText(State.get('countdown'), this.canvas.width / 2, this.canvas.height / 2);
-	// }
-	
-
 	drawBackground() {
 		this.ctx.fillStyle = '#33CB99';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-	}
-
-	drawTopText(text, fontSize = '36px') {
-		this.ctx.font = `${fontSize} Arial`;
-		this.ctx.fillText(text, this.canvas.width / 2, this.canvas.height / 4);
-	}
-
-	drawBottomText(text) {
-		const lines = text.split('\n');
-		const lineHeight = 60; // Adjust this value to change the space between lines
-		const startY = this.canvas.height * 3 / 4;
-
-		this.ctx.font = '36px Arial';
-		this.ctx.fillStyle = 'white';
-		this.ctx.textAlign = 'center';
-
-		lines.forEach((line, index) => {
-			this.ctx.fillText(line.trim(), this.canvas.width / 2, startY + (index * lineHeight));
-		});
 	}
 
 	show() {

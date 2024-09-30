@@ -12,12 +12,12 @@ export default class InputHandler {
 		console.log(State.get("gameSettings", "mode"));
 		switch(State.get("gameSettings", "mode")) {
 			case GameModes.SINGLE:
-				//document.addEventListener('keydown', (e) => this.handleKeyDownSingle(e));
-				//document.addEventListener('keyup', (e) => this.handleKeyUpSingle(e));
+				document.addEventListener('keydown', (e) => this.handleKeyDownSingle(e));
+				document.addEventListener('keyup', (e) => this.handleKeyUpSingle(e));
 				break;
 			case GameModes.MULTI:
-				//document.addEventListener('keydown', (e) => this.handleKeyDownMulti(e));
-				//document.addEventListener('keyup', (e) => this.handleKeyUpMulti(e));
+				document.addEventListener('keydown', (e) => this.handleKeyDownMulti(e));
+				document.addEventListener('keyup', (e) => this.handleKeyUpMulti(e));
 				break;
 			case GameModes.ONLINE:
 				document.addEventListener('keydown', (e) => this.handleKeyDownOnline(e));
@@ -36,6 +36,32 @@ export default class InputHandler {
 	// SINGLE
 
 	handleKeyDownSingle(e) {
+		switch(e.key) {
+			case 'ArrowUp':
+				this.game.engine.setPlayerDirection(2, -1);
+				break;
+			case 'ArrowDown':
+				this.game.engine.setPlayerDirection(2, 1);
+				break;
+			case 'Enter':
+				//this.handleEnterKey();
+				break;
+
+		}
+	}
+
+	handleKeyUpSingle(e) {
+		switch(e.key) {
+			case 'ArrowUp':
+			case 'ArrowDown':
+				this.game.engine.setPlayerDirection(2, 0);
+				break;
+		}
+	}
+
+	// MULTI
+
+	handleKeyDownMulti(e) {
 		switch(e.key) {
 			case 'w':
 				this.game.engine.setPlayerDirection(1, -1);
@@ -56,7 +82,7 @@ export default class InputHandler {
 		}
 	}
 
-	handleKeyUpSingle(e) {
+	handleKeyUpMulti(e) {
 		switch(e.key) {
 			case 'w':
 			case 's':
@@ -68,8 +94,6 @@ export default class InputHandler {
 				break;
 		}
 	}
-
-	// MULTI
 
 	// ONLINE
 

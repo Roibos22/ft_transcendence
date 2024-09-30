@@ -27,14 +27,10 @@ export class OnlineGameView {
 	initGameSocket(gameId) {
 		this.gameSocket = new Socket('live_game', { gameId });
 		this.gameSocket.addEventListenersGame();
-		// Add message event listener
 		// state.reset();
 		console.log(state.data);
 		this.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
-			//console.log("Game socket received message:", data);
-			// Handle game updates here
-			//console.log(data);
 			if (data.game_state) {
 				this.updateState(data.game_state);
 			}
