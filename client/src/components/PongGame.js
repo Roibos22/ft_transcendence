@@ -27,6 +27,7 @@ export class PongGame {
 		this.twoD = new TwoD(this);
 		this.threeD = new ThreeD(this);
 
+		console.log(State.get("gameSettings", "mode"));
 		this.inputHandler = State.get("gameSettings", "mode") === GameModes.ONLINE 
 								? new OnlineInputHandler()
 								: new InputHandler(this);

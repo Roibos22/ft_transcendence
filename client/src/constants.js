@@ -45,9 +45,12 @@ export const initState = {
 		winner: ""
 	},
 	gameData: {
+		gameId: 0,
 		phase: GamePhases.WAITING_TO_START,
 		player1Pos: 0,
 		player2Pos: 0,
+		player1Ready: false,
+		player2Ready: false,
 		countdown: -1,
 		ball: {
 			x: 0,

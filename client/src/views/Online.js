@@ -43,26 +43,25 @@ export class OnlineGameView {
 	}
 
 	updateState(newState) {
+		console.log("STATE", newState)
 		const oldData = state.get("gameData");
 		var newData = {
 			...oldData,
+			gameId: game_id,
 			phase: newState.phase,
 			countdown: newState.countdown,
-		}
-
-		if (newData.phase === "running") {
-			newData = {
-				...newData,
-				player1Pos: newState.player1_pos,
-				player2Pos: newState.player2_pos,
-				ball: {
-					x: newState.ball.x || 0,
-					y: newState.ball.y || 0
-				}
+			player1Pos: newState.player1_pos,
+			player2Pos: newState.player2_pos,
+			player1Ready: newState.player1_ready,
+			player2Ready: newState.player2_ready,
+			ball: {
+				x: newState.ball.x || 0,
+				y: newState.ball.y || 0
 			}
 		}
 
 		state.set('gameData', newData);
+		console.log("GameData", state.get("gameData"));
 	}
 
 	update() {
