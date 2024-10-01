@@ -1,6 +1,9 @@
+import State from "../State.js";
+
 export default class OnlineInputHandler {
-	constructor(socket) {
-		this.socket = socket;
+	constructor(game) {
+		this.game = game;
+		this.socket = game.gameSocket;
 		this.init();
 	}
 
@@ -22,9 +25,12 @@ export default class OnlineInputHandler {
 			switch(e.key) {
 				case 'ArrowUp':
 					this.socket.send(JSON.stringify({ action: 'move_player', direction: '-1' }));
+					this.game.threeD.changePlayerDirection(1, -1);
 					break;
 				case 'ArrowDown':
 					this.socket.send(JSON.stringify({ action: 'move_player', direction: '1' }));
+					State.set('gameData', 'player1Direction', 1);
+					this.game.threeD.changePlayerDirection(1, 1);
 					break;
 				case 'Enter':
 					this.socket.send(JSON.stringify({ action: 'player_ready' }));
@@ -43,6 +49,7 @@ export default class OnlineInputHandler {
 					this.socket.send(JSON.stringify({
 						action: 'move_player',
 						direction: '0' }));
+					this.game.threeD.changePlayerDirection(1, 0);
 					break;
 			}
 		}

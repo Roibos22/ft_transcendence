@@ -5,12 +5,10 @@ import { UIManager } from '../components/UIManager.js';
 import { PongGame } from '../components/PongGame.js';
 import * as Cookies from '../services/cookies.js';
 import state from "../State.js";
-import { GamePhases } from "../constants.js";
 
 
 export class OnlineGameView {
 	constructor() {
-		this.gameSocket = null;
 		this.game = null
 		this.UIManager = null;
 	}
@@ -21,17 +19,17 @@ export class OnlineGameView {
 		this.game = new PongGame();
 		this.UIManager = new UIManager();
 		this.initGameSocket(Cookies.getCookie("gameId"));
-		this.inputHandler = new OnlineInputHandler(this.gameSocket);
+		this.inputHandler = new OnlineInputHandler(this.game);
 		console.log("Online Game initialized");
 	}
 	
 	initGameSocket(gameId) {
-		this.gameSocket = new Socket('live_game', { gameId });
-		this.gameSocket.addEventListenersGame();
+		this.game.gameSocket = new Socket('live_game', { gameId });
+		this.game.gameSocket.addEventListenersGame();
 		// Add message event listener
 		state.reset();
 		console.log(state.data);
-		this.gameSocket.socket.addEventListener('message', (event) => {
+		this.game.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
 			//console.log("Game socket received message:", data);
 			// Handle game updates here
@@ -62,13 +60,12 @@ export class OnlineGameView {
 			}
 		}
 
-		state.set('gameData', newData);
+		state.data.gameData = newData;
 	}
 
 	update() {
 		this.UIManager.update();
 		this.game.update();
 	}
-
 }
 
