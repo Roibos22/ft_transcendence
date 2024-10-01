@@ -55,8 +55,9 @@ export default class TwoD {
 	drawBall() {
 		const ball = State.get('gameData', 'ball');
 		const ballRadius = 5;
+		const countdown = State.get('gameData', 'countdown');
 	
-		if (ball) {
+		if (ball && countdown <= 0) {
 			this.ctx.beginPath();
 			this.ctx.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
 			this.ctx.fillStyle = 'white';
