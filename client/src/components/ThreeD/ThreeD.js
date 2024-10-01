@@ -20,7 +20,6 @@ export default class ThreeD {
             player1: null,
             player2: null
         }
-        this.direction = 0;
 
         this.spritesLoaded = false;
 
@@ -94,7 +93,6 @@ export default class ThreeD {
             scale: { x: 0.3, y: 0.3, z: 0.3 },
             currentAnimation: 5
         });
-        this.elephant.lastPosition = { x: 0, y: 0 };
         this.mice.player1 = this.newMouse();
         this.mice.player2 = this.newMouse();
         
@@ -115,15 +113,9 @@ export default class ThreeD {
         this.mice.player2.model.rotation.y = Math.PI/2;
     }
 
-    calculateElephantDirection(currentPosition) {
-        if (currentPosition.x === this.elephant.lastPosition.x && currentPosition.y === this.elephant.lastPosition.y) return;
-        const direction = {
-            x: currentPosition.x - this.elephant.lastPosition.x,
-            y: currentPosition.y - this.elephant.lastPosition.y
-        };
-        const angle = Math.atan2(direction.x, direction.y);
+    calculateElephantDirection(ball) {
+        const angle = Math.atan2(ball.dx, ball.dy);
         this.elephant.model.rotation.y = angle + Math.PI;
-        this.elephant.lastPosition = currentPosition
     }
 
 

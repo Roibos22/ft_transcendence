@@ -6,7 +6,6 @@ import { PongGame } from '../components/PongGame.js';
 import * as Cookies from '../services/cookies.js';
 import state from "../State.js";
 
-
 export class OnlineGameView {
 	constructor() {
 		this.game = null
@@ -55,7 +54,9 @@ export class OnlineGameView {
 				player2Pos: newState.player2_pos,
 				ball: {
 					x: newState.ball.x || 0,
-					y: newState.ball.y || 0
+					y: newState.ball.y || 0,
+					dx: newState.ball_dir.x || 0,
+					dy: newState.ball_dir.y || 0,
 				}
 			}
 		}

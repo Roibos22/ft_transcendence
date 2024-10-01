@@ -6,3 +6,4 @@ Barra To Do
 [ ] - Mice directions - get from backend
 [ ] - UI improvements
 [ ] - User Stats (single player, online)
+[ ] - redirect users that are not logged in

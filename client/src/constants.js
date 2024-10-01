@@ -54,6 +54,8 @@ export const initState = {
 		ball: {
 			x: 0,
 			y: 0,
+			dx: 0,
+			dy: 0
 		}
 	},
 	tournament:

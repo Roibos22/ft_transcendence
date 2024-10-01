@@ -15,17 +15,16 @@ export class PongGame {
 		this.threeD = null;
 		this.inputHandler = null;
 		this.tournament = null;
+		this.gameSocket = socket;
 
 		this.init();
-
-		this.socket = socket;
 	}
 
 	init() {
 		this.twoD = new TwoD(this);
 		this.threeD = new ThreeD(this);
 
-		if (this.socket) {
+		if (this.gameSocket) {
 			this.inputHandler = new OnlineInputHandler(this);
 		}
 
