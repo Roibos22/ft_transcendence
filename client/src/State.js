@@ -27,7 +27,6 @@ class State {
 		const value = deepCopy(args.pop());
 
 		let path = this.data;
-		const firstKey = args;
 		const lastKey = args.pop();
 		args.forEach(key => {
 			if (path[key] === undefined) {
@@ -37,9 +36,6 @@ class State {
 		});
 
 		path[lastKey] = value;
-		if (firstKey === 'gameData') {
-			return;
-		}
 		currentView.view.update();
 	}
 

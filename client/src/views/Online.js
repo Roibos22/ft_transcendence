@@ -60,13 +60,12 @@ export class OnlineGameView {
 			}
 		}
 
-		state.set('gameData', newData);
+		state.data.gameData = newData;
 	}
 
 	update() {
 		this.UIManager.update();
 		this.game.update();
 	}
-
 }
 
