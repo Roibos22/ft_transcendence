@@ -20,8 +20,6 @@ export default class ThreeD {
             player1: null,
             player2: null
         }
-
-        this.lastBallPos = { x: 0, y: 0 };
         this.direction = 0;
 
         this.spritesLoaded = false;
@@ -96,6 +94,7 @@ export default class ThreeD {
             scale: { x: 0.3, y: 0.3, z: 0.3 },
             currentAnimation: 5
         });
+        this.elephant.lastPosition = { x: 0, y: 0 };
         this.mice.player1 = this.newMouse();
         this.mice.player2 = this.newMouse();
         
@@ -117,14 +116,14 @@ export default class ThreeD {
     }
 
     calculateElephantDirection(currentPosition) {
-        if (currentPosition.x === this.lastBallPos.x && currentPosition.y === this.lastBallPos.y) return;
+        if (currentPosition.x === this.elephant.lastPosition.x && currentPosition.y === this.elephant.lastPosition.y) return;
         const direction = {
-            x: currentPosition.x - this.lastBallPos.x,
-            y: currentPosition.y - this.lastBallPos.y
+            x: currentPosition.x - this.elephant.lastPosition.x,
+            y: currentPosition.y - this.elephant.lastPosition.y
         };
         const angle = Math.atan2(direction.x, direction.y);
         this.elephant.model.rotation.y = angle + Math.PI;
-        this.lastBallPos = currentPosition
+        this.elephant.lastPosition = currentPosition
     }
 
 
@@ -134,14 +133,9 @@ export default class ThreeD {
         const { ball, player1Pos, player2Pos} = State.get('gameData');
 
         this.calculateElephantDirection(ball);
-
         this.elephant.model.position.set((ball.x - 500) * -1, 0, (ball.y - 250) * -1);
         this.mice.player1.model.position.set(500, 0, (player1Pos - 250) * -1);
         this.mice.player2.model.position.set(-500, 0, (player2Pos - 250) * -1);
-    }
-
-    directionToAnimation(direction) {
-        return direction === 0 ? 0 : 7;
     }
 
     changePlayerDirection(player, direction) {
@@ -150,10 +144,11 @@ export default class ThreeD {
                                 ? -Math.PI/2 + direction * -Math.PI/2
                                 : Math.PI/2 + direction * Math.PI/2;
 
-        const newAnimation = this.directionToAnimation(direction);
+        const newAnimation = direction === 0 ? 0 : 7;
         if (newAnimation === mouse.currentAnimation) return;
+
         mouse.currentAnimation = newAnimation;
-        
+    
         const action = mouse.mixer.clipAction(mouse.animations[newAnimation]);
         mouse.mixer.stopAllAction();
         action.play();
