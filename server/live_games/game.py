@@ -75,7 +75,7 @@ class GameLogic:
         self._current_countdown = self._initial_countdown_value
         self._player1_ready = False
         self._player2_ready = False
-        self._phase = "Waiting players"
+        self._phase = "waitingToStart"
         self._start_time = -1
         self._last_tick = 0
         self._player1: Paddle = Paddle('Left', self._map_height, self._paddle_size)

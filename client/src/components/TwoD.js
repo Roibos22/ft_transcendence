@@ -1,5 +1,4 @@
 import State from '../State.js';
-import { GamePhases } from '../constants.js';
 
 export default class TwoD {
 	constructor(game) {
@@ -8,17 +7,22 @@ export default class TwoD {
 		this.game = game;
 
 		this.init();
+		this.printGameStatus();
 	}
 
 	init() {
 		this.canvas = document.getElementById('gameCanvas2D');
 		this.ctx = this.canvas.getContext('2d');
 
-		this.lastLogTime = 0;
-		this.lastLogTime2 = 0;
 		this.canvas.width = this.game.field.width;
 		this.canvas.height = this.game.field.height;
 		this.startGame();
+	}
+
+	printGameStatus() {
+		setInterval(() => {
+			console.log(State);
+		}, 2000);
 	}
 
 	startGame() {
@@ -33,9 +37,6 @@ export default class TwoD {
 		this.drawBackground();
 		this.drawPaddles();
 		this.drawBall();
-		if (State.get('gameData', 'phase') !== GamePhases.RUNNING) {
-			this.drawText();
-		}
 		this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
 	}
 
@@ -66,61 +67,9 @@ export default class TwoD {
 		}
 	}
 
-	// drawCountdown() {
-	// 	this.ctx.font = `12 Arial`;
-	// 	this.ctx.fillText(State.get('countdown'), this.canvas.width / 2, this.canvas.height / 2);
-	// }
-	
-
 	drawBackground() {
 		this.ctx.fillStyle = '#33CB99';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-	}
-
-	drawText() {
-		this.ctx.fillStyle = 'white';
-		this.ctx.textAlign = 'center';
-		this.ctx.font = '36px Arial';
-
-		const currentMatch = State.get('currentMatch');
-
-		const gamePhase = State.get('gameData', 'phase');
-		switch (gamePhase) {
-			case GamePhases.WAITING_TO_START:
-				this.drawTopText('Press Enter to Start');
-				break;
-			case GamePhases.COUNTDOWN:
-				this.drawTopText(State.get("gameData", "countdown").toString());
-				break;
-			case GamePhases.MATCH_ENDED:
-				const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
-				this.drawTopText(`${winner.name} wins the match!`);
-				break;
-			case GamePhases.FINISHED:
-				this.drawTopText('Tournament Completed!');
-				const tournamentWinner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
-				this.drawBottomText(`${tournamentWinner.name} wins the tournament!`);
-				break;
-		}
-	}
-
-	drawTopText(text, fontSize = '36px') {
-		this.ctx.font = `${fontSize} Arial`;
-		this.ctx.fillText(text, this.canvas.width / 2, this.canvas.height / 4);
-	}
-
-	drawBottomText(text) {
-		const lines = text.split('\n');
-		const lineHeight = 60; // Adjust this value to change the space between lines
-		const startY = this.canvas.height * 3 / 4;
-
-		this.ctx.font = '36px Arial';
-		this.ctx.fillStyle = 'white';
-		this.ctx.textAlign = 'center';
-
-		lines.forEach((line, index) => {
-			this.ctx.fillText(line.trim(), this.canvas.width / 2, startY + (index * lineHeight));
-		});
 	}
 
 	show() {

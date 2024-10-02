@@ -1,3 +1,5 @@
+import { GameModes } from "../constants.js";
+
 export default class InputHandler {
 	constructor(game) {
 		this.game = game;
@@ -5,8 +7,20 @@ export default class InputHandler {
 	}
 
 	init() {
-		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
-		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+		switch(this.game.gameMode) {
+			case GameModes.SINGLE:
+				document.addEventListener('keydown', (e) => this.handleKeyDownSingle(e));
+				document.addEventListener('keyup', (e) => this.handleKeyUpSingle(e));
+				break;
+			case GameModes.MULTI:
+				document.addEventListener('keydown', (e) => this.handleKeyDownMulti(e));
+				document.addEventListener('keyup', (e) => this.handleKeyUpMulti(e));
+				break;
+			case GameModes.ONLINE:
+				document.addEventListener('keydown', (e) => this.handleKeyDownOnline(e));
+				document.addEventListener('keyup', (e) => this.handleKeyUpOnline(e));
+				break;
+		} 
 		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
 	}
 
@@ -16,7 +30,35 @@ export default class InputHandler {
 		}
 	}
 
-	handleKeyDown(e) {
+	// SINGLE
+
+	handleKeyDownSingle(e) {
+		switch(e.key) {
+			case 'ArrowUp':
+				this.game.engine.setPlayerDirection(2, -1);
+				break;
+			case 'ArrowDown':
+				this.game.engine.setPlayerDirection(2, 1);
+				break;
+			case 'Enter':
+				//this.handleEnterKey();
+				break;
+
+		}
+	}
+
+	handleKeyUpSingle(e) {
+		switch(e.key) {
+			case 'ArrowUp':
+			case 'ArrowDown':
+				this.game.engine.setPlayerDirection(2, 0);
+				break;
+		}
+	}
+
+	// MULTI
+
+	handleKeyDownMulti(e) {
 		switch(e.key) {
 			case 'w':
 				this.game.engine.setPlayerDirection(1, -1);
@@ -31,12 +73,13 @@ export default class InputHandler {
 				this.game.engine.setPlayerDirection(2, 1);
 				break;
 			case 'Enter':
-				this.handleEnterKey();
+				//this.handleEnterKey();
+				break;
 
 		}
 	}
 
-	handleKeyUp(e) {
+	handleKeyUpMulti(e) {
 		switch(e.key) {
 			case 'w':
 			case 's':
@@ -49,7 +92,43 @@ export default class InputHandler {
 		}
 	}
 
-	handleEnterKey() {
+	// ONLINE
+
+	handleKeyDownOnline(e) {
+		if (this.game.socket) {
+			switch(e.key) {
+				case 'ArrowUp':
+					this.game.socket.send(JSON.stringify({ action: 'move_player', direction: '-1' }));
+					break;
+				case 'ArrowDown':
+					this.game.socket.send(JSON.stringify({ action: 'move_player', direction: '1' }));
+					break;
+				case 'Enter':
+					this.game.socket.send(JSON.stringify({ action: 'player_ready' }));
+					break;
+			}
+		} else {
+			console.log("No Socket Connected");
+		}
+	}
+
+	handleKeyUpOnline(e) {
+		if (this.game.socket) {
+			switch(e.key) {
+				case 'ArrowUp':
+				case 'ArrowDown':
+					this.game.socket.send(JSON.stringify({
+						action: 'move_player',
+						direction: '0' }));
+					break;
+			}
+		} else {
+			console.log("No Socket Connected");
+		}
+	}
+}
+
+	//handleEnterKey() {
 		// if (this.game.state.waitingForEnter) {
 		// 	if (State.get('gameData', 'phase') === GamePhases.MATCH_ENDED) {
 		// 		incrementCurrentMatchIndex();
@@ -63,5 +142,5 @@ export default class InputHandler {
 		// 	}
 		// 	this.game.State.waitingForEnter = false;
 		// }
-	}
-}
+//	}
+//}
