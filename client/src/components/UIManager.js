@@ -62,10 +62,10 @@ export class UIManager {
 				this.content.gameInformation.innerHTML = Math.ceil(State.get("gameData", "countdown").toString());
 				break;
 			case GamePhases.RUNNING:
-				this.content.gameInformation.innerHTML = 'Running';
+				this.content.gameInformation.innerHTML = '&nbsp;';
 				break;
 			case GamePhases.MATCH_ENDED:
-				this.content.gameInformation.innerHTML = 'Math Ended';
+				this.content.gameInformation.innerHTML = ' ';
 				//const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
 				//this.drawTopText(`${winner.name} wins the match!`);
 				break;
