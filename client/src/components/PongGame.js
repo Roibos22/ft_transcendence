@@ -1,6 +1,5 @@
 import TwoD from "./TwoD.js";
 import ThreeD from "./ThreeD/ThreeD.js";
-import InputHandler from "./InputHandler.js";
 import State from "../State.js";
 import Engine from "./Engine.js";
 import * as Cookies from '../services/cookies.js';
@@ -17,12 +16,13 @@ export class PongGame {
 		this.twoD = null;
 		this.threeD = null;
 		this.inputHandler = null;
-		this.engine = null;
 		this.tournament = null;
 		this.socket = socket;
 		this.gameMode = Cookies.getCookie("gameMode");
 
 		this.init();
+
+		this.socket = socket;
 	}
 
 	init() {

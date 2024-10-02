@@ -4,15 +4,15 @@ import State from '../../State.js';
 
 export default class ThreeD {
     constructor(game) {
-        this.canvas = null
-        this.game = game
+        this.canvas = null;
+        this.game = game;
 
-        this.scene = null
-        this.camera = null
-        this.renderer = null
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
 
-        this.clock = null
-        this.audioListener = null
+        this.clock = new THREE.Clock();
+        this.audioListener = null;
 
         this.elephant = null;
 
@@ -20,6 +20,7 @@ export default class ThreeD {
             player1: null,
             player2: null
         }
+        this.direction = 0;
 
         this.spritesLoaded = false;
 
@@ -46,8 +47,8 @@ export default class ThreeD {
 
     setupCamera() {
         const aspect = this.canvas.width / this.canvas.height;
-        const frustumSize = 700; 
-        
+        const frustumSize = 700;
+
         this.camera = new THREE.OrthographicCamera(
             frustumSize * aspect / -2, // left
             frustumSize * aspect / 2,  // right
@@ -56,8 +57,8 @@ export default class ThreeD {
             -10000,                    // near
             10000                      // far
         );
-        
-        this.camera.position.set(10, 10, 10); 
+
+        this.camera.position.set(250, 250, -250);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         this.scene.add(this.camera);
     }
@@ -68,13 +69,13 @@ export default class ThreeD {
     }
 
     addFloor() {
-        const floorGeometry = new THREE.PlaneGeometry(this.game.field.width, this.game.field.height, 10, 10);
+        const floorGeometry = new THREE.PlaneGeometry(this.game.field.width, this.game.field.height);
         const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x33CB99, side: THREE.DoubleSide });
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        floor.rotation.x = Math.PI / 2;
-        floor.rotation.z = Math.PI / 2;
         floor.receiveShadow = true;
+        floor.rotation.x = Math.PI / 2;
         this.scene.add(floor);
+        console.log(floor.position);
     }
 
     newMouse() {
@@ -91,8 +92,9 @@ export default class ThreeD {
             path: "../public/elephant/scene.gltf",
             scene: this.scene,
             scale: { x: 0.3, y: 0.3, z: 0.3 },
-            currentAnimation: 0
+            currentAnimation: 5
         });
+        this.elephant.lastPosition = { x: 0, y: 0 };
         this.mice.player1 = this.newMouse();
         this.mice.player2 = this.newMouse();
         
@@ -106,27 +108,68 @@ export default class ThreeD {
     }
 
     setupMice() {
-        this.mice.player1.model.position.set(0, 0, 500);
-        this.mice.player1.model.rotation.y = Math.PI;
-        this.mice.player2.model.position.set(0, 0, -500);
+        this.elephant.model.position.set(500, 0, 250);
+        this.mice.player1.model.position.set(500, 0, 0);
+        this.mice.player1.model.rotation.y = -Math.PI/2;
+        this.mice.player2.model.position.set(-500, 0, 0);
+        this.mice.player2.model.rotation.y = Math.PI/2;
     }
+
+    calculateElephantDirection(currentPosition) {
+        if (currentPosition.x === this.elephant.lastPosition.x && currentPosition.y === this.elephant.lastPosition.y) return;
+        const direction = {
+            x: currentPosition.x - this.elephant.lastPosition.x,
+            y: currentPosition.y - this.elephant.lastPosition.y
+        };
+        const angle = Math.atan2(direction.x, direction.y);
+        this.elephant.model.rotation.y = angle + Math.PI;
+        this.elephant.lastPosition = currentPosition
+    }
+
 
     update() {
         if (!this.spritesLoaded) return;
 
-        const ball = State.get('gameData', 'ball');
-        this.elephant.model.position.set(ball.x, 0, ball.y);
+        const { ball, player1Pos, player2Pos} = State.get('gameData');
 
-        const player1Pos = State.get('gameData', 'player1Pos');
-        this.mice.player1.model.position.set(player1Pos - 250, 0, 500);
+        this.calculateElephantDirection(ball);
+        this.elephant.model.position.set((ball.x - 500) * -1, 0, (ball.y - 250) * -1);
+        this.mice.player1.model.position.set(500, 0, (player1Pos - 250) * -1);
+        this.mice.player2.model.position.set(-500, 0, (player2Pos - 250) * -1);
+    }
 
-        const player2Pos = State.get('gameData', 'player2Pos');
-        this.mice.player2.model.position.set(player2Pos - 250, 0, -500);
+    changePlayerDirection(player, direction) {
+        const mouse = this.mice[`player${player}`];
+        mouse.model.rotation.y = player === 1
+                                ? -Math.PI/2 + direction * -Math.PI/2
+                                : Math.PI/2 + direction * Math.PI/2;
+
+        const newAnimation = direction === 0 ? 0 : 7;
+        if (newAnimation === mouse.currentAnimation) return;
+
+        mouse.currentAnimation = newAnimation;
+    
+        const action = mouse.mixer.clipAction(mouse.animations[newAnimation]);
+        mouse.mixer.stopAllAction();
+        action.play();
+    }
+
+    getAnimationMixers() {
+        return [
+            this.elephant.mixer,
+            this.mice.player1.mixer,
+            this.mice.player2.mixer
+        ];
     }
 
     animate() {
         requestAnimationFrame(() => this.animate());
         this.update();
+        const mixers = this.getAnimationMixers();
+        const delta = this.clock.getDelta();
+        if (this.spritesLoaded && mixers) {
+            mixers.forEach(mixer => mixer.update(delta));
+        }
         this.renderer.render(this.scene, this.camera);
     }
 

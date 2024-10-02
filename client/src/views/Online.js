@@ -4,12 +4,10 @@ import { UIManager } from '../components/UIManager.js';
 import { PongGame } from '../components/PongGame.js';
 import * as Cookies from '../services/cookies.js';
 import state from "../State.js";
-import { GamePhases } from "../constants.js";
 
 
 export class OnlineGameView {
 	constructor() {
-		this.gameSocket = null;
 		this.game = null
 		this.UIManager = null;
 	}
@@ -18,17 +16,19 @@ export class OnlineGameView {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
 		this.initGameSocket(Cookies.getCookie("gameId"));
-		this.game = new PongGame(this.gameSocket);
+		// WATCH
+		this.game = new PongGame(this.game);
 		this.UIManager = new UIManager();
 		console.log("Online Game initialized");
 	}
 	
 	initGameSocket(gameId) {
-		this.gameSocket = new Socket('live_game', { gameId });
-		this.gameSocket.addEventListenersGame();
+		// WATCH
+		this.game.gameSocket = new Socket('live_game', { gameId });
+		this.game.gameSocket.addEventListenersGame();
 		// state.reset();
 		console.log(state.data);
-		this.gameSocket.socket.addEventListener('message', (event) => {
+		this.game.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
 			if (data.game_state) {
 				//console.log(data);
@@ -55,13 +55,12 @@ export class OnlineGameView {
 			}
 		}
 
-		state.set('gameData', newData);
+		state.data.gameData = newData;
 	}
 
 	update() {
 		this.UIManager.update();
 		this.game.update();
 	}
-
 }
 
