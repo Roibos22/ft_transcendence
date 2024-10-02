@@ -1,18 +1,13 @@
-import State from "../State.js";
-import { GameModes, GameTypes } from "../constants.js";
-import * as Cookies from '../services/cookies.js';
+import { GameModes } from "../constants.js";
 
 export default class InputHandler {
 	constructor(game) {
 		this.game = game;
-		this.socket = game.socket;
-		this.gameMode = Cookies.getCookie("gameMode");
-		//this.gameMode = State.get("gameSettings", "mode");
 		this.init();
 	}
 
 	init() {
-		switch(this.gameMode) {
+		switch(this.game.gameMode) {
 			case GameModes.SINGLE:
 				document.addEventListener('keydown', (e) => this.handleKeyDownSingle(e));
 				document.addEventListener('keyup', (e) => this.handleKeyUpSingle(e));
@@ -100,16 +95,16 @@ export default class InputHandler {
 	// ONLINE
 
 	handleKeyDownOnline(e) {
-		if (this.socket) {
+		if (this.game.socket) {
 			switch(e.key) {
 				case 'ArrowUp':
-					this.socket.send(JSON.stringify({ action: 'move_player', direction: '-1' }));
+					this.game.socket.send(JSON.stringify({ action: 'move_player', direction: '-1' }));
 					break;
 				case 'ArrowDown':
-					this.socket.send(JSON.stringify({ action: 'move_player', direction: '1' }));
+					this.game.socket.send(JSON.stringify({ action: 'move_player', direction: '1' }));
 					break;
 				case 'Enter':
-					this.socket.send(JSON.stringify({ action: 'player_ready' }));
+					this.game.socket.send(JSON.stringify({ action: 'player_ready' }));
 					break;
 			}
 		} else {
@@ -118,11 +113,11 @@ export default class InputHandler {
 	}
 
 	handleKeyUpOnline(e) {
-		if (this.socket) {
+		if (this.game.socket) {
 			switch(e.key) {
 				case 'ArrowUp':
 				case 'ArrowDown':
-					this.socket.send(JSON.stringify({
+					this.game.socket.send(JSON.stringify({
 						action: 'move_player',
 						direction: '0' }));
 					break;

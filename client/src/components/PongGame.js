@@ -3,6 +3,7 @@ import ThreeD from "./ThreeD/ThreeD.js";
 import InputHandler from "./InputHandler.js";
 import State from "../State.js";
 import Engine from "./Engine.js";
+import * as Cookies from '../services/cookies.js';
 import { GameModes, GameTypes } from "../constants.js";
 
 export class PongGame {
@@ -19,6 +20,7 @@ export class PongGame {
 		this.engine = null;
 		this.tournament = null;
 		this.socket = socket;
+		this.gameMode = Cookies.getCookie("gameMode");
 
 		this.init();
 	}
@@ -29,7 +31,7 @@ export class PongGame {
 
 		this.inputHandler = new InputHandler(this);
 
-		this.engine = State.get('gameSettings', 'mode') === GameModes.MULTI ? new Engine() : null;
+		this.engine = this.gameMode === GameModes.MULTI ? new Engine() : null;
 		this.update();
 	}
 
