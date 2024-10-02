@@ -8,7 +8,7 @@ import state from "../State.js";
 
 export class OnlineGameView {
 	constructor() {
-		// this.gameSocket = null;
+		this.gameSocket = null;
 		this.game = null
 		this.UIManager = null;
 	}
@@ -16,28 +16,17 @@ export class OnlineGameView {
 	async init() {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
-		this.game = new PongGame(this.gameSocket);
 		this.initGameSocket(Cookies.getCookie("gameId"));
-
-		// WATCH
-		//this.game = new PongGame(this.game);
-
+		this.game = new PongGame(this.gameSocket);
 		this.UIManager = new UIManager();
-		console.log("Online Game initialized");
 	}
 	
 	initGameSocket(gameId) {
-
-		// WATCH
-		this.game.gameSocket = new Socket('live_game', { gameId });
-		this.game.gameSocket.addEventListenersGame();
-		
-		// state.reset();
-		console.log(state.data);
-		this.game.gameSocket.socket.addEventListener('message', (event) => {
+		this.gameSocket = new Socket('live_game', { gameId });
+		this.gameSocket.addEventListenersGame();
+		this.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
 			if (data.game_state) {
-				//console.log(data);
 				this.updateState(data.game_state);
 			}
 		});
@@ -61,7 +50,8 @@ export class OnlineGameView {
 			}
 		}
 
-		state.data.gameData = newData;
+		//state.data.gameData = newData;
+		state.set('gameData', newData);
 	}
 
 	update() {
