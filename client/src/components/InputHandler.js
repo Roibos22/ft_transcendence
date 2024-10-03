@@ -24,7 +24,7 @@ export default class InputHandler {
 			's': { action: 'move_player', player_no: '1', direction: '1' },
 			'ArrowUp': { action: 'move_player', player_no: '2', direction: '-1' },
 			'ArrowDown': { action: 'move_player', player_no: '2', direction: '1' },
-			'Space': { action: 'player_ready', player_no: '1' },
+			' ': { action: 'player_ready', player_no: '1' },
 			'Enter': { action: 'player_ready', player_no: '2' }
 		};
 	

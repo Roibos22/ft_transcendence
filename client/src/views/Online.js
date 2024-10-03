@@ -21,7 +21,7 @@ export class OnlineGameView {
 	}
 	
 	initGameSocket(gameId) {
-		this.gameSocket = new Socket('live_game', { gameId });
+		this.gameSocket = new Socket('online_game', { gameId });
 		this.gameSocket.addEventListenersGame();
 		this.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
@@ -46,8 +46,8 @@ export class OnlineGameView {
 			ball: {
 				x: newState.ball.x || 0,
 				y: newState.ball.y || 0,
-					dx: newState.ball_dir.x || 0,
-					dy: newState.ball_dir.y || 0,
+				dx: newState.ball_dir.x || 0,
+				dy: newState.ball_dir.y || 0,
 			}
 		}
 

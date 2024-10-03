@@ -36,6 +36,7 @@ export const initState = {
 		displayType: GameTypes.TWO_D,
 		mode: GameModes.SINGLE,
 		pointsToWin: 5,
+		paddleSize: 0,
 	},
 	currentMatch: {
 		player1Name: "Player 1",
