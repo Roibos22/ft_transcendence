@@ -7,7 +7,7 @@ import asyncio
 
 game_sessions = {}
 
-class LiveGameConsumer(AsyncWebsocketConsumer):
+class MultiplayerGameConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         
@@ -26,7 +26,6 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             elif action == 'player_ready':
                 await self.handle_player_ready()
             elif action == 'move_player':
-                print("LiveGame Consumer: Move Player" + str(data))
                 await self.handle_move(data)
             elif action == 'get_init_data':
                 await self.send_init_data()
@@ -58,10 +57,10 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
 
         if not self.user.is_authenticated or not data.get("2fa_complete"):
             await self.close()
-            print("LiveGame consumer: User not authenticated")
+            print("MultiplayerGameConsumer: User not authenticated")
             return
 
-        print("LiveGame Consumer: User Authenticated!")
+        print("MultiplayerGameConsumer: User Authenticated!")
 
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game_group_name = f'game_{self.game_id}'
@@ -75,7 +74,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         elif self.user.username == player_usernames[1]:
             self.user_player_no = 2
         else:
-            print("LiveGame consumer: User is not part of this game")
+            print("MultiplayerGameConsumer: User is not part of this game")
             await self.close()
             return
 
@@ -87,7 +86,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         if (self.game_id not in game_sessions):
             game_sessions[self.game_id] = GameLogic(self.game_id, player_usernames[0], player_usernames[1])
 
-        print("LiveGame consumer: User Connected! Username: ", self.user.username)
+        print("MultiplayerGameConsumer: User Connected! Username: ", self.user.username)
         self.user_is_authenticated = True
         self.periodic_task = asyncio.create_task(self.send_game_updates())
 

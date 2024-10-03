@@ -1,11 +1,12 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Game
-from .serializer import GameSerializer 
+from .models import LocalGame, Game
+from .serializer import GameSerializer, LocalGameSerializer 
 from django.views import View
 from django.http import JsonResponse
 from django.contrib.auth import authenticate
+from users.permissions import Is2FAComplete
 
 @api_view(['GET'])
 def get_games(request):
@@ -29,3 +30,12 @@ def game_profile(requst, game_id):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     serilizer = GameSerializer(game)
     return Response(serilizer.data)
+
+@api_view(['POST'])
+@permission_classes([Is2FAComplete])
+def create_local_game(request):
+    print("local game")
+    user = request.user
+    game = LocalGame.objects.create(created_by=user)
+    return Response({'game_id': game.id}, status=status.HTTP_201_CREATED)
+
