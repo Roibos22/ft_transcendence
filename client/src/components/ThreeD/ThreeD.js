@@ -119,7 +119,7 @@ export default class ThreeD {
     }
 
     newHitBox() {
-        const hitBoxGeometry = new THREE.PlaneGeometry(5, 20);
+        const hitBoxGeometry = new THREE.PlaneGeometry(5, 50);
         const hitBoxMaterial = new THREE.MeshBasicMaterial({
             color: 0xFFFFFF,
             side: THREE.DoubleSide,
