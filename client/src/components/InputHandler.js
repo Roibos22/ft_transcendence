@@ -17,43 +17,42 @@ export default class InputHandler {
 	}
 
 	handleKeyDown(e) {
-		if (!this.game.socket) {
-			console.log("No Socket Connected");
+		if (!this.isSocketConnected()) return;
+	
+		const keyActions = {
+			'w': { action: 'move_player', player_no: '1', direction: '-1' },
+			's': { action: 'move_player', player_no: '1', direction: '1' },
+			'ArrowUp': { action: 'move_player', player_no: '2', direction: '-1' },
+			'ArrowDown': { action: 'move_player', player_no: '2', direction: '1' },
+			'Space': { action: 'player_ready', player_no: '1' },
+			'Enter': { action: 'player_ready', player_no: '2' }
+		};
+	
+		if (keyActions[e.key]) {
+			this.sendSocketMessage(keyActions[e.key]);
 		}
-			
-		switch(e.key) {
-			case 'w':
-				this.game.socket.send(JSON.stringify({ action: `move_player`, player_no: '1', direction: '-1' }));
-				break;
-			case 's':
-				this.game.socket.send(JSON.stringify({ action: `move_player`, player_no: '1', direction: '1' }));
-				break;
-			case 'ArrowUp':
-				this.game.socket.send(JSON.stringify({ action: `move_player`, player_no: '2', direction: '-1' }));
-				break;
-			case 'ArrowDown':
-				this.game.socket.send(JSON.stringify({ action: `move_player`, player_no: '2', direction: '1' }));
-				break;
-			case 'Space':
-				this.game.socket.send(JSON.stringify({ action: 'player_ready', player_no: '1' }));
-				break;
-			case 'Enter':
-				this.game.socket.send(JSON.stringify({ action: 'player_ready', player_no: '2' }));
-				break;
+	}
+	
+	handleKeyUp(e) {
+		if (!this.isSocketConnected()) return;
+	
+		const keyReleaseActions = ['w', 's', 'ArrowUp', 'ArrowDown'];
+	
+		if (keyReleaseActions.includes(e.key)) {
+			const player_no = ['w', 's'].includes(e.key) ? '1' : '2';
+			this.sendSocketMessage({ action: 'move_player', player_no, direction: '0' });
 		}
 	}
 
-	handleKeyUp(e) {
+	isSocketConnected() {
 		if (!this.game.socket) {
 			console.log("No Socket Connected");
+			return false;
 		}
-
-		if (!['w', 's', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
-
-		const player_no = e.key === 'w' || e.key === 's' ? '1' : '2';
-		this.game.socket.send(JSON.stringify({
-			action: 'move_player',
-			player_no: player_no,
-			direction: '0' }));
+		return true;
+	}
+	
+	sendSocketMessage(message) {
+		this.game.socket.send(JSON.stringify(message));
 	}
 }
