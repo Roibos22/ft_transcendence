@@ -1,11 +1,13 @@
 import TwoD from "./TwoD.js";
 import ThreeD from "./ThreeD/ThreeD.js";
 import State from "../State.js";
-import { GameTypes } from "../constants.js";
-import OnlineInputHandler from "../conponents_online/OnlineInputHandler.js";
+import InputHandler from "./InputHandler.js";
+import * as Cookies from '../services/cookies.js';
+import { GameModes, GameTypes } from "../constants.js";
 
 export class PongGame {
 	constructor(socket) {
+
 		this.field = {
 			width: 1000,
 			height: 500,
@@ -15,7 +17,8 @@ export class PongGame {
 		this.threeD = null;
 		this.inputHandler = null;
 		this.tournament = null;
-		this.gameSocket = socket;
+		this.socket = socket;
+		this.gameMode = Cookies.getCookie("gameMode");
 
 		this.init();
 	}
@@ -23,11 +26,9 @@ export class PongGame {
 	init() {
 		this.twoD = new TwoD(this);
 		this.threeD = new ThreeD(this);
-
-		if (this.gameSocket) {
-			this.inputHandler = new OnlineInputHandler(this);
-		}
-
+		this.inputHandler = new InputHandler(this);
+		//this.engine = this.gameMode === GameModes.MULTI ? new Engine() : null;
+	
 		this.update();
 	}
 

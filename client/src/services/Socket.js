@@ -40,15 +40,6 @@ export default class Socket {
 				token: `${this.authToken}`
 			}));
 		});
-		this.socket.addEventListener('open', () => {
-			console.log("Game socket opened, sending player_ready");
-			setTimeout(() => {
-				console.log("Sending player_ready message");
-				this.socket.send(JSON.stringify({
-					action: 'player_ready'
-				}));
-			}, 1000);
-		});
 	}
 
 	addEventListenersDebug() {

@@ -13,19 +13,15 @@ export class GameView {
 	}
 
 	async init() {
-		try {
-			const content = await Router.loadTemplate('game');
-			document.getElementById('app').innerHTML = content;
+		const content = await Router.loadTemplate('game');
+		document.getElementById('app').innerHTML = content;
 
-			if (State.get('gameSettings', 'mode') === GameModes.SINGLE) {
-				await this.getSinglePlayerGame();
-			}
-
-			this.game = new PongGame(this.gameSocket);
-			this.UIManager = new UIManager();
-		} catch (error) {
-			console.error('Error initializing GameView:', error);
+		if (State.get('gameSettings', 'mode') === GameModes.SINGLE) {
+			await this.getSinglePlayerGame();
 		}
+
+		this.game = new PongGame(this.gameSocket);
+		this.UIManager = new UIManager();
 	}
 
 	update() {

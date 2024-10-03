@@ -53,6 +53,7 @@ export class GameSetupView {
 			button.addEventListener('click', (e) => {
 				const id = e.target.id;
 				const gameMode = buttonIdToGameMode(id);
+				Cookies.setCookie("gameMode", gameMode, 24);
 				State.set('gameSettings', 'mode', gameMode);
 			});
 		});
@@ -100,14 +101,15 @@ export class GameSetupView {
 		gameModeButtons.online.classList.toggle('active', gameMode === GameModes.ONLINE);
 
 		//set player1 placeholder
-		player1Input.placeholder = gameMode === GameModes.ONLINE ? State.get('user', 'username') : 'Player 1';
+		//player1Input.placeholder = gameMode === GameModes.ONLINE ? State.get('user', 'username') : 'Player 1';
+		player1Input.placeholder = Cookies.getCookie('username');
 		player2container.classList.toggle('d-none', gameMode !== GameModes.MULTI);
 
 		settingsContainer.style.display = gameMode === GameModes.ONLINE ? 'none' : 'inline';
 	
 		start.classList.toggle('d-none', gameMode === GameModes.ONLINE);
 		oneVone.classList.toggle('d-none', gameMode !== GameModes.ONLINE);
-		tournament.classList.toggle('d-none', gameMode !== GameModes.ONLINE);
+		// tournament.classList.toggle('d-none', gameMode !== GameModes.ONLINE);
 	
 		Object.values(pointsToWinButtons).forEach(button => {
 			const value = parseInt(button.dataset.value);

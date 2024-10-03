@@ -48,6 +48,20 @@ html, body {
 	padding: 1rem;
 }
 
+
+/* SCORE CARD */
+
+.scorecard-card {
+	background-color: #2ec58e;
+	border: 0;
+}
+
+.custom-score, .custom-vs {
+	background-color: #C3E5D4;
+	color: #000000;
+}
+
+
 /* FORM */
 
 .form-input, .form-input:focus {
