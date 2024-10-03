@@ -7,7 +7,6 @@ from channels.db import database_sync_to_async
 import json
 import asyncio
 
-matchmaking_queue_lock = asyncio.Lock()
 matchmaking_queue = {}
 
 class MatchmakingConsumer(AsyncWebsocketConsumer):
@@ -59,7 +58,7 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
 
         if len(matchmaking_queue) >= 2:
             player1_id, player1_connections = matchmaking_queue.popitem()
-            player2_id, player2_connections= matchmaking_queue.popitem()
+            player2_id, player2_connections = matchmaking_queue.popitem()
 
             game = await self.create_game(player1_connections[0].user, player2_connections[0].user)
 
