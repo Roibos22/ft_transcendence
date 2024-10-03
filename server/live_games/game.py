@@ -91,6 +91,7 @@ class GameLogic:
         self._map_height = 500 
         self._paddle_height = 30
         self._paddle_width = 5
+        self._paddle_speed = 1
         self._ball_speed = 1
         self._ball_radius = 3
         self._initial_countdown_value = 3
@@ -100,8 +101,8 @@ class GameLogic:
         self._phase = "waitingToStart"
         self._start_time = -1
         self._last_tick = 0
-        self._player1: Paddle = Paddle('Left', self._map_height, self._paddle_height)
-        self._player2: Paddle = Paddle('Right', self._map_height, self._paddle_height)
+        self._player1: Paddle = Paddle('Left', self._map_height, self._paddle_height, self._paddle_speed)
+        self._player2: Paddle = Paddle('Right', self._map_height, self._paddle_height, self._paddle_speed)
         self._ball: Ball = Ball(self._map_width, self._map_height, self._ball_speed, self._ball_radius, self._paddle_width)
 
     def move_player1(self, direction: int):
@@ -127,7 +128,8 @@ class GameLogic:
             asyncio.create_task(self.render_game())
 
     async def render_game(self):
-        while self._player1_score != self._score_to_win and self._player1_score != self._score_to_win:
+        while self._player1_score != self._score_to_win and self._player2_score != self._score_to_win:
+            print("Game started")
             self._start_time = time.time() + self._initial_countdown_value
             self._phase = "countdown"
             await self.render_countdown()
