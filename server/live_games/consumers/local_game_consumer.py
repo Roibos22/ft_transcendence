@@ -95,7 +95,6 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
 
     async def handle_player_ready(self, data):
-        print("test")
         if int(data['player_no']) == 1:
             game_sessions[self.game_id].set_player1_ready()
         elif int(data['player_no']) == 2:
@@ -112,7 +111,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
             while True:
                 game_state = game_sessions[self.game_id].get_state()
                 await self.send(text_data=json.dumps({"game_state":game_state}))
-                if game_state.phase == "game_over":
+                if game_state['phase'] == "game_over":
                     break
                 await asyncio.sleep(0.016) # 60 fps NEED TO CHANGE THIS
                 # await asyncio.sleep(1) # 60 fps NEED TO CHANGE THIS
