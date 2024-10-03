@@ -26,3 +26,27 @@ class Game(models.Model):
 
     def __str__(self):
         return f"Game (id {self.id}) between {self.player1.username} and {self.player2.username} on {self.game_date.strftime('%Y-%m-%d')}"
+
+
+class LocalGame(models.Model):
+    created_by = models.ForeignKey(User, related_name='games_created', on_delete=models.CASCADE)
+    score_player1 = models.IntegerField(
+        validators= [
+			MinValueValidator(MIN_SCORE),
+			MaxValueValidator(MAX_SCORE)
+		],
+        default=0
+    )
+    score_player2 = models.IntegerField(
+        validators= [
+			MinValueValidator(MIN_SCORE),
+			MaxValueValidator(MAX_SCORE)
+		],
+        default=0
+	)
+    game_date = models.DateTimeField(auto_now_add=True)
+    # boolean ?
+    winner = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Local game (id {self.id}) created by {self.user.username} on {self.game_date.strftime('%Y-%m-%d')}"

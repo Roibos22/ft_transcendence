@@ -75,7 +75,7 @@ class GameLogic:
         self._player2_username = player2_username
         self._map_width = 1000
         self._map_height = 500 
-        self._paddle_size = 4
+        self._paddle_size = 20
         self._ball_speed = 1
         self._initial_countdown_value = 3
         self._current_countdown = self._initial_countdown_value
