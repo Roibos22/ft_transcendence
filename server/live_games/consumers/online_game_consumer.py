@@ -133,8 +133,10 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
     async def send_game_updates(self):
         try:
             while True:
-                game_state = {"game_state": game_sessions[self.game_id].get_state()}
-                await self.send(text_data=json.dumps(game_state))
+                game_state = game_sessions[self.game_id].get_state()
+                await self.send(text_data=json.dumps({"game_state":game_state}))
+                if game_state.phase == "game_over":
+                    break
                 await asyncio.sleep(0.016) # 60 fps NEED TO CHANGE THIS
 
         except asyncio.CancelledError:
