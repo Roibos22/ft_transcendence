@@ -10,8 +10,10 @@ class Paddle:
         self._paddle_speed = paddle_speed
         self._side = side
         self._y_position = int(map_height / 2 - paddle_height / 2)
+        self._direction = 0
 
     def move_paddle(self, direction: int):
+        self._direction = direction
         new_y = self._y_position + (direction * self._paddle_speed)
         if new_y < 0:
             self._y_position = 0
@@ -45,6 +47,10 @@ class Ball:
     @property
     def position(self):
         return {'x': self._position_x, 'y': self._position_y}
+
+    @property
+    def direction(self):
+        return {'x': self._direction_x, 'y': self._direction_y}
 
     def reset_ball_position_to_center(self):
         self._position_x = self._start_x
@@ -155,9 +161,12 @@ class GameLogic:
             'phase': self._phase,
             'player1_pos': self._player1._y_position,
             'player2_pos': self._player2._y_position,
+            'player1_dir': self._player1._direction,
+            'player2_dir': self._player2._direction,
             'player1_ready': self._player1_ready,
             'player2_ready': self._player2_ready,
             'ball': self._ball.position,
+            'ball_dir': self._ball.direction,
             'countdown': self._current_countdown,
             'player1_score': self._player1_score,
             'player2_score': self._player2_score,

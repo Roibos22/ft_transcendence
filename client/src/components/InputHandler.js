@@ -1,5 +1,3 @@
-import { GameModes } from "../constants.js";
-
 export default class InputHandler {
 	constructor(game) {
 		this.game = game;
@@ -7,20 +5,8 @@ export default class InputHandler {
 	}
 
 	init() {
-		switch(this.game.gameMode) {
-			case GameModes.SINGLE:
-				document.addEventListener('keydown', (e) => this.handleKeyDownSingle(e));
-				document.addEventListener('keyup', (e) => this.handleKeyUpSingle(e));
-				break;
-			case GameModes.MULTI:
-				document.addEventListener('keydown', (e) => this.handleKeyDownMulti(e));
-				document.addEventListener('keyup', (e) => this.handleKeyUpMulti(e));
-				break;
-			case GameModes.ONLINE:
-				document.addEventListener('keydown', (e) => this.handleKeyDownOnline(e));
-				document.addEventListener('keyup', (e) => this.handleKeyUpOnline(e));
-				break;
-		} 
+		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
+		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
 		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
 	}
 
@@ -30,117 +16,43 @@ export default class InputHandler {
 		}
 	}
 
-	// SINGLE
-
-	handleKeyDownSingle(e) {
-		switch(e.key) {
-			case 'ArrowUp':
-				this.game.engine.setPlayerDirection(2, -1);
-				break;
-			case 'ArrowDown':
-				this.game.engine.setPlayerDirection(2, 1);
-				break;
-			case 'Enter':
-				//this.handleEnterKey();
-				break;
-
+	handleKeyDown(e) {
+		if (!this.isSocketConnected()) return;
+	
+		const keyActions = {
+			'w': { action: 'move_player', player_no: '1', direction: '-1' },
+			's': { action: 'move_player', player_no: '1', direction: '1' },
+			'ArrowUp': { action: 'move_player', player_no: '2', direction: '-1' },
+			'ArrowDown': { action: 'move_player', player_no: '2', direction: '1' },
+			' ': { action: 'player_ready', player_no: '1' },
+			'Enter': { action: 'player_ready', player_no: '2' }
+		};
+	
+		if (keyActions[e.key]) {
+			this.sendSocketMessage(keyActions[e.key]);
+		}
+	}
+	
+	handleKeyUp(e) {
+		if (!this.isSocketConnected()) return;
+	
+		const keyReleaseActions = ['w', 's', 'ArrowUp', 'ArrowDown'];
+	
+		if (keyReleaseActions.includes(e.key)) {
+			const player_no = ['w', 's'].includes(e.key) ? '1' : '2';
+			this.sendSocketMessage({ action: 'move_player', player_no, direction: '0' });
 		}
 	}
 
-	handleKeyUpSingle(e) {
-		switch(e.key) {
-			case 'ArrowUp':
-			case 'ArrowDown':
-				this.game.engine.setPlayerDirection(2, 0);
-				break;
-		}
-	}
-
-	// MULTI
-
-	handleKeyDownMulti(e) {
-		switch(e.key) {
-			case 'w':
-				this.game.engine.setPlayerDirection(1, -1);
-				break;
-			case 's':
-				this.game.engine.setPlayerDirection(1, 1);
-				break;
-			case 'ArrowUp':
-				this.game.engine.setPlayerDirection(2, -1);
-				break;
-			case 'ArrowDown':
-				this.game.engine.setPlayerDirection(2, 1);
-				break;
-			case 'Enter':
-				//this.handleEnterKey();
-				break;
-
-		}
-	}
-
-	handleKeyUpMulti(e) {
-		switch(e.key) {
-			case 'w':
-			case 's':
-				this.game.engine.setPlayerDirection(1, 0);
-				break;
-			case 'ArrowUp':
-			case 'ArrowDown':
-				this.game.engine.setPlayerDirection(2, 0);
-				break;
-		}
-	}
-
-	// ONLINE
-
-	handleKeyDownOnline(e) {
-		if (this.game.socket) {
-			switch(e.key) {
-				case 'ArrowUp':
-					this.game.socket.send(JSON.stringify({ action: 'move_player', direction: '-1' }));
-					break;
-				case 'ArrowDown':
-					this.game.socket.send(JSON.stringify({ action: 'move_player', direction: '1' }));
-					break;
-				case 'Enter':
-					this.game.socket.send(JSON.stringify({ action: 'player_ready' }));
-					break;
-			}
-		} else {
+	isSocketConnected() {
+		if (!this.game.socket) {
 			console.log("No Socket Connected");
+			return false;
 		}
+		return true;
 	}
-
-	handleKeyUpOnline(e) {
-		if (this.game.socket) {
-			switch(e.key) {
-				case 'ArrowUp':
-				case 'ArrowDown':
-					this.game.socket.send(JSON.stringify({
-						action: 'move_player',
-						direction: '0' }));
-					break;
-			}
-		} else {
-			console.log("No Socket Connected");
-		}
+	
+	sendSocketMessage(message) {
+		this.game.socket.send(JSON.stringify(message));
 	}
 }
-
-	//handleEnterKey() {
-		// if (this.game.state.waitingForEnter) {
-		// 	if (State.get('gameData', 'phase') === GamePhases.MATCH_ENDED) {
-		// 		incrementCurrentMatchIndex();
-		// 		this.game.State.startNextMatch();
-		// 		this.game.State.startCountdown();
-		// 	} else if (State.get('gameData', 'phase') === GamePhases.FINISHED) {
-		// 		console.log("TOURNAMENT COMPLETED");
-		// 		// Add logic to restart the tournament or return to main menu
-		// 	} else {
-		// 		this.game.State.startCountdown();
-		// 	}
-		// 	this.game.State.waitingForEnter = false;
-		// }
-//	}
-//}

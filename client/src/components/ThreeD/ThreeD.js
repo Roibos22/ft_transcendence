@@ -20,7 +20,11 @@ export default class ThreeD {
             player1: null,
             player2: null
         }
-        this.direction = 0;
+
+        this.hitBoxes = {
+            player1: null,
+            player2: null
+        }
 
         this.spritesLoaded = false;
 
@@ -32,6 +36,7 @@ export default class ThreeD {
         this.setupCamera();
         this.addFloor();
         this.loadSprites();
+        this.setupHitBoxes();
         this.setupRenderer();
         this.animate();
     }
@@ -75,7 +80,6 @@ export default class ThreeD {
         floor.receiveShadow = true;
         floor.rotation.x = Math.PI / 2;
         this.scene.add(floor);
-        console.log(floor.position);
     }
 
     newMouse() {
@@ -94,7 +98,6 @@ export default class ThreeD {
             scale: { x: 0.3, y: 0.3, z: 0.3 },
             currentAnimation: 5
         });
-        this.elephant.lastPosition = { x: 0, y: 0 };
         this.mice.player1 = this.newMouse();
         this.mice.player2 = this.newMouse();
         
@@ -115,17 +118,34 @@ export default class ThreeD {
         this.mice.player2.model.rotation.y = Math.PI/2;
     }
 
-    calculateElephantDirection(currentPosition) {
-        if (currentPosition.x === this.elephant.lastPosition.x && currentPosition.y === this.elephant.lastPosition.y) return;
-        const direction = {
-            x: currentPosition.x - this.elephant.lastPosition.x,
-            y: currentPosition.y - this.elephant.lastPosition.y
-        };
-        const angle = Math.atan2(direction.x, direction.y);
-        this.elephant.model.rotation.y = angle + Math.PI;
-        this.elephant.lastPosition = currentPosition
+    newHitBox() {
+        const hitBoxGeometry = new THREE.PlaneGeometry(5, 20);
+        const hitBoxMaterial = new THREE.MeshBasicMaterial({
+            color: 0xFFFFFF,
+            side: THREE.DoubleSide,
+            // transparent: true,
+            // opacity: 0.5
+        });
+        const hitBox = new THREE.Mesh(hitBoxGeometry, hitBoxMaterial);
+        hitBox.rotation.x = Math.PI / 2;
+        return hitBox;
     }
 
+    setupHitBoxes() {
+        this.hitBoxes.player1 = this.newHitBox();
+        this.hitBoxes.player1.position.set(500, 1, 0);
+
+        this.hitBoxes.player2 = this.newHitBox();
+        this.hitBoxes.player2.position.set(-500, 1, 0);
+
+        this.scene.add(this.hitBoxes.player1);
+        this.scene.add(this.hitBoxes.player2);
+    }
+
+    calculateElephantDirection(ball) {
+        const angle = Math.atan2(ball.dx, ball.dy);
+        this.elephant.model.rotation.y = angle + Math.PI;
+    }
 
     update() {
         if (!this.spritesLoaded) return;
@@ -135,7 +155,9 @@ export default class ThreeD {
         this.calculateElephantDirection(ball);
         this.elephant.model.position.set((ball.x - 500) * -1, 0, (ball.y - 250) * -1);
         this.mice.player1.model.position.set(500, 0, (player1Pos - 250) * -1);
+        this.hitBoxes.player1.position.set(495, 1, (player1Pos - 250) * -1);
         this.mice.player2.model.position.set(-500, 0, (player2Pos - 250) * -1);
+        this.hitBoxes.player2.position.set(-494, 1, (player2Pos - 250) * -1);
     }
 
     changePlayerDirection(player, direction) {
