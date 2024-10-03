@@ -15,7 +15,7 @@ from channels.auth import AuthMiddlewareStack
 from django.urls import path
 from game.consumers.matchmaking import MatchmakingConsumer
 from live_games.consumers.local_game_consumer import LocalGameConsumer
-from live_games.consumers.Online_game_consumer import OnlineGameConsumer
+from live_games.consumers.online_game_consumer import OnlineGameConsumer
 from .middleware import JWTAuthMiddlewareStack
 from django.urls import re_path
 
