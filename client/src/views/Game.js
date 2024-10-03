@@ -36,6 +36,6 @@ export class GameView {
 		if (!data.gameId) {
 			throw new Error();
 		}
-		this.gameSocket = new Socket('single_player_game', { gameId: data.gameId });
+		this.gameSocket = new Socket('local_game', { gameId: data.gameId });
 	}
 }
