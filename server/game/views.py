@@ -34,7 +34,6 @@ def game_profile(requst, game_id):
 @api_view(['POST'])
 @permission_classes([Is2FAComplete])
 def create_local_game(request):
-    print("local game")
     user = request.user
     game = LocalGame.objects.create(created_by=user)
     return Response({'game_id': game.id}, status=status.HTTP_201_CREATED)

@@ -24,7 +24,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
             if action == 'get_state':
                 await self.handle_get_state()
             elif action == 'player_ready':
-                await self.handle_player_ready()
+                await self.handle_player_ready(data)
             elif action == 'move_player':
                 await self.handle_move(data)
             elif action == 'get_init_data':
@@ -38,7 +38,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
     async def handle_authenticate(self, data):
 
         from users.models import User
-        from game.models import Game
+        from game.models import LocalGame
         from jwt import decode as jwt_decode
         from django.conf import settings
         from django.contrib.auth.models import AnonymousUser
@@ -64,10 +64,10 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
 
         self.game_id = self.scope['url_route']['kwargs']['game_id']
 
-        game = await sync_to_async(Game.objects.get)(id=self.game_id)
+        game = await sync_to_async(LocalGame.objects.get)(id=self.game_id)
         game_creator = await database_sync_to_async(lambda: game.created_by)()
 
-        if self.user.username != game_creator:
+        if self.user.username != game_creator.username:
             print("LocalGameConsumer: User does not have access to this game.")
             await self.close()
             return
@@ -95,6 +95,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
 
     async def handle_player_ready(self, data):
+        print("test")
         if int(data['player_no']) == 1:
             game_sessions[self.game_id].set_player1_ready()
         elif int(data['player_no']) == 2:
