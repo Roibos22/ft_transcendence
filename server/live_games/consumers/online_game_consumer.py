@@ -7,7 +7,7 @@ import asyncio
 
 game_sessions = {}
 
-class MultiplayerGameConsumer(AsyncWebsocketConsumer):
+class OnlineGameConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         
@@ -57,10 +57,10 @@ class MultiplayerGameConsumer(AsyncWebsocketConsumer):
 
         if not self.user.is_authenticated or not data.get("2fa_complete"):
             await self.close()
-            print("MultiplayerGameConsumer: User not authenticated")
+            print("OnlineGameConsumer: User not authenticated")
             return
 
-        print("MultiplayerGameConsumer: User Authenticated!")
+        print("OnlineGameConsumer: User Authenticated!")
 
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game_group_name = f'game_{self.game_id}'
@@ -74,7 +74,7 @@ class MultiplayerGameConsumer(AsyncWebsocketConsumer):
         elif self.user.username == player_usernames[1]:
             self.user_player_no = 2
         else:
-            print("MultiplayerGameConsumer: User is not part of this game")
+            print("OnlineGameConsumer: User is not part of this game")
             await self.close()
             return
 
@@ -86,7 +86,7 @@ class MultiplayerGameConsumer(AsyncWebsocketConsumer):
         if (self.game_id not in game_sessions):
             game_sessions[self.game_id] = GameLogic(self.game_id, player_usernames[0], player_usernames[1])
 
-        print("MultiplayerGameConsumer: User Connected! Username: ", self.user.username)
+        print("OnlineGameConsumer: User Connected! Username: ", self.user.username)
         self.user_is_authenticated = True
         self.periodic_task = asyncio.create_task(self.send_game_updates())
 

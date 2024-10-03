@@ -49,4 +49,4 @@ class LocalGame(models.Model):
     winner = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Local game (id {self.id}) created by {self.user.username} on {self.game_date.strftime('%Y-%m-%d')}"
+        return f"Local game (id {self.id}) created by {self.created_by.username} on {self.game_date.strftime('%Y-%m-%d')}"

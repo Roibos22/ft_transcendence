@@ -113,6 +113,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
                 game_state = {"game_state": game_sessions[self.game_id].get_state()}
                 await self.send(text_data=json.dumps(game_state))
                 await asyncio.sleep(0.016) # 60 fps NEED TO CHANGE THIS
+                # await asyncio.sleep(1) # 60 fps NEED TO CHANGE THIS
 
         except asyncio.CancelledError:
             pass
