@@ -7,7 +7,7 @@ import asyncio
 
 game_sessions = {}
 
-class LiveGameConsumer(AsyncWebsocketConsumer):
+class OnlineGameConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         
@@ -26,7 +26,6 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
             elif action == 'player_ready':
                 await self.handle_player_ready()
             elif action == 'move_player':
-                print("LiveGame Consumer: Move Player" + str(data))
                 await self.handle_move(data)
             elif action == 'get_init_data':
                 await self.send_init_data()
@@ -34,7 +33,7 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
                 await self.handle_receive_message(data)
 
     async def send_init_data(self):
-        await self.send(text_data=json.dumps({"game_data": game_sessions[self.game_id].get_init_data(self.user_player_no)}))
+        await self.send(text_data=json.dumps({"game_data": game_sessions[self.game_id].get_init_data()}))
 
     async def handle_authenticate(self, data):
 
@@ -58,24 +57,24 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
 
         if not self.user.is_authenticated or not data.get("2fa_complete"):
             await self.close()
-            print("LiveGame consumer: User not authenticated")
+            print("OnlineGameConsumer: User not authenticated")
             return
 
-        print("LiveGame Consumer: User Authenticated!")
+        print("OnlineGameConsumer: User Authenticated!")
 
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game_group_name = f'game_{self.game_id}'
         game = await sync_to_async(Game.objects.get)(id=self.game_id)
-        players_username = await database_sync_to_async(
+        player_usernames = await database_sync_to_async(
             lambda: (game.player1.username,game.player2.username)
         )()
 
-        if self.user.username == players_username[0]:
+        if self.user.username == player_usernames[0]:
             self.user_player_no = 1
-        elif self.user.username == players_username[1]:
+        elif self.user.username == player_usernames[1]:
             self.user_player_no = 2
         else:
-            print("LiveGame consumer: User is not part of this game")
+            print("OnlineGameConsumer: User is not part of this game")
             await self.close()
             return
 
@@ -85,9 +84,9 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
         )
 
         if (self.game_id not in game_sessions):
-            game_sessions[self.game_id] = GameLogic(self.game_id)
+            game_sessions[self.game_id] = GameLogic(self.game_id, player_usernames[0], player_usernames[1])
 
-        print("LiveGame consumer: User Connected! Username: ", self.user.username)
+        print("OnlineGameConsumer: User Connected! Username: ", self.user.username)
         self.user_is_authenticated = True
         self.periodic_task = asyncio.create_task(self.send_game_updates())
 
@@ -134,12 +133,14 @@ class LiveGameConsumer(AsyncWebsocketConsumer):
     async def send_game_updates(self):
         try:
             while True:
-                await self.send(text_data=json.dumps({"game_state": game_sessions[self.game_id].get_state()}))
-                await asyncio.sleep(0.)
+                game_state = game_sessions[self.game_id].get_state()
+                await self.send(text_data=json.dumps({"game_state":game_state}))
+                if game_state['phase'] == "game_over":
+                    break
+                await asyncio.sleep(0.016) # 60 fps NEED TO CHANGE THIS
 
         except asyncio.CancelledError:
             pass
-
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(

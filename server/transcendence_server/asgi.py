@@ -14,7 +14,8 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
 from game.consumers.matchmaking import MatchmakingConsumer
-from live_games.consumers.live_game import LiveGameConsumer
+from live_games.consumers.local_game_consumer import LocalGameConsumer
+from live_games.consumers.online_game_consumer import OnlineGameConsumer
 from .middleware import JWTAuthMiddlewareStack
 from django.urls import re_path
 
@@ -25,7 +26,7 @@ application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": URLRouter([
         path('ws/matchmaking/', MatchmakingConsumer.as_asgi()),
-        # path('ws/live_game/', LiveGameConsumer.as_asgi()),
-        re_path(r'ws/live_game/(?P<game_id>\w+)/$', LiveGameConsumer.as_asgi()),
+        re_path(r'ws/online_game/(?P<game_id>\w+)/$', OnlineGameConsumer.as_asgi()),
+        re_path(r'ws/local_game/(?P<game_id>\w+)/$', LocalGameConsumer.as_asgi()),
     ])
 })

@@ -10,6 +10,13 @@ html, body {
 	padding: 5rem;
 }
 
+.title {
+	font-family: "Baskerville", "Brush Script MT", cursive;
+	color: #6c757d;
+	font-size: 5rem;
+	padding-bottom: 4rem;
+}
+
 .background-gradient {
 	min-height: 100vh;
 	width: 100%;
@@ -40,6 +47,20 @@ html, body {
 .profile-card-body {
 	padding: 1rem;
 }
+
+
+/* SCORE CARD */
+
+.scorecard-card {
+	background-color: #2ec58e;
+	border: 0;
+}
+
+.custom-score, .custom-vs {
+	background-color: #C3E5D4;
+	color: #000000;
+}
+
 
 /* FORM */
 

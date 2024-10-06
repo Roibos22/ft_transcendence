@@ -28,11 +28,15 @@ export const initState = {
 		displayName: "",
 		onlineStatus: false
 	},
+	ThreeD: {
+		spritesLoaded: false,
+	},
 	gameSettings: {
 		numberOfGames: 1,
 		displayType: GameTypes.TWO_D,
 		mode: GameModes.SINGLE,
 		pointsToWin: 5,
+		paddleSize: 0,
 	},
 	currentMatch: {
 		player1Name: "Player 1",
@@ -42,17 +46,24 @@ export const initState = {
 		winner: ""
 	},
 	gameData: {
+		gameId: 0,
 		phase: GamePhases.WAITING_TO_START,
 		player1Pos: 0,
 		player2Pos: 0,
+		player1Direction: 0,
+		player2Direction: 0,
+		player1Ready: false,
+		player2Ready: false,
 		countdown: -1,
 		ball: {
 			x: 0,
 			y: 0,
+			dx: 0,
+			dy: 0
 		}
 	},
 	tournament:
-	 null
+		null
 	// {
 	// 	players: ["player1", "player2", "player3", "player4"],
 	// 	results: [],

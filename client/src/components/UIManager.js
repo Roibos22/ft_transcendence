@@ -1,6 +1,7 @@
-import state from '../State.js';
+import State from '../State.js';
 import { standingsTableRow } from '../utils/utils.js';
 import { Tournament } from './Tournament.js';
+import { GamePhases } from '../constants.js';
 
 export class UIManager {
 	constructor() {
@@ -22,7 +23,7 @@ export class UIManager {
 	init() {
 		this.content.displayToggle = document.getElementById('viewToggle');
 		this.content.displayToggle.addEventListener('change', () => {
-			state.set('gameSettings', 'displayType', this.content.displayToggle.checked ? '3D' : '2D');
+			State.set('gameSettings', 'displayType', this.content.displayToggle.checked ? '3D' : '2D');
 		});
 
 		this.content.scoreCard = {
@@ -34,16 +35,46 @@ export class UIManager {
 		this.content.fixtures = document.getElementById('fixtures');
 		this.content.standings = document.getElementById('standings');
 		this.content.standingsTable = document.getElementById('standingsTable');
+		this.content.gameInformation = document.getElementById('gameInformation');
 		this.update();
 	}
 
 	update() {
 		this.updateScoreCard()
-		if (state.get('tournament')) {
+		this.updateGameInformation();
+		if (State.get('tournament')) {
 			this.updateMatchList();
 			this.updateTable();
 		} else {
 			this.hideTournamentInfo();
+		}
+	}
+
+	updateGameInformation() {
+		const currentMatch = State.get('currentMatch');
+
+		const gamePhase = State.get('gameData', 'phase');
+		switch (gamePhase) {
+			case GamePhases.WAITING_TO_START:
+				this.content.gameInformation.innerHTML = 'Press Enter to Start';
+				break;
+			case GamePhases.COUNTDOWN:
+				this.content.gameInformation.innerHTML = Math.ceil(State.get("gameData", "countdown").toString());
+				break;
+			case GamePhases.RUNNING:
+				this.content.gameInformation.innerHTML = '&nbsp;';
+				break;
+			case GamePhases.MATCH_ENDED:
+				this.content.gameInformation.innerHTML = ' ';
+				//const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
+				//this.drawTopText(`${winner.name} wins the match!`);
+				break;
+			case GamePhases.FINISHED:
+				this.content.gameInformation.innerHTML = 'Tournament Ended';
+				//this.drawTopText('Tournament Completed!');
+				//const tournamentWinner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
+				//this.drawBottomText(`${tournamentWinner.name} wins the tournament!`);
+				break;
 		}
 	}
 
@@ -53,7 +84,7 @@ export class UIManager {
 	}
 
 	updateScoreCard() {
-		const { player1Name, player2Name, player1Score, player2Score } = state.get('currentMatch');
+		const { player1Name, player2Name, player1Score, player2Score } = State.get('currentMatch');
 	
 		this.content.scoreCard.player1Name.innerHTML = player1Name;
 		this.content.scoreCard.player2Name.innerHTML = player2Name;
@@ -63,7 +94,7 @@ export class UIManager {
 
 	updateMatchList() {
 		this.content.fixtures.style.display = 'inline';
-		const tournament = state.get('tournament');
+		const tournament = State.get('tournament');
 		const matchesList = tournament.matches.map((match, index) => {
 			const player1 = match.players[0].name;
 			const player2 = match.players[1].name;

@@ -1,16 +1,13 @@
-import { GameModes, GamePhases } from '../constants.js';
-import { incrementCurrentMatchIndex } from '../utils/utils.js';
-import state from '../State.js';
-
 export default class InputHandler {
 	constructor(game) {
 		this.game = game;
+		this.init();
 	}
 
 	init() {
-		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
 		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
 		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
 	}
 
 	preventDefaultScroll(e) {
@@ -20,98 +17,42 @@ export default class InputHandler {
 	}
 
 	handleKeyDown(e) {
-		switch(e.key) {
-			case 'w':
-				this.game.engine.player1.moveUp();
-				break;
-			case 's':
-				this.game.engine.player1.moveDown();
-				break;
-			case 'ArrowUp':
-				this.game.engine.player2.moveUp();
-				break;
-			case 'ArrowDown':
-				this.game.engine.player2.moveDown();
-				break;
-			case 'Enter':
-				this.handleEnterKey();
-
+		if (!this.isSocketConnected()) return;
+	
+		const keyActions = {
+			'w': { action: 'move_player', player_no: '1', direction: '-1' },
+			's': { action: 'move_player', player_no: '1', direction: '1' },
+			'ArrowUp': { action: 'move_player', player_no: '2', direction: '-1' },
+			'ArrowDown': { action: 'move_player', player_no: '2', direction: '1' },
+			' ': { action: 'player_ready', player_no: '1' },
+			'Enter': { action: 'player_ready', player_no: '2' }
+		};
+	
+		if (keyActions[e.key]) {
+			this.sendSocketMessage(keyActions[e.key]);
 		}
 	}
-
+	
 	handleKeyUp(e) {
-		if (e.key in this.keys) {
-			this.keys[e.key] = false;
+		if (!this.isSocketConnected()) return;
+	
+		const keyReleaseActions = ['w', 's', 'ArrowUp', 'ArrowDown'];
+	
+		if (keyReleaseActions.includes(e.key)) {
+			const player_no = ['w', 's'].includes(e.key) ? '1' : '2';
+			this.sendSocketMessage({ action: 'move_player', player_no, direction: '0' });
 		}
 	}
 
-	handleEnterKey() {
-		if (this.game.state.waitingForEnter) {
-			if (state.get('gameData', 'phase') === GamePhases.MATCH_ENDED) {
-				incrementCurrentMatchIndex();
-				this.game.state.startNextMatch();
-				this.game.state.startCountdown();
-			} else if (state.get('gameData', 'phase') === GamePhases.FINISHED) {
-				console.log("TOURNAMENT COMPLETED");
-				// Add logic to restart the tournament or return to main menu
-			} else {
-				this.game.state.startCountdown();
-			}
-			this.game.state.waitingForEnter = false;
+	isSocketConnected() {
+		if (!this.game.socket) {
+			console.log("No Socket Connected");
+			return false;
 		}
+		return true;
 	}
-
-	update() {
-		if (state.get('gameSettings', 'mode') === GameModes.SINGLE) {
-			this.updateSinglePlayerMode();
-		} else if (state.get('gameSettings', 'mode') === GameModes.MULTI) {
-			this.updateMultiPlayerMode();
-		}
-	}
-
-	updateSinglePlayerMode() {
-		if (state.get('gameData', 'phase') === GamePhases.RUNNING || state.get('gameData', 'phase') === GamePhases.COUNTDOWN) {
-			if (this.keys.ArrowUp) {
-				this.game.physics.leftPaddleY = Math.max(
-					0, 
-					this.game.physics.leftPaddleY - this.game.physics.paddleSpeed
-				);
-			}
-			if (this.keys.ArrowDown) {
-				this.game.physics.leftPaddleY = Math.min(
-					this.game.canvas.height - this.game.physics.paddleHeight, 
-					this.game.physics.leftPaddleY + this.game.physics.paddleSpeed
-				);
-			}
-		}
-	}
-
-	updateMultiPlayerMode() {
-		if (state.get('gameData', 'phase') === GamePhases.RUNNING || state.get('gameData', 'phase') === GamePhases.COUNTDOWN) {
-			if (this.keys.w) {
-				this.game.physics.leftPaddleY = Math.max(
-					0, 
-					this.game.physics.leftPaddleY - this.game.physics.paddleSpeed
-				);
-			}
-			if (this.keys.s) {
-				this.game.physics.leftPaddleY = Math.min(
-					this.game.canvas.height - this.game.physics.paddleHeight, 
-					this.game.physics.leftPaddleY + this.game.physics.paddleSpeed
-				);
-			}
-			if (this.keys.ArrowUp) {
-				this.game.physics.rightPaddleY = Math.max(
-					0, 
-					this.game.physics.rightPaddleY - this.game.physics.paddleSpeed
-				);
-			}
-			if (this.keys.ArrowDown) {
-				this.game.physics.rightPaddleY = Math.min(
-					this.game.canvas.height - this.game.physics.paddleHeight, 
-					this.game.physics.rightPaddleY + this.game.physics.paddleSpeed
-				);
-			}
-		}
+	
+	sendSocketMessage(message) {
+		this.game.socket.send(JSON.stringify(message));
 	}
 }

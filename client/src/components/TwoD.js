@@ -1,26 +1,31 @@
-import state from '../State.js';
-import { GamePhases } from '../constants.js';
+import State from '../State.js';
 
 export default class TwoD {
-    constructor(game) {
-        this.canvas = null;
-        this.ctx = null;
-        this.game = game;
+	constructor(game) {
+		this.canvas = null;
+		this.ctx = null;
+		this.game = game;
 
-        this.init();
-    }
+		this.init();
+		this.printGameStatus();
+	}
 
-    init() {
-        this.canvas = document.getElementById('gameCanvas2D');
-        this.ctx = this.canvas.getContext('2d');
+	init() {
+		this.canvas = document.getElementById('gameCanvas2D');
+		this.ctx = this.canvas.getContext('2d');
 
-        this.canvas.width = this.game.field.width;
-        this.canvas.height = this.game.field.height;
+		this.canvas.width = this.game.field.width;
+		this.canvas.height = this.game.field.height;
+		this.startGame();
+	}
 
-        this.startGame();
-    }
+	printGameStatus() {
+		setInterval(() => {
+			console.log(State);
+		}, 2000);
+	}
 
-    startGame() {
+	startGame() {
 		if (this.animationFrameId) {
 			cancelAnimationFrame(this.animationFrameId);
 			this.animationFrameId = null;
@@ -28,95 +33,50 @@ export default class TwoD {
 		this.gameLoop();
 	}
 
-    gameLoop() {
-        this.drawBackground();
-        this.drawPaddles();
-        this.drawBall();
-        if (state.get('gameData', 'phase') !== GamePhases.RUNNING) {
-            this.drawText();
-        }
-        this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
-    }
+	gameLoop() {
+		this.drawBackground();
+		this.drawPaddles();
+		this.drawBall();
+		this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
+	}
 
-    drawPaddles() {
-        const paddleHeight = 100;
-        const paddleWidth = 10;
-        const leftPaddleY = (state.get('gameData', 'player1Pos') || this.canvas.height / 2) - paddleHeight / 2;
-        const rightPaddleY = (state.get('gameData', 'player2Pos') || this.canvas.height / 2) - paddleHeight / 2;
-
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
-        this.ctx.fillRect(this.canvas.width - paddleWidth, rightPaddleY, paddleWidth, paddleHeight);
-    }
-
-    drawBall() {
-        const { ball } = state.get('gameData');
-        const ballRadius = 5;
-
-        this.ctx.beginPath();
-		this.ctx.arc(ball.x, ball.x, ballRadius, 0, Math.PI * 2);
+	drawPaddles() {
+		const paddleHeight = 50;
+		const paddleWidth = 10;
+		const player1PosState = State.data.gameData.player1Pos;
+		const player2PosState = State.data.gameData.player2Pos;
+		const leftPaddleY = (player1PosState || this.canvas.height / 2);
+		const rightPaddleY = (player2PosState || this.canvas.height / 2);
+	
 		this.ctx.fillStyle = 'white';
-		this.ctx.fill();
-		this.ctx.closePath();
-    }
+		this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
+		this.ctx.fillRect(this.canvas.width - paddleWidth, rightPaddleY, paddleWidth, paddleHeight);
+	}
 
-    drawBackground() {
-        this.ctx.fillStyle = '#33CB99';
+	drawBall() {
+		const ball = State.get('gameData', 'ball');
+		const ballRadius = 5;
+		const countdown = State.get('gameData', 'countdown');
+	
+		if (ball && countdown <= 0) {
+			this.ctx.beginPath();
+			this.ctx.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
+			this.ctx.fillStyle = 'white';
+			this.ctx.fill();
+			this.ctx.closePath();
+		}
+	}
+
+	drawBackground() {
+		this.ctx.fillStyle = '#33CB99';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    }
+	}
 
-    drawText() {
-        this.ctx.fillStyle = 'white';
-        this.ctx.textAlign = 'center';
-        this.ctx.font = '36px Arial';
+	show() {
+		this.canvas.style.display = 'inline';
+	}
 
-        const currentMatch = state.get('currentMatch');
-
-        const gamePhase = state.get('gameData', 'phase');
-
-        switch (gamePhase) {
-            case GamePhases.WAITING_TO_START:
-                this.drawTopText('Press Enter to Start');
-                break;
-            case GamePhases.COUNTDOWN:
-                this.drawTopText(state.get("gameData", "countdown").toString());
-                break;
-            case GamePhases.MATCH_ENDED:
-                const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
-                this.drawTopText(`${winner.name} wins the match!`);
-                break;
-            case GamePhases.FINISHED:
-                this.drawTopText('Tournament Completed!');
-                const tournamentWinner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
-                this.drawBottomText(`${tournamentWinner.name} wins the tournament!`);
-                break;
-        }
-    }
-
-    drawTopText(text, fontSize = '36px') {
-        this.ctx.font = `${fontSize} Arial`;
-        this.ctx.fillText(text, this.canvas.width / 2, this.canvas.height / 4);
-    }
-
-    drawBottomText(text) {
-        const lines = text.split('\n');
-        const lineHeight = 60; // Adjust this value to change the space between lines
-        const startY = this.canvas.height * 3 / 4;
-
-        this.ctx.font = '36px Arial';
-        this.ctx.fillStyle = 'white';
-        this.ctx.textAlign = 'center';
-
-        lines.forEach((line, index) => {
-            this.ctx.fillText(line.trim(), this.canvas.width / 2, startY + (index * lineHeight));
-        });
-    }
-
-    show() {
-        this.canvas.style.display = 'inline';
-    }
-
-    hide() {
-        this.canvas.style.display = 'none';
-    }
+	hide() {
+		this.canvas.style.display = 'none';
+	}
 }
