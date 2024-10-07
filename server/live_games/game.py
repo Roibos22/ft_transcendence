@@ -13,6 +13,8 @@ class Paddle:
         self._direction = 0
 
     def move_paddle(self):
+        if self._direction == 0:
+            return
         new_y = self._y_position + (self._direction * self._paddle_speed)
         if new_y < 0:
             self._y_position = 0
