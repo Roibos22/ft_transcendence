@@ -1,1 +1,1 @@
-VERIFICATION_LINK='http://localhost:8000/users/emailverification/'
+VERIFICATION_LINK='https://localhost:8443//users/emailverification/'

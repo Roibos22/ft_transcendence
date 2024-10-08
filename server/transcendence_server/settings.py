@@ -213,5 +213,5 @@ EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'postmaster@sandboxab17e3479f1c4b2a82d81bd75b4acb8c.mailgun.org'  # Your Mailgun domain
-EMAIL_HOST_PASSWORD = 'c0b670e51709ee8b54d437e456d2bc98-5dcb5e36-61dc4469'  # Your Mailgun API Key
+EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_PASSWORD')
 DEFAULT_FROM_EMAIL = 'jalbers42.dev@gmail.com'

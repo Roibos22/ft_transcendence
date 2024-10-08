@@ -66,7 +66,6 @@ def send_email_code(user):
 def send_email_confirmation(user):
     two_factor = TwoFactorCode.objects.filter(user=user).first()
     otp_code = two_factor.code
-    print(user.email)
     send_mail(
         'Email Verification',
         f'Press here to verify your email: {VERIFICATION_LINK}{user.id}/?token={otp_code}',
