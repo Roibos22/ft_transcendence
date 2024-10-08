@@ -1,6 +1,7 @@
 import random
 import time
 import asyncio
+import math
 
 class Paddle:
 
@@ -35,15 +36,10 @@ class Ball:
     def __init__(self, map_width, map_height, ball_speed, paddle_width, ball_radius):
         self._map_width = map_width
         self._map_height = map_height
-        self._start_x = int(map_width / 2) 
-        self._start_y = int(map_height / 2)
-        self._position_x = self._start_x
-        self._position_y = self._start_y
-        self._initial_spee = ball_speed
-        self._speed = ball_speed
+        self._initial_speed = ball_speed
         self._ball_radius = ball_radius
-        self._direction_x = random.choice([1, -1])
-        self._direction_y = random.choice([1, -1])
+        self.reset_ball()
+        self.calculate_velocity()
         self._paddle_width = paddle_width
 
     @property
@@ -54,34 +50,48 @@ class Ball:
     def direction(self):
         return {'x': self._direction_x, 'y': self._direction_y}
 
-    def reset_ball_position_to_center(self):
-        self._position_x = self._start_x
-        self._position_y = self._start_y
+    def reset_ball(self):
+        angle = random.uniform(-math.pi / 4, math.pi / 4)
+
+        self._speed = self._initial_speed
+        self._position_x = int(self._map_width / 2)
+        self._position_y = int(self._map_height / 2)
+        self._direction_x = math.cos(angle)
+        self._direction_y = math.sin(angle) * .5
 
     def movement(self, left_paddle: Paddle, right_paddle: Paddle):
-        self._position_x += self._direction_x * self._speed
-        self._position_y += self._direction_y * self._speed
+        self._position_x += int(self._velocity_x)
+        self._position_y += int(self._velocity_y)
+
         # Wall collisions
         if self._position_y <= 1 + self._ball_radius or self._position_y >= self._map_height - self._ball_radius:
             self._direction_y *= -1
+            self.calculate_velocity()
         # Paddle collisions
         if self._position_x <= 1 + self._paddle_width + self._ball_radius:
             if left_paddle.check_hit(self._position_y) != None:
                 self._direction_x *= -1
                 self._speed += 0.5
+                self.calculate_velocity()
             else:
-                self.reset_ball_position_to_center()
-                self._speed = self._initial_spee
+                self._speed = self._initial_speed
+                self.reset_ball()
                 return 2
         elif self._position_x >= self._map_width - self._paddle_width - self._ball_radius:
             if right_paddle.check_hit(self._position_y) != None:
                 self._direction_x *= -1
                 self._speed += 0.5
+                self.calculate_velocity()
             else:
-                self.reset_ball_position_to_center()
-                self._speed = self._initial_spee
+                self._speed = self._initial_speed
+                self.reset_ball()
                 return 1
         return 0
+
+    def calculate_velocity(self):
+        self._velocity_x = self._speed * self._direction_x
+        self._velocity_y = self._speed * self._direction_y
+
 
 class GameLogic:
 
