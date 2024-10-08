@@ -16,6 +16,7 @@ export class PongGame {
 		this.twoD = null;
 		this.threeD = null;
 		this.inputHandler = null;
+		this.AIplayer = null;
 		this.tournament = null;
 		this.socket = socket;
 		this.gameMode = Cookies.getCookie("gameMode");
@@ -27,8 +28,9 @@ export class PongGame {
 		this.twoD = new TwoD(this);
 		this.threeD = new ThreeD(this);
 		this.inputHandler = new InputHandler(this);
-		//this.engine = this.gameMode === GameModes.MULTI ? new Engine() : null;
-	
+		// if (this.gameMode === GameModes.MULTI){
+		// 	this.AIplayer = new AIPlayer(this);
+		// }
 		this.update();
 	}
 

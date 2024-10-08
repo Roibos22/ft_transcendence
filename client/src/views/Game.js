@@ -8,18 +8,16 @@ import Socket from '../services/Socket.js';
 
 export class GameView {
 	constructor() {
+		this.gameSocket = null;
 		this.game = null;
 		this.UIManager = null;
-		this.gameSocket = null;
 	}
 
 	async init() {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
 
-		if (State.get('gameSettings', 'mode') === GameModes.MULTI) {
-			await this.getLocalMultiPlayerGame();
-		}
+		await this.getLocalGame();
 
 		this.game = new PongGame(this.gameSocket);
 		this.UIManager = new UIManager();
@@ -30,11 +28,11 @@ export class GameView {
 		this.UIManager.update();
 	}
 
-	async getLocalMultiPlayerGame() {
+	async getLocalGame() {
 		// throw new Error('Not implemented');
-		const response = await gameService.createLocalMultiplayerGame();
+		const response = await gameService.createLocalGame();
 		if (!response.success) {
-			throw new Error('Failed to create local multiplayer game');
+			throw new Error('Failed to create local game');
 		}
 		const data = response.data;
 		this.initGameSocket(data.game_id);
@@ -61,6 +59,8 @@ export class GameView {
 			countdown: newState.countdown,
 			player1Pos: newState.player1_pos,
 			player2Pos: newState.player2_pos,
+			player1Dir: newState.player1_dir,
+			player2Dir: newState.player2_dir,
 			player1Ready: newState.player1_ready,
 			player2Ready: newState.player2_ready,
 			ball: {
