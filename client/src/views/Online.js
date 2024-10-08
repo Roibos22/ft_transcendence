@@ -28,7 +28,26 @@ export class OnlineGameView {
 			if (data.game_state) {
 				this.updateState(data.game_state);
 			}
+			if (data.game_data) {
+				this.initGameData(data.game_data);
+			}
 		});
+	}
+
+	initGameData(data) {
+		const oldData = state.get("gameDataConstants");
+		var newData = {
+			...oldData,
+			mapHeight: data.map_height,
+			mapWidth: data.map_width,
+			player1Username: data.player1_username,
+			player2Username: data.player2_username,
+			paddleHeight: data.paddle_height,
+			paddleWidth: data.paddle_width,
+			ballRadius: data.ball_radius,
+		}
+
+		state.set('gameDataConstants', newData);
 	}
 
 	updateState(newState) {
@@ -51,7 +70,6 @@ export class OnlineGameView {
 			}
 		}
 
-		//state.data.gameData = newData;
 		state.set('gameData', newData);
 	}
 

@@ -44,6 +44,15 @@ export const initState = {
 		player2Score: 0,
 		winner: ""
 	},
+	gameDataConstants: {
+		mapHeight: 0,
+		mapWidth: 0,
+		player1Username: "",
+		player2Username: "",
+		paddleHeight: 0,
+		paddleWidth: 0,
+		ballRadius: 0,
+	},
 	gameData: {
 		gameId: 0,
 		phase: GamePhases.WAITING_TO_START,

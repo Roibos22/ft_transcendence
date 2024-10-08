@@ -49,8 +49,8 @@ export default class TwoD {
 		const rightPaddleY = player2PosState;
 	
 		this.ctx.fillStyle = 'white';
-		this.ctx.fillRect(0, p1y, paddleWidth, paddleHeight);
-		this.ctx.fillRect(this.canvas.width - paddleWidth, p2y, paddleWidth, paddleHeight);
+		this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
+		this.ctx.fillRect(this.canvas.width - paddleWidth, rightPaddleY, paddleWidth, paddleHeight);
 	}
 
 	drawBall() {
