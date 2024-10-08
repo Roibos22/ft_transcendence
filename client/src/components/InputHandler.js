@@ -4,6 +4,7 @@ export default class InputHandler {
 	constructor(game) {
 		this.game = game;
 		this.init();
+		this.currentlyPressedKeys = {};
 	}
 
 	init() {
@@ -35,8 +36,9 @@ export default class InputHandler {
 			delete keyActions['ArrowDown'];
 		}
 	
-		if (keyActions[e.key]) {
+		if (keyActions[e.key] && !this.currentlyPressedKeys[e.key]) {
 			this.sendSocketMessage(keyActions[e.key]);
+			this.currentlyPressedKeys[e.key] = true;
 		}
 	}
 	
