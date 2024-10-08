@@ -45,8 +45,8 @@ export default class TwoD {
 		const paddleWidth = 10;
 		const player1PosState = State.data.gameData.player1Pos;
 		const player2PosState = State.data.gameData.player2Pos;
-		const leftPaddleY = (player1PosState || this.canvas.height / 2);
-		const rightPaddleY = (player2PosState || this.canvas.height / 2);
+		const leftPaddleY = player1PosState;
+		const rightPaddleY = player2PosState;
 	
 		this.ctx.fillStyle = 'white';
 		this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
