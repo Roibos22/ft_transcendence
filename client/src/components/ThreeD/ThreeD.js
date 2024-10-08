@@ -119,7 +119,7 @@ export default class ThreeD {
     }
 
     newHitBox() {
-        const hitBoxGeometry = new THREE.PlaneGeometry(5, 20);
+        const hitBoxGeometry = new THREE.PlaneGeometry(5, 50);
         const hitBoxMaterial = new THREE.MeshBasicMaterial({
             color: 0xFFFFFF,
             side: THREE.DoubleSide,
@@ -150,13 +150,17 @@ export default class ThreeD {
     update() {
         if (!this.spritesLoaded) return;
 
-        const { ball, player1Pos, player2Pos} = State.get('gameData');
+        const { ball, player1Pos, player2Pos, player1Dir, player2Dir} = State.get('gameData');
 
         this.calculateElephantDirection(ball);
         this.elephant.model.position.set((ball.x - 500) * -1, 0, (ball.y - 250) * -1);
+
         this.mice.player1.model.position.set(500, 0, (player1Pos - 250) * -1);
+        this.changePlayerDirection(1, player1Dir);
         this.hitBoxes.player1.position.set(495, 1, (player1Pos - 250) * -1);
+
         this.mice.player2.model.position.set(-500, 0, (player2Pos - 250) * -1);
+        this.changePlayerDirection(2, player2Dir);
         this.hitBoxes.player2.position.set(-494, 1, (player2Pos - 250) * -1);
     }
 
