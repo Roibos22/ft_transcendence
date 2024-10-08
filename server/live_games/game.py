@@ -72,8 +72,8 @@ class Ball:
             self._direction_y *= -1
             self.calculate_velocity()
 
-    def check_paddle_collision(self, paddle, is_left_paddle):
-        if is_left_paddle:
+    def check_paddle_collision(self, paddle):
+        if paddle._side == 'Left':
             ball_near_paddle = self._position_x <= 1 + self._paddle_width + self._ball_radius
         else:
             ball_near_paddle = self._position_x >= self._map_width - self._paddle_width - self._ball_radius
@@ -81,13 +81,13 @@ class Ball:
         if ball_near_paddle:
             hit_position = paddle.check_hit(self._position_y)
             if hit_position is not None:
-                self.bounce_off_paddle(paddle, hit_position, is_left_paddle)
+                self.bounce_off_paddle(paddle, hit_position)
                 return False
             else:
                 return True
         return False
 
-    def bounce_off_paddle(self, paddle, hit_position, is_left_paddle):
+    def bounce_off_paddle(self, paddle, hit_position):
         paddle_center = paddle._y_position + paddle._paddle_height / 2
         relative_hit = (self._position_y - paddle_center) / (paddle._paddle_height / 2)
 
@@ -104,10 +104,10 @@ class Ball:
 
         self.check_wall_collision()
 
-        if self.check_paddle_collision(left_paddle, is_left_paddle=True):
+        if self.check_paddle_collision(left_paddle):
             self.reset_ball()
             return 2
-        elif self.check_paddle_collision(right_paddle, is_left_paddle=False):
+        elif self.check_paddle_collision(right_paddle):
             self.reset_ball()
             return 1
 
