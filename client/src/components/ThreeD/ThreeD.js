@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Sprite } from './Sprite.js';
 import State from '../../State.js';
+import { GamePhases } from '../../constants.js';
 
 export default class ThreeD {
     constructor(game) {
@@ -66,6 +67,9 @@ export default class ThreeD {
         this.camera.position.set(250, 250, -250);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         this.scene.add(this.camera);
+
+        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+        this.scene.add(ambientLight);
     }
 
     setupRenderer() {
@@ -74,7 +78,7 @@ export default class ThreeD {
     }
 
     addFloor() {
-        const floorGeometry = new THREE.PlaneGeometry(this.game.field.width, this.game.field.height);
+        const floorGeometry = new THREE.PlaneGeometry(this.game.map.width, this.game.map.height);
         const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x33CB99, side: THREE.DoubleSide });
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
         floor.receiveShadow = true;
@@ -119,12 +123,12 @@ export default class ThreeD {
     }
 
     newHitBox() {
-        const hitBoxGeometry = new THREE.PlaneGeometry(5, 50);
+        const hitBoxGeometry = new THREE.PlaneGeometry(10, 50);
         const hitBoxMaterial = new THREE.MeshBasicMaterial({
             color: 0xFFFFFF,
             side: THREE.DoubleSide,
-            // transparent: true,
-            // opacity: 0.5
+            transparent: true,
+            opacity: 0.5
         });
         const hitBox = new THREE.Mesh(hitBoxGeometry, hitBoxMaterial);
         hitBox.rotation.x = Math.PI / 2;
@@ -153,15 +157,28 @@ export default class ThreeD {
         const { ball, player1Pos, player2Pos, player1Dir, player2Dir} = State.get('gameData');
 
         this.calculateElephantDirection(ball);
+        this.setElephantAnimation();
         this.elephant.model.position.set((ball.x - 500) * -1, 0, (ball.y - 250) * -1);
 
-        this.mice.player1.model.position.set(500, 0, (player1Pos - 250) * -1);
+        this.mice.player1.model.position.set(500, 0, (player1Pos + 25 - 250) * -1);
         this.changePlayerDirection(1, player1Dir);
-        this.hitBoxes.player1.position.set(495, 1, (player1Pos - 250) * -1);
+        this.hitBoxes.player1.position.set(495, 1, (player1Pos + 25 - 250) * -1);
 
-        this.mice.player2.model.position.set(-500, 0, (player2Pos - 250) * -1);
+        this.mice.player2.model.position.set(-500, 0, (player2Pos + 25 - 250) * -1);
         this.changePlayerDirection(2, player2Dir);
-        this.hitBoxes.player2.position.set(-494, 1, (player2Pos - 250) * -1);
+        this.hitBoxes.player2.position.set(-495, 1, (player2Pos + 25 - 250) * -1);
+    }
+
+    setElephantAnimation() {
+        const { phase} = State.get('gameData');
+        const newAnimation = phase !== GamePhases.RUNNING ? 6 : 5;
+        if (newAnimation === this.elephant.currentAnimation) return;
+
+        this.elephant.currentAnimation = newAnimation;
+    
+        const action = this.elephant.mixer.clipAction(this.elephant.animations[newAnimation]);
+        this.elephant.mixer.stopAllAction();
+        action.play();
     }
 
     changePlayerDirection(player, direction) {

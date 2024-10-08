@@ -16,7 +16,7 @@ class Paddle:
         if self._direction == 0:
             return
         new_y = self._y_position + (self._direction * self._paddle_speed)
-        if new_y < 0:
+        if new_y <= 0:
             self._y_position = 0
         elif new_y > self._map_height - self._paddle_height:
             self._y_position = self._map_height - self._paddle_height
@@ -184,6 +184,7 @@ class GameLogic:
             'player2_ready': self._player2_ready,
             'ball': self._ball.position,
             'ball_dir': self._ball.direction,
+            'ball_speed': self._ball._speed,
             'countdown': self._current_countdown,
             'player1_score': self._player1_score,
             'player2_score': self._player2_score,

@@ -14,8 +14,8 @@ export default class TwoD {
 		this.canvas = document.getElementById('gameCanvas2D');
 		this.ctx = this.canvas.getContext('2d');
 
-		this.canvas.width = this.game.field.width;
-		this.canvas.height = this.game.field.height;
+		this.canvas.width = this.game.map.width;
+		this.canvas.height = this.game.map.height;
 		this.startGame();
 	}
 
@@ -49,8 +49,8 @@ export default class TwoD {
 		const rightPaddleY = player2PosState;
 	
 		this.ctx.fillStyle = 'white';
-		this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
-		this.ctx.fillRect(this.canvas.width - paddleWidth, rightPaddleY, paddleWidth, paddleHeight);
+		this.ctx.fillRect(0, p1y, paddleWidth, paddleHeight);
+		this.ctx.fillRect(this.canvas.width - paddleWidth, p2y, paddleWidth, paddleHeight);
 	}
 
 	drawBall() {

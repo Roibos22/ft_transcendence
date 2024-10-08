@@ -1,3 +1,5 @@
+import { GameModes } from "../constants.js";
+
 export default class InputHandler {
 	constructor(game) {
 		this.game = game;
@@ -20,13 +22,18 @@ export default class InputHandler {
 		if (!this.isSocketConnected()) return;
 	
 		const keyActions = {
-			'w': { action: 'move_player', player_no: '1', direction: '-1' },
-			's': { action: 'move_player', player_no: '1', direction: '1' },
 			'ArrowUp': { action: 'move_player', player_no: '2', direction: '-1' },
 			'ArrowDown': { action: 'move_player', player_no: '2', direction: '1' },
+			'w': { action: 'move_player', player_no: '1', direction: '-1' },
+			's': { action: 'move_player', player_no: '1', direction: '1' },
 			' ': { action: 'player_ready', player_no: '1' },
 			'Enter': { action: 'player_ready', player_no: '2' }
 		};
+
+		if (this.game.gameMode === GameModes.SINGLE) {
+			delete keyActions['ArrowUp'];
+			delete keyActions['ArrowDown'];
+		}
 	
 		if (keyActions[e.key]) {
 			this.sendSocketMessage(keyActions[e.key]);

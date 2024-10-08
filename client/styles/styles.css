@@ -11,10 +11,10 @@ html, body {
 }
 
 .title {
-	font-family: "Baskerville", "Brush Script MT", cursive;
+	font-family: "Brush Script MT", cursive;
 	color: #6c757d;
 	font-size: 5rem;
-	padding-bottom: 4rem;
+	padding-bottom: 1rem;
 }
 
 .background-gradient {

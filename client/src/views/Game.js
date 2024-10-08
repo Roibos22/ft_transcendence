@@ -1,6 +1,5 @@
 import { PongGame } from '../components/PongGame.js';
 import { UIManager } from '../components/UIManager.js';
-import { GameModes } from '../constants.js';
 import * as gameService from '../services/api/gameService.js';
 import Router from '../router.js';
 import State from '../State.js';
@@ -29,7 +28,6 @@ export class GameView {
 	}
 
 	async getLocalGame() {
-		// throw new Error('Not implemented');
 		const response = await gameService.createLocalGame();
 		if (!response.success) {
 			throw new Error('Failed to create local game');
@@ -43,16 +41,37 @@ export class GameView {
 		this.gameSocket.addEventListenersGame();
 		this.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
+			if (data.game_data) {
+				this.initialiseGameData(data.game_data);
+			}
 			if (data.game_state) {
 				this.updateState(data.game_state);
 			}
 		});
 	}
 
+	initialiseGameData(gameData) {
+		const oldSettings = State.get('gameSettings');
+		const newSettings = {
+			...oldSettings,
+			ballRadius: gameData.ball_radius,
+			map: {
+				width: gameData.map_width,
+				height: gameData.map_height
+			},
+			paddle: {
+				width: gameData.paddle_width,
+				height: gameData.paddle_height
+			}
+		};
+
+		State.set('gameSettings', newSettings);
+	}
+
 	updateState(newState) {
 		const oldData = State.get("gameData");
 
-		var newData = {
+		const newData = {
 			...oldData,
 			gameId: newState.game_id,
 			phase: newState.phase,
@@ -68,6 +87,7 @@ export class GameView {
 				y: newState.ball.y || 0,
 				dx: newState.ball_dir.x || 0,
 				dy: newState.ball_dir.y || 0,
+				speed: newState.ball_speed || 0
 			}
 		}
 
