@@ -50,6 +50,7 @@ export default class InputHandler {
 		if (keyReleaseActions.includes(e.key)) {
 			const player_no = ['w', 's'].includes(e.key) ? '1' : '2';
 			this.sendSocketMessage({ action: 'move_player', player_no, direction: '0' });
+			this.currentlyPressedKeys[e.key] = false;
 		}
 	}
 
