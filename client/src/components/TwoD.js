@@ -56,7 +56,6 @@ export default class TwoD {
 	drawBall() {
 		const ball = State.get('gameData', 'ball');
 		const ballRadius = 5;
-		const countdown = State.get('gameData', 'countdown');
 	
 		if (ball) {
 			this.ctx.beginPath();
