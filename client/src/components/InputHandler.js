@@ -4,6 +4,7 @@ export default class InputHandler {
 	constructor(game) {
 		this.game = game;
 		this.init();
+		this.currentlyPressedKeys = {};
 	}
 
 	init() {
@@ -35,8 +36,9 @@ export default class InputHandler {
 			delete keyActions['ArrowDown'];
 		}
 	
-		if (keyActions[e.key]) {
+		if (keyActions[e.key] && !this.currentlyPressedKeys[e.key]) {
 			this.sendSocketMessage(keyActions[e.key]);
+			this.currentlyPressedKeys[e.key] = true;
 		}
 	}
 	
@@ -48,6 +50,7 @@ export default class InputHandler {
 		if (keyReleaseActions.includes(e.key)) {
 			const player_no = ['w', 's'].includes(e.key) ? '1' : '2';
 			this.sendSocketMessage({ action: 'move_player', player_no, direction: '0' });
+			this.currentlyPressedKeys[e.key] = false;
 		}
 	}
 
