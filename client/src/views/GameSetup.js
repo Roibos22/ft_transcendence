@@ -71,14 +71,14 @@ export class GameSetupView {
 		Object.values(pointsToWinButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
 				const value = parseInt(e.target.dataset.value);
-				State.set('gameSettings', 'pointsToWin', value);
+				State.set('tournament', 'pointsToWin', value);
 			});
 		});
 
 		Object.values(numberOfGamesButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
 				const value = parseInt(e.target.dataset.value);
-				State.set('gameSettings', 'numberOfGames', value);
+				State.set('tournament', 'numberOfGames', value);
 			});
 		});
 
@@ -107,8 +107,8 @@ export class GameSetupView {
 
 	update() {
 		const gameMode = State.get('gameSettings', 'mode');
-		const pointsToWin = State.get('gameSettings', 'pointsToWin');
-		const numberOfGames = State.get('gameSettings', 'numberOfGames');
+		const pointsToWin = State.get('tournament', 'pointsToWin');
+		const numberOfGames = State.get('tournament', 'numberOfGames');
 
 		const gameModeButtons = this.UIelements.gameModeButtons;
 		const { start, oneVone, tournament } = this.UIelements.startGameButtons;
@@ -149,7 +149,7 @@ export class GameSetupView {
 				name: "AI Player"
 			});
 		}
-		State.set('currentMatch', 'players', this.players);
+		State.set('tournament', 'players', this.players);
 	}
 
 	addPlayerInput() {

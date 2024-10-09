@@ -5,6 +5,7 @@ import { OnlineGameView } from "../views/Online.js";
 import { OnlineGameLoadingView } from "../views/OnlineLoading.js";
 import { ProfileView } from "../views/Profile.js";
 import { RegisterView } from "../views/Register.js";
+import { LocalGameOverview } from "../views/LocalGameOverview.js";
 
 export const urlRoutes = {
 	"/": {
@@ -41,5 +42,10 @@ export const urlRoutes = {
 		template: "../templates/online-game-loading.html",
 		title: "Loading",
 		view: OnlineGameLoadingView,
+	},
+	"/local-game-overview": {
+		template: "../templates/local-game-overview.html",
+		title: "Overview",
+		view: LocalGameOverview,
 	}
 };

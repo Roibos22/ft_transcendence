@@ -41,14 +41,14 @@ export function buttonIdToGameMode(id) {
 	}
 }
 
-export function standingsTableRow(playerStats) {
+export function standingsTableRow(player) {
 	return `
 		<tr>
 			<td>${player.rank}</td>
 			<td>${player.name}</td>
 			<td>${player.wins}</td>
 			<td>${player.losses}</td>
-			<td>${player.draws}</td>
+			<td>${player.points}</td>
 		</tr>
 	`;
 }

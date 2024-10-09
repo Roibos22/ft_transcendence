@@ -32,10 +32,8 @@ export const initState = {
 		spritesLoaded: false,
 	},
 	gameSettings: {
-		numberOfGames: 1,
 		displayType: GameTypes.TWO_D,
-		mode: GameModes.SINGLE,
-		pointsToWin: 5,
+		mode: GameModes.SINGLE
 	},
 	currentMatch: {
 		player1Name: "Player 1",
@@ -71,8 +69,13 @@ export const initState = {
 			speed: 0
 		}
 	},
-	tournament:
-		null
+	tournament: {
+		players: null,
+		matches: null,
+		standings: null,
+		pointsToWin: 5,
+		numberOfGames: 1
+	}
 	// {
 	// 	players: ["player1", "player2", "player3", "player4"],
 	// 	results: [],
