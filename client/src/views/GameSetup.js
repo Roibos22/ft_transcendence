@@ -15,6 +15,7 @@ export class GameSetupView {
 		document.getElementById('app').innerHTML = content;
 
 		this.UIelements = this.getUIElements();
+		this.UIelements.player1Input.value = Cookies.getCookie("username");
 		this.addEventListeners();
 		this.update();
 	}
@@ -148,7 +149,6 @@ export class GameSetupView {
 				name: "AI Player"
 			});
 		}
-		console.log(this.players);
 		State.set('currentMatch', 'players', this.players);
 	}
 
