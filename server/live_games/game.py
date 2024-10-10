@@ -87,7 +87,6 @@ class Ball:
                 self.bounce_off_paddle(paddle, hit_position)
                 return False
             else:
-                print(self._position_y, " ", paddle._y_position, " ", paddle._y_position + paddle._paddle_height)
                 return True
         return False
 
