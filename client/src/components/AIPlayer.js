@@ -1,73 +1,53 @@
 import { GamePhases } from "../constants.js";
 import State from "../State.js";
+import { deepCopy } from "../utils/utils.js";
 
 export default class AIPlayer {
 	constructor(game) {
 		this.game = game;
 		this.lastDecisionTime = 0;
-		this.decisionInterval = 1000;
 		this.targetY = 0;
 		this.paddleHeight = 50;
         this.paddleWidth = 10;
+		this.ballRadius = 5;
 
-        setInterval(() => {
-            this.update();
-        }, 100);  
+		setInterval(() => this.calculateTargetY(), 1000);
+		setInterval(() => this.movePaddle(), 1000 / 10);
 	}
 
-	update() {
-        if (State.get('gameData', 'phase') !== GamePhases.RUNNING) {
-            return;
-        }
+	calculateTargetY() {
 		const currentTime = performance.now();
+		const ball = deepCopy(State.get('gameData', 'ball'));
+		if (ball.velocity.x < 0) return;
+		this.lastDecisionTime = currentTime;
+
+		let ballFinalX = ball.x;
+		let ballFinalY = ball.y;
 		
-		if (currentTime - this.lastDecisionTime >= this.decisionInterval) {
-			this.decideMove();
-			this.lastDecisionTime = currentTime;
-		}
-		
-        const playerY = State.get('gameData', 'player2Pos');
-
-		const distanceToTarget = this.targetY - playerY;
-        const direction = distanceToTarget > '0' ? '1' : distanceToTarget < '0' ? '-1' : '0';
-
-        console.log("Direction: ", direction);
-
-        if (this.game.socket){
-		    this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: direction}));
-	    }
-    }
-
-	decideMove() {
-		const predictedY = this.predictBallY();
-		
-		const randomFactor = (Math.random() - 0.5) * this.paddleHeight;
-		this.targetY = predictedY + randomFactor - this.paddleHeight / 2;
-
-		if (Math.random() < 0.05) {
-			this.targetY += (Math.random() > 0.5 ? 1 : -1) * this.paddleHeight;
+		while (ballFinalX < this.game.map.width - this.paddleWidth) {
+			ballFinalX += ball.velocity.x;
+			ballFinalY += ball.velocity.y;
+			if (ballFinalY < this.ballRadius || ballFinalY > this.game.map.height - this.ballRadius) {
+				ball.velocity.y = -ball.velocity.y;
+				ballFinalY = Math.min(Math.max(ballFinalY, this.ballRadius), this.game.map.height - this.ballRadius);
+			}
 		}
 
-		this.targetY = Math.max(0, Math.min(this.game.map.height - this.paddleHeight, this.targetY));
+		this.targetY = ballFinalY;
 	}
 
-	predictBallY() {
-		const ball = State.get('gameData', 'ball');
-		const mapHeight = this.game.map.height;
-		const aiPaddleX = this.game.map.width - this.paddleWidth;
-
-		const timeToReach = (aiPaddleX - ball.x) / ball.speed;
-		let verticalDistance = ball.speed * timeToReach;
-		let finalY = ball.y + verticalDistance;
-
-		const bounces = Math.floor(Math.abs(finalY) / mapHeight);
-		const remainder = Math.abs(finalY) % mapHeight;
-		if (bounces % 2 === 0) {
-			finalY = (ball.speed > 0) ? remainder : mapHeight - remainder;
-		} else {
-			finalY = (ball.speed > 0) ? mapHeight - remainder : remainder;
+	movePaddle() {
+		if (State.get('gameData', 'phase') !== GamePhases.RUNNING) {
+			return;
 		}
-
-		return finalY;
+	
+		const playerY = State.get('gameData', 'player2Pos');
+		if (playerY < this.targetY - (this.paddleHeight / 2)) {
+			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '1'}));
+		} else if (playerY > this.targetY + (this.paddleHeight / 2)) {
+			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '-1'}));
+		} else {
+			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '0'}));
+		}
 	}
 }
