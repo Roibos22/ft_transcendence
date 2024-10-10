@@ -18,7 +18,8 @@ export class Tournament {
 							{ ...tournament.players[j], score: 0 },
 							{ ...tournament.players[k], score: 0 }
 						],
-						completed: false
+						completed: false,
+						socket: null
 					});
 				}
 			}
@@ -28,7 +29,7 @@ export class Tournament {
 	}
 
 	getCurrentMatch() {
-		return State.get('tournament', 'currentMatch');
+		return State.get('tournament', 'currentMatch')[State.get('tournament', 'currentMatchIndex')];
 	}
 
 	getNextMatch() {

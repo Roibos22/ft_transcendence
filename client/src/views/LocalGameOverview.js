@@ -4,6 +4,7 @@ import Socket from '../services/Socket.js';
 import { PongGame } from '../components/PongGame.js';
 import * as Cookies from '../services/cookies.js';
 import State from '../State.js';
+import { Tournament } from '../components/Tournament.js';
 
 export class LocalGameOverview {
 	constructor() {
@@ -23,7 +24,8 @@ export class LocalGameOverview {
 		this.content.standings = document.getElementById('standings');
 		this.content.standingsTable = document.getElementById('standingsTable');
 
-		this.createTournament();
+		//this.createTournament();
+		this.tournament = Tournament();
 		console.log(State);
 	}
 
@@ -31,6 +33,14 @@ export class LocalGameOverview {
 		this.generateMatches();
 		this.initPlayerStats();
 		//this.update();
+	}
+
+	initNextMatch() {
+
+	}
+
+	setupNextMatch() {
+
 	}
 
 	initPlayerStats() {
@@ -59,7 +69,8 @@ export class LocalGameOverview {
 							{ ...tournament.players[j], score: 0 },
 							{ ...tournament.players[k], score: 0 }
 						],
-						completed: false
+						completed: false,
+						socket: null,
 					});
 				}
 			}

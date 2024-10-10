@@ -1,6 +1,4 @@
 import State from '../State.js';
-import { standingsTableRow } from '../utils/utils.js';
-import { Tournament } from './Tournament.js';
 import { GamePhases } from '../constants.js';
 
 export class UIManager {
@@ -70,24 +68,12 @@ export class UIManager {
 		}
 	}
 
-	// hideTournamentInfo() {
-	// 	this.content.fixtures.style.display = 'none';
-	// 	this.content.standings.style.display = 'none';
-	// }
-
-	updateScoreCard() {	
+	// tournament
+	updateScoreCard() {
 		this.content.scoreCard.player1Name.innerHTML = State.get('gameData', 'constants', 'player1Username');
 		this.content.scoreCard.player2Name.innerHTML = State.get('gameData', 'constants', 'player2Username');
 		this.content.scoreCard.player1Score.innerHTML = State.get('gameData', 'player1Score');
 		this.content.scoreCard.player2Score.innerHTML = State.get('gameData', 'player2Score');
 	}
-
-	// updateTable() {
-	// 	this.content.standings.style.display = 'inline';
-	// 	const standings = Tournament.getStandings();
-	// 	const tableEntries = standings.map(playerStats => standingsTableRow(playerStats))
-	
-	// 	this.standingsTable.innerHTML = `${tableEntries.join('')}`;
-	// }
 
 }
