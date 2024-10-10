@@ -42,12 +42,12 @@ export default class AIPlayer {
 		}
 	
 		const playerY = State.get('gameData', 'player2Pos');
-		if (playerY < this.targetY - (this.paddleHeight / 2)) {
-			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '1'}));
-		} else if (playerY > this.targetY + (this.paddleHeight / 2)) {
-			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '-1'}));
-		} else {
+		if (playerY < this.targetY && playerY + this.paddleHeight > this.targetY) {
 			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '0'}));
+		} else if (playerY < this.targetY && playerY + this.paddleHeight < this.targetY) {
+			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '1'}));
+		} else {
+			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '-1'}));
 		}
 	}
 }
