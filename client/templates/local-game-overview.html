@@ -4,10 +4,25 @@
 	<div class="container-fluid px-0" style="max-width: 1000px;">
 		<div class="row g-3">
 			
+			<!-- NEXT MATCH -->
+			<div class="col-12">
+				<div id="nextMatch" class="card rounded">
+					<div class="card-header bg-dark text-white text-center rounded">
+						<h5 class="mb-0">Next Match</h5>
+					</div>
+					<div class="card-body d-flex justify-content-between align-items-center p-3">
+						<h5 class="card-title mb-0 ps-5" id="nextMatchPlayers">Team A vs Team B</h6>
+						<div class="pe-5">
+							<a href="/game" class="btn btn-primary" id="goToNextMatch">Start Match</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<!-- FIXTURES -->
 			<div class="col-md-6">
 				<div id="fixtures" class="card rounded">
-					<div class="card-header bg-dark text-white text-center rounded-top">
+					<div class="card-header bg-dark text-white text-center rounded">
 						<h5 class="mb-0">Fixtures</h5>
 					</div>
 					<div class="card-body rounded-bottom"></div>
@@ -17,10 +32,9 @@
 			<!-- STANDINGS -->
 			<div class="col-md-6">
 				<div id="standings" class="card rounded">
-					<div class="card-header bg-dark text-white text-center rounded-top">
+					<div class="card-header bg-dark text-white text-center rounded">
 					<h5 class="mb-0">Standings</h5>
 				</div>
-				<div class="card-body rounded-bottom p-0">
 					<div class="table-responsive">
 						<table class="table table-striped mb-0 text-center">
 							<thead>

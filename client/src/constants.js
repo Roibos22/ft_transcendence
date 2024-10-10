@@ -40,7 +40,6 @@ export const initState = {
 		player2Name: "Player 2",
 		player1Score: 0,
 		player2Score: 0,
-		winner: ""
 	},
 	gameDataConstants: {
 		mapHeight: 0,
@@ -54,6 +53,8 @@ export const initState = {
 	gameData: {
 		gameId: 0,
 		phase: GamePhases.WAITING_TO_START,
+		player1Score: 0,
+		player2Score: 0,
 		player1Pos: 0,
 		player2Pos: 0,
 		player1Dir: 0,
@@ -61,6 +62,7 @@ export const initState = {
 		player1Ready: false,
 		player2Ready: false,
 		countdown: -1,
+		winner: "",
 		ball: {
 			x: 0,
 			y: 0,

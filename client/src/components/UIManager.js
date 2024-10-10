@@ -42,17 +42,15 @@ export class UIManager {
 	update() {
 		this.updateScoreCard()
 		this.updateGameInformation();
-		if (State.get('tournament')) {
-			this.updateMatchList();
-			this.updateTable();
-		} else {
-			this.hideTournamentInfo();
-		}
+		// if (State.get('tournament')) {
+		// 	//this.updateMatchList();
+		// 	//this.updateTable();
+		// } else {
+		// 	this.hideTournamentInfo();
+		// }
 	}
 
 	updateGameInformation() {
-		const currentMatch = State.get('currentMatch');
-
 		const gamePhase = State.get('gameData', 'phase');
 		switch (gamePhase) {
 			case GamePhases.WAITING_TO_START:
@@ -78,10 +76,10 @@ export class UIManager {
 		}
 	}
 
-	hideTournamentInfo() {
-		this.content.fixtures.style.display = 'none';
-		this.content.standings.style.display = 'none';
-	}
+	// hideTournamentInfo() {
+	// 	this.content.fixtures.style.display = 'none';
+	// 	this.content.standings.style.display = 'none';
+	// }
 
 	updateScoreCard() {
 		const { player1Name, player2Name, player1Score, player2Score } = State.get('currentMatch');
@@ -94,12 +92,12 @@ export class UIManager {
 
 	
 
-	updateTable() {
-		this.content.standings.style.display = 'inline';
-		const standings = Tournament.getStandings();
-		const tableEntries = standings.map(playerStats => standingsTableRow(playerStats))
+	// updateTable() {
+	// 	this.content.standings.style.display = 'inline';
+	// 	const standings = Tournament.getStandings();
+	// 	const tableEntries = standings.map(playerStats => standingsTableRow(playerStats))
 	
-		this.standingsTable.innerHTML = `${tableEntries.join('')}`;
-	}
+	// 	this.standingsTable.innerHTML = `${tableEntries.join('')}`;
+	// }
 
 }

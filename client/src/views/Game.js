@@ -70,12 +70,14 @@ export class GameView {
 
 	updateState(newState) {
 		const oldData = State.get("gameData");
-
+		console.log(newState);
 		const newData = {
 			...oldData,
 			gameId: newState.game_id,
 			phase: newState.phase,
 			countdown: newState.countdown,
+			player1Score: newState.player1_score,
+			player2Score: newState.player2_score,
 			player1Pos: newState.player1_pos,
 			player2Pos: newState.player2_pos,
 			player1Dir: newState.player1_dir,
