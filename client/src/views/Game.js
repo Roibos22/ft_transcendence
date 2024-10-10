@@ -7,24 +7,62 @@ import Socket from '../services/Socket.js';
 
 export class GameView {
 	constructor() {
-		this.gameSocket = null;
 		this.game = null;
 		this.UIManager = null;
 	}
 
 	async init() {
+		console.log('GameView init called');
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
 
-		await this.getLocalGame();
+		console.log('Game template loaded:', document.getElementById('app').innerHTML);
 
-		this.game = new PongGame(this.gameSocket);
+		await this.initializeGame();
 		this.UIManager = new UIManager();
+
+		console.log('Canvas in DOM after init:', document.getElementById('gameCanvas2D'));
+
+	}
+
+
+	async initializeGame() {
+		console.log('Initializing game');
+		const currentMatch = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')];
+		if (currentMatch && currentMatch.socket) {
+			if (!PongGame.instance) {
+				this.game = new PongGame(currentMatch.socket);
+			} else {
+				console.log('Using existing PongGame instance');
+				this.game = PongGame.instance;
+			}
+		} else {
+			console.error('No current match or socket found');
+			// If no match is found, create a local game
+			await this.getLocalGame();
+		}
 	}
 
 	update() {
-		this.game.update();
-		this.UIManager.update();
+		if (this.game) {
+			this.game.update();
+		}
+		if (this.UIManager) {
+			this.UIManager.update();
+		}
+	}
+
+	cleanup() {
+		if (this.game) {
+			this.game.cleanup();
+			this.game = null;
+		}
+		if (this.UIManager) {
+			// Assuming UIManager has a cleanup method
+			this.UIManager.cleanup();
+			this.UIManager = null;
+		}
+		PongGame.instance = null;  // Reset the PongGame instance
 	}
 
 	async getLocalGame() {
@@ -94,5 +132,4 @@ export class GameView {
 
 		State.set('gameData', newData);
 	}
-
 }

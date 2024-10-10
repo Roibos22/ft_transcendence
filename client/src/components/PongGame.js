@@ -7,12 +7,13 @@ import * as Cookies from '../services/cookies.js';
 import { GameModes, GameTypes } from "../constants.js";
 
 export class PongGame {
-	constructor(socket) {
+	static instance = null;
 
-		this.map = {
-			width: 1000,
-			height: 500,
-		};
+	constructor(socket) {
+		if (PongGame.instance) {
+			console.warn('PongGame instance already exists. Returning existing instance.');
+			return PongGame.instance;
+		}
 
 		this.twoD = null;
 		this.threeD = null;
@@ -23,21 +24,48 @@ export class PongGame {
 		this.gameMode = Cookies.getCookie("gameMode");
 
 		this.init();
+		PongGame.instance = this;
 	}
 
 	init() {
+		console.log('PongGame init called');
 		this.twoD = new TwoD(this);
-		this.threeD = new ThreeD(this);
+		//this.threeD = new ThreeD(this);
 		this.inputHandler = new InputHandler(this);
-		this.update();
+		this.twoD.show(); // Ensure the canvas is visible
+		this.startStateLogging();
+	}
+
+	startStateLogging() {
+		this.stateLoggingInterval = setInterval(() => {
+			console.log('Current State:', State);
+		}, 2000);
 	}
 
 	update() {
-		State.get("gameSettings", "displayType") === GameTypes.TWO_D ? this.twoD.show() : this.twoD.hide();
-		State.get("gameSettings", "displayType") === GameTypes.THREE_D ? this.threeD.show() : this.threeD.hide();
+		if (this.twoD) {
+			this.twoD.update();
+		}
+		
 		if (!this.AIplayer && this.gameMode === GameModes.SINGLE) {
 			console.log('AIPlayer created');
 			this.AIplayer = new AIPlayer(this);
 		}
 	}
+
+	cleanup() {
+        if (this.twoD) {
+            this.twoD.cleanup();
+        }
+        if (this.inputHandler) {
+            this.inputHandler.cleanup();
+        }
+        if (this.AIplayer) {
+            this.AIplayer.cleanup();
+        }
+        if (this.stateLoggingInterval) {
+            clearInterval(this.stateLoggingInterval);
+        }
+        PongGame.instance = null;
+    }
 }
