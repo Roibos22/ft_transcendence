@@ -51,26 +51,25 @@ export class GameView {
 	}
 
 	initialiseGameData(gameData) {
-		const oldSettings = State.get('gameSettings');
-		const newSettings = {
-			...oldSettings,
+		const oldData = State.get('gameData', 'constants');
+		console.log("gameData", gameData);
+		const newData = {
+			...oldData,
+			mapHeight: gameData.map_height,
+			mapWidth: gameData.map_width,
+			player1Username: gameData.player1_username,
+			player2Username: gameData.player2_username,
+			paddleHeight: gameData.paddle_height,
+			paddleWidth: gameData.paddle_width,
 			ballRadius: gameData.ball_radius,
-			map: {
-				width: gameData.map_width,
-				height: gameData.map_height
-			},
-			paddle: {
-				width: gameData.paddle_width,
-				height: gameData.paddle_height
-			}
+			winner: ""
 		};
 
-		State.set('gameSettings', newSettings);
+		State.set('gameData', 'constants', newData);
 	}
 
 	updateState(newState) {
 		const oldData = State.get("gameData");
-		console.log(newState);
 		const newData = {
 			...oldData,
 			gameId: newState.game_id,
@@ -93,7 +92,6 @@ export class GameView {
 			}
 		}
 
-		//state.data.gameData = newData;
 		State.set('gameData', newData);
 	}
 

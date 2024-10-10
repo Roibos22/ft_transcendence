@@ -42,12 +42,6 @@ export class UIManager {
 	update() {
 		this.updateScoreCard()
 		this.updateGameInformation();
-		// if (State.get('tournament')) {
-		// 	//this.updateMatchList();
-		// 	//this.updateTable();
-		// } else {
-		// 	this.hideTournamentInfo();
-		// }
 	}
 
 	updateGameInformation() {
@@ -81,16 +75,12 @@ export class UIManager {
 	// 	this.content.standings.style.display = 'none';
 	// }
 
-	updateScoreCard() {
-		const { player1Name, player2Name, player1Score, player2Score } = State.get('currentMatch');
-	
-		this.content.scoreCard.player1Name.innerHTML = player1Name;
-		this.content.scoreCard.player2Name.innerHTML = player2Name;
-		this.content.scoreCard.player1Score.innerHTML = player1Score;
-		this.content.scoreCard.player2Score.innerHTML = player2Score;
+	updateScoreCard() {	
+		this.content.scoreCard.player1Name.innerHTML = State.get('gameData', 'constants', 'player1Username');
+		this.content.scoreCard.player2Name.innerHTML = State.get('gameData', 'constants', 'player2Username');
+		this.content.scoreCard.player1Score.innerHTML = State.get('gameData', 'player1Score');
+		this.content.scoreCard.player2Score.innerHTML = State.get('gameData', 'player2Score');
 	}
-
-	
 
 	// updateTable() {
 	// 	this.content.standings.style.display = 'inline';

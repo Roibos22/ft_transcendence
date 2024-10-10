@@ -35,23 +35,17 @@ export const initState = {
 		displayType: GameTypes.TWO_D,
 		mode: GameModes.SINGLE
 	},
-	currentMatch: {
-		player1Name: "Player 1",
-		player2Name: "Player 2",
-		player1Score: 0,
-		player2Score: 0,
-	},
-	gameDataConstants: {
-		mapHeight: 0,
-		mapWidth: 0,
-		player1Username: "",
-		player2Username: "",
-		paddleHeight: 0,
-		paddleWidth: 0,
-		ballRadius: 0,
-	},
 	gameData: {
-		gameId: 0,
+		constants: {
+			mapHeight: 0,
+			mapWidth: 0,
+			player1Username: "",
+			player2Username: "",
+			paddleHeight: 0,
+			paddleWidth: 0,
+			ballRadius: 0,
+			winner: ""
+		},
 		phase: GamePhases.WAITING_TO_START,
 		player1Score: 0,
 		player2Score: 0,
@@ -62,7 +56,6 @@ export const initState = {
 		player1Ready: false,
 		player2Ready: false,
 		countdown: -1,
-		winner: "",
 		ball: {
 			x: 0,
 			y: 0,
@@ -76,13 +69,7 @@ export const initState = {
 		matches: null,
 		standings: null,
 		pointsToWin: 5,
-		numberOfGames: 1
+		numberOfGames: 1,
+		currentMatchIndex: 0
 	}
-	// {
-	// 	players: ["player1", "player2", "player3", "player4"],
-	// 	results: [],
-	// 	matches: [],
-	// 	currentMatch: {},
-	// 	currentMatchIndex: 0
-	// },
 };
