@@ -208,10 +208,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # EMAIL c0b670e51709ee8b54d437e456d2bc98-5dcb5e36-61dc4469
 
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.mailgun.org'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'postmaster@sandboxab17e3479f1c4b2a82d81bd75b4acb8c.mailgun.org'  # Your Mailgun domain
+# EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_PASSWORD')
+# DEFAULT_FROM_EMAIL = 'jalbers42.dev@gmail.com'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST = 'in-v3.mailjet.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'postmaster@sandboxab17e3479f1c4b2a82d81bd75b4acb8c.mailgun.org'  # Your Mailgun domain
-EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_PASSWORD')
+EMAIL_HOST_USER = os.getenv('MAILJET_API_KEY')  # Your Mailjet API key
+EMAIL_HOST_PASSWORD = os.getenv('MAILJET_API_SECRET')  # Your Mailjet API secret
 DEFAULT_FROM_EMAIL = 'jalbers42.dev@gmail.com'
