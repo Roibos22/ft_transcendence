@@ -39,12 +39,17 @@ export default class Socket {
 				action: 'authenticate',
 				token: `${this.authToken}`
 			}));
+			this.socket.send(JSON.stringify({
+				action: 'get_init_data'
+			}));
 		});
 	}
 
 	addEventListenersDebug() {
 		this.socket.addEventListener('message', (event) => {
-			//console.log('Message from server:', event.data);
+			if (event.data.game_data) {
+				console.log(event.data.game_data);
+			}
 		});
 
 		this.socket.addEventListener('close', (event) => {

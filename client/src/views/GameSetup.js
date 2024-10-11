@@ -49,6 +49,9 @@ export class GameSetupView {
 		const { start } = this.UIelements.startGameButtons;
 		const { pointsToWinButtons, numberOfGamesButtons } = this.UIelements.settingsButtons;
 
+		Cookies.setCookie("gameMode", GameModes.SINGLE, 24);
+		State.set('gameSettings', 'mode', GameModes.SINGLE);
+
 		Object.values(gameModeButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
 				const id = e.target.id;
