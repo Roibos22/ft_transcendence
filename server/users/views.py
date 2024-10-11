@@ -53,15 +53,15 @@ def user_login(request):
         #     }, status=status.HTTP_403_FORBIDDEN)
 
         # Check if 2fa is required
-        # if user.twoFA_active:
-        #     generate_otp(user=user)
-        #     send_email_code(user)
-        #     return Response({
-        #         'username': user.username,
-        #         'detail': '2FA required, one time password sent to users email',
-        #         '2fa_required': True,
-        #         'tokens': tokens
-        #     }, status=status.HTTP_200_OK)
+        if user.twoFA_active:
+            generate_otp(user=user)
+            send_email_code(user)
+            return Response({
+                'username': user.username,
+                'detail': '2FA required, one time password sent to users email',
+                '2fa_required': True,
+                'tokens': tokens
+            }, status=status.HTTP_200_OK)
 
         # # Check if the user has a confirmed TOTP device (2FA enabled)
         # totp_device = TOTPDevice.objects.filter(user=user).first()
