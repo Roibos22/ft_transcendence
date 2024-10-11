@@ -46,22 +46,22 @@ def user_login(request):
         tokens = serializer.validated_data
 
         # Check if email is verified
-        if not user.email_verified:
-            return Response({
-                'detail': 'Email is not verified. Please check you inbox and verify your email to proceed.',
-                'email_verified': False
-            }, status=status.HTTP_403_FORBIDDEN)
+        # if not user.email_verified:
+        #     return Response({
+        #         'detail': 'Email is not verified. Please check you inbox and verify your email to proceed.',
+        #         'email_verified': False
+        #     }, status=status.HTTP_403_FORBIDDEN)
 
         # Check if 2fa is required
-        if user.twoFA_active:
-            generate_otp(user=user)
-            send_email_code(user)
-            return Response({
-                'username': user.username,
-                'detail': '2FA required, one time password sent to users email',
-                '2fa_required': True,
-                'tokens': tokens
-            }, status=status.HTTP_200_OK)
+        # if user.twoFA_active:
+        #     generate_otp(user=user)
+        #     send_email_code(user)
+        #     return Response({
+        #         'username': user.username,
+        #         'detail': '2FA required, one time password sent to users email',
+        #         '2fa_required': True,
+        #         'tokens': tokens
+        #     }, status=status.HTTP_200_OK)
 
         # # Check if the user has a confirmed TOTP device (2FA enabled)
         # totp_device = TOTPDevice.objects.filter(user=user).first()
@@ -110,7 +110,7 @@ def verify_email(request, user_id):
             return Response({
                 'detail': 'Email confirmed',
             }, status=status.HTTP_200_OK)
-            
+
     sys_otp_codes.delete()
 
     return Response({'detail': 'Login failed'}, status=status.HTTP_400_BAD_REQUEST)
@@ -142,7 +142,7 @@ def verify_2fa(request, user_id):
             return Response({
                 'detail': '2fa verified',
             }, status=status.HTTP_200_OK)
-            
+
     sys_otp_codes.delete()
     return Response({'detail': '2FA wrong OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -178,7 +178,7 @@ def confirm_2fa(request):
 
     if not otp_token:
         return Response({'error': 'Token is not provided'}, status=status.HTTP_400_NOT_FOUND)
-    
+
     sys_otp_codes = TwoFactorCode.objects.filter(user=user)
     if not sys_otp_codes:
         return Response({'detail': 'No one time password found in database for this user.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -192,7 +192,7 @@ def confirm_2fa(request):
                 'detail': 'Login successful',
                 'tokens': tokens
             }, status=status.HTTP_200_OK)
-            
+
     return Response({'detail': 'Login failed, one time password incorrect'}, status=status.HTTP_400_BAD_REQUEST)
 
     # # Retrieve the user's confirmed TOTP device
