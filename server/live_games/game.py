@@ -24,7 +24,6 @@ class Paddle:
         else:
             self._y_position = new_y
 
-    # im not using the hit position yet
     def check_hit(self, ball_y_position):
         if ball_y_position > self._y_position and ball_y_position < self._y_position + self._paddle_height:
             return ball_y_position - (self._y_position + (self._paddle_height / 2))
@@ -55,7 +54,7 @@ class Ball:
 
     def reset_ball(self):
         angle = random.uniform(-math.pi / 3, math.pi / 3)
-        self._direction_x = math.cos(angle)
+        self._direction_x = math.cos(angle) * random.choice([-1, 1])
         self._direction_y = math.sin(angle)
         self._speed = self._initial_speed
         self._position_x = int(self._map_width / 2)
