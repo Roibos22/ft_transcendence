@@ -10,3 +10,4 @@ django-two-factor-auth[phonenumbers]
 django-cors-headers
 channels
 daphne
+python-dotenv

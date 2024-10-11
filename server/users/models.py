@@ -16,6 +16,8 @@ class User(AbstractUser):
     )
     # Email verification flag
     email_verified = models.BooleanField(default=False)
+    # 2fa verification flag
+    twoFA_active = models.BooleanField(default=False)
     # Phone number for authentication
     phone_number = models.CharField(blank=True, null=True)
     # Changeable display name
