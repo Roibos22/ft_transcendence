@@ -1,6 +1,5 @@
 import { PongGame } from '../components/PongGame.js';
 import { UIManager } from '../components/UIManager.js';
-import { GameModes } from '../constants.js';
 import * as gameService from '../services/api/gameService.js';
 import Router from '../router.js';
 import State from '../State.js';
@@ -8,18 +7,16 @@ import Socket from '../services/Socket.js';
 
 export class GameView {
 	constructor() {
+		this.gameSocket = null;
 		this.game = null;
 		this.UIManager = null;
-		this.gameSocket = null;
 	}
 
 	async init() {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
 
-		if (State.get('gameSettings', 'mode') === GameModes.MULTI) {
-			await this.getLocalMultiPlayerGame();
-		}
+		await this.getLocalGame();
 
 		this.game = new PongGame(this.gameSocket);
 		this.UIManager = new UIManager();
@@ -30,11 +27,10 @@ export class GameView {
 		this.UIManager.update();
 	}
 
-	async getLocalMultiPlayerGame() {
-		// throw new Error('Not implemented');
-		const response = await gameService.createLocalMultiplayerGame();
+	async getLocalGame() {
+		const response = await gameService.createLocalGame();
 		if (!response.success) {
-			throw new Error('Failed to create local multiplayer game');
+			throw new Error('Failed to create local game');
 		}
 		const data = response.data;
 		this.initGameSocket(data.game_id);
@@ -45,29 +41,54 @@ export class GameView {
 		this.gameSocket.addEventListenersGame();
 		this.gameSocket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
+			if (data.game_data) {
+				this.initialiseGameData(data.game_data);
+			}
 			if (data.game_state) {
 				this.updateState(data.game_state);
 			}
 		});
 	}
 
+	initialiseGameData(gameData) {
+		const oldSettings = State.get('gameSettings');
+		const newSettings = {
+			...oldSettings,
+			ballRadius: gameData.ball_radius,
+			map: {
+				width: gameData.map_width,
+				height: gameData.map_height
+			},
+			paddle: {
+				width: gameData.paddle_width,
+				height: gameData.paddle_height
+			}
+		};
+
+		State.set('gameSettings', newSettings);
+	}
+
 	updateState(newState) {
 		const oldData = State.get("gameData");
 
-		var newData = {
+		const newData = {
 			...oldData,
 			gameId: newState.game_id,
 			phase: newState.phase,
 			countdown: newState.countdown,
 			player1Pos: newState.player1_pos,
 			player2Pos: newState.player2_pos,
+			player1Dir: newState.player1_dir,
+			player2Dir: newState.player2_dir,
 			player1Ready: newState.player1_ready,
 			player2Ready: newState.player2_ready,
 			ball: {
 				x: newState.ball.x || 0,
 				y: newState.ball.y || 0,
-				dx: newState.ball_dir.x || 0,
-				dy: newState.ball_dir.y || 0,
+				velocity: {
+					x: newState.ball_velocity.x || 0,
+					y: newState.ball_velocity.y || 0,
+				}
 			}
 		}
 

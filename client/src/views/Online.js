@@ -46,8 +46,10 @@ export class OnlineGameView {
 			ball: {
 				x: newState.ball.x || 0,
 				y: newState.ball.y || 0,
-				dx: newState.ball_dir.x || 0,
-				dy: newState.ball_dir.y || 0,
+				velocity: {
+					x: newState.ball_velocity.x || 0,
+					y: newState.ball_velocity.y || 0,
+				}
 			}
 		}
 

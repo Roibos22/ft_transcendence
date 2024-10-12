@@ -36,7 +36,6 @@ export const initState = {
 		displayType: GameTypes.TWO_D,
 		mode: GameModes.SINGLE,
 		pointsToWin: 5,
-		paddleSize: 0,
 	},
 	currentMatch: {
 		player1Name: "Player 1",
@@ -50,16 +49,18 @@ export const initState = {
 		phase: GamePhases.WAITING_TO_START,
 		player1Pos: 0,
 		player2Pos: 0,
-		player1Direction: 0,
-		player2Direction: 0,
+		player1Dir: 0,
+		player2Dir: 0,
 		player1Ready: false,
 		player2Ready: false,
 		countdown: -1,
 		ball: {
 			x: 0,
 			y: 0,
-			dx: 0,
-			dy: 0
+			velocity: {
+				x: 0,
+				y: 0
+			}
 		}
 	},
 	tournament:
