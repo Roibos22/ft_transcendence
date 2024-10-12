@@ -9,20 +9,31 @@ import time
 init()
 
 async def play(user: User):
-    websocket = Websocket(f'{url_game}ws/matchmaking/', user.access_tocken)
-    print('Connecting to matchmaking')
+    url = f'{url_game}ws/matchmaking/'
+    websocket = Websocket(url, user.access_tocken)
     await websocket.connect()
+    print('Connecting to matchmaking')
+    await websocket.send({
+        "action": "join_game",
+        "token": user.access_tocken
+    })
     data = await websocket.recieve()
+    print(data)
     game_id = data.get('game_id')
-    url = f'{url_game}ws/live_game/{game_id}/'
+    url = f'{url_game}ws/online_game/{game_id}/'
     websocket = Websocket(url, user.access_tocken)
     print('Connecting to game')
     await websocket.connect()
+    await websocket.send({
+        "action": "authenticate",
+        "token": user.access_tocken
+    })
     await websocket.send({"action": "get_init_data"})
     game: Game = {}
     print('Waiting for data')
     while True:
         data: dict = await websocket.recieve()
+        print(data)
         if data and data.get('game_data'):
             game = Game(data.get('game_data'), websocket)
             break
@@ -30,19 +41,25 @@ async def play(user: User):
     print(game)
     game.start()
     game.check_window()
-    await websocket.send({"action": "player_ready"})
+    await websocket.send({
+        "action": "authenticate",
+        "token": user.access_tocken
+    })
+    await websocket.send({
+        "action": "player_ready"
+    })
     while True:
         game._stdscr.clear()
         data: dict = await websocket.recieve()
         if data == None:
             break
         data = data.get('game_state', None)
-        if data and data['start_time'] != 0:
-            print(f'Game will start in {int(data.get("start_time"))}')
+        if data and data['countdown'] != 0:
+            print(f'Game will start in {int(data.get("countdown"))}')
         elif data:
-            game.draw_vert_paddle(data.get('player_1'))
-            game.draw_vert_paddle(data.get('player_2'))
-            game.draw_ball(data['ball']['position'])
+            game.draw_vert_paddle(data.get('player1_pos'), data.get('player1_pos') + game._paddle_size, 0)
+            game.draw_vert_paddle(data.get('player2_pos'), data.get('player2_pos') + game._paddle_size, 1)
+            game.draw_ball(data.get('ball'))
         key = game._stdscr.getch()
         # await game.move_paddle(key)
         if key == ord('w'):
@@ -58,7 +75,7 @@ async def play(user: User):
                 "direction": -1
             })
         game._stdscr.refresh()
-        time.sleep(0.01)
+        time.sleep(0.016)
 
 
 
