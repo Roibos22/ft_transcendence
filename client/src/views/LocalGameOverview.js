@@ -26,7 +26,16 @@ export class LocalGameOverview {
 		this.content.standings = document.getElementById('standings');
 		this.content.standingsTable = document.getElementById('standingsTable');
 
-		this.createTournament();
+		const tournament = State.get('tournament');
+		if (!tournament || !tournament.matches || tournament.matches.length === 0) {
+			this.createTournament();
+		} else if (!tournament.completed) {
+			this.setupNextMatch();
+		} else {
+			this.showTournamentResults();
+		}
+
+		this.update();
 		//this.tournament = new Tournament();
 		console.log(State);
 	}
@@ -41,22 +50,20 @@ export class LocalGameOverview {
 	setupNextMatch() {
 		const tournament = State.get('tournament');
 		const currentMatchIndex = tournament.currentMatchIndex;
-		const matches = tournament.matches;
 
-		if (currentMatchIndex >= matches.length) {
+		if (currentMatchIndex >= tournament.matches.length) {
 			console.log("Tournament completed");
+			this.showTournamentResults();
 			return;
 		}
 
-		const currentMatch = matches[currentMatchIndex];
+		const currentMatch = tournament.matches[currentMatchIndex];
 
-		// CLOSE SOCKET OF DONE GAMES
-		// if (this.currentSocket) {
-		// 	this.currentSocket.close();
-		// }
-		this.getLocalGame(currentMatch);
-
-
+		if (!currentMatch.socket) {
+			this.getLocalGame(currentMatch);
+		} else {
+			Router.navigateTo('/game');
+		}
 	}
 
 	async getLocalGame(currentMatch) {
@@ -66,6 +73,13 @@ export class LocalGameOverview {
 		}
 		const data = response.data;
 		this.initGameSocket(currentMatch, data.game_id);
+	}
+
+	showTournamentResults() {
+		console.log("Showing tournament results");
+		// Implement logic to display final tournament standings
+		this.updateStandings();
+		// You might want to add a UI element to show that the tournament is completed
 	}
 
 	initGameSocket(currentMatch, gameId) {
@@ -150,8 +164,8 @@ export class LocalGameOverview {
 				for (let k = j + 1; k < tournament.players.length; k++) {
 					matches.push({
 						players: [
-							{ ...tournament.players[j], score: 0 },
-							{ ...tournament.players[k], score: 0 }
+							{ name: tournament.players[j].name, score: 0 },
+							{ name: tournament.players[k].name, score: 0 }
 						],
 						completed: false,
 						socket: null,

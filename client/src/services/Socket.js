@@ -11,11 +11,11 @@ export default class Socket {
 		this.addEventListenersDebug();
 	}
 
-    init() {
-        this.authToken = Cookies.getCookie("accessToken");
-        const gameIndex = this.data.gameId ? this.data.gameId + '/' : '';
-        this.socket = new WebSocket(`wss://localhost:8443/ws/${this.url}/${gameIndex}`);
-    }
+	init() {
+		this.authToken = Cookies.getCookie("accessToken");
+		const gameIndex = this.data.gameId ? this.data.gameId + '/' : '';
+		this.socket = new WebSocket(`wss://localhost:8443/ws/${this.url}/${gameIndex}`);
+	}
 
 	send(data) {
 		this.socket.send(data);
@@ -63,5 +63,14 @@ export default class Socket {
 		this.socket.addEventListener('error', (error) => {
 			console.error('WebSocket error:', error);
 		});
+	}
+
+	close(code = 1000, reason = "Normal closure") {
+		if (this.socket) {
+			this.socket.close(code, reason);
+			console.log(`WebSocket connection closed: ${reason}`);
+		} else {
+			console.log('WebSocket connection already closed or not initialized');
+		}
 	}
 }

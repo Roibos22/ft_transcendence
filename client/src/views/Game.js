@@ -52,31 +52,73 @@ export class GameView {
 
 	checkGameFinished() {
 		const gameData = State.get('gameData');
-		if (gameData.phase === 'game_over') {
-			console.log("Game finished");
-			return true;
-		}
-		return false;
+		return gameData.phase === 'game_over';
 	}
 
 	handleGameFinished() {
 		console.log("Handling game finish");
+		const tournament = State.get('tournament');
+		const matchIndex = tournament.currentMatchIndex;
+		const currentMatch = tournament.matches[matchIndex];
 
-		// update match in tournament
-		// navigate back to overview
-		// close socket
-		// update standings
-		// go to next game
-		// prepare next game
+		// Update match in tournament
+		currentMatch.completed = true;
+		
+		// Update player stats
+		this.updatePlayerStats(currentMatch);
 
-		// const gameData = State.get('gameData');
-		// const matchResult = {
-		// 	player1_name: gameData.constants.player1Username,
-		// 	player2_name: gameData.constants.player2Username,
-		// 	player1_score: gameData.player1Score,
-		// 	player2_score: gameData.player2Score
-		// };
-		// this.handleMatchComplete(matchResult);
+		// Close socket
+		if (currentMatch.socket) {
+			currentMatch.socket.close();
+		}
+
+		// Clean up game resources
+		if (this.game) {
+			this.game.destroy();
+			this.game = null;
+		}
+
+		// Clean up UI Manager
+		if (this.UIManager) {
+			this.UIManager.destroy();
+			this.UIManager = null;
+		}
+
+		// Move to next match
+		tournament.currentMatchIndex++;
+
+		// Check if tournament is completed
+		if (tournament.currentMatchIndex >= tournament.matches.length) {
+			tournament.completed = true;
+		}
+
+		// Update tournament state
+		State.set('tournament', tournament);
+
+		// Navigate back to overview
+		window.history.pushState({}, '', '/local-game-overview');
+		Router.handleLocationChange();
+	}
+
+	updatePlayerStats(match) {
+		const tournament = State.get('tournament');
+		const player1 = tournament.players.find(p => p.name === match.players[0].name);
+		const player2 = tournament.players.find(p => p.name === match.players[1].name);
+
+		if (match.players[0].score > match.players[1].score) {
+			player1.wins++;
+			player2.losses++;
+			player1.points += 3;
+		} else if (match.players[0].score < match.players[1].score) {
+			player2.wins++;
+			player1.losses++;
+			player2.points += 3;
+		} else {
+			player1.points++;
+			player2.points++;
+		}
+
+		State.set('tournament', tournament);
 	}
 
 
