@@ -1,5 +1,6 @@
 
 import * as Cookies from './cookies.js';
+import State from '../State.js';
 
 export default class Socket {
 	constructor(url, data) {

@@ -1,11 +1,10 @@
 import Router from '../router.js';
 import { standingsTableRow } from '../utils/utils.js';
 import Socket from '../services/Socket.js';
-import { PongGame } from '../components/PongGame.js';
 import * as Cookies from '../services/cookies.js';
 import State from '../State.js';
-import { Tournament } from '../components/Tournament.js';
 import * as gameService from '../services/api/gameService.js';
+import * as Utils from '../utils/utils.js';
 
 
 export class LocalGameOverview {
@@ -25,45 +24,31 @@ export class LocalGameOverview {
 		this.content.fixtures = document.getElementById('fixtures');
 		this.content.standings = document.getElementById('standings');
 		this.content.standingsTable = document.getElementById('standingsTable');
+		this.content.nextMatchButton = document.getElementById('goToNextMatch');
+		this.content.tournamentInfoText = document.getElementById('tournamentInfoText');
+		this.content.finishTournamentButton = document.getElementById('finishTournament');
 
 		const tournament = State.get('tournament');
 		if (!tournament || !tournament.matches || tournament.matches.length === 0) {
 			this.createTournament();
 		} else if (!tournament.completed) {
 			this.setupNextMatch();
-		} else {
-			this.showTournamentResults();
 		}
 
 		this.update();
-		//this.tournament = new Tournament();
-		console.log(State);
 	}
 
 	createTournament() {
-		this.generateMatches();
-		this.initPlayerStats();
-		//this.update();
+		Utils.generateMatches();
+		Utils.initPlayerStats();
 		this.setupNextMatch();
 	}
 
 	setupNextMatch() {
 		const tournament = State.get('tournament');
 		const currentMatchIndex = tournament.currentMatchIndex;
-
-		if (currentMatchIndex >= tournament.matches.length) {
-			console.log("Tournament completed");
-			this.showTournamentResults();
-			return;
-		}
-
 		const currentMatch = tournament.matches[currentMatchIndex];
-
-		if (!currentMatch.socket) {
-			this.getLocalGame(currentMatch);
-		} else {
-			Router.navigateTo('/game');
-		}
+		this.getLocalGame(currentMatch);
 	}
 
 	async getLocalGame(currentMatch) {
@@ -75,143 +60,41 @@ export class LocalGameOverview {
 		this.initGameSocket(currentMatch, data.game_id);
 	}
 
-	showTournamentResults() {
-		console.log("Showing tournament results");
-		// Implement logic to display final tournament standings
-		this.updateStandings();
-		// You might want to add a UI element to show that the tournament is completed
-	}
-
 	initGameSocket(currentMatch, gameId) {
 		currentMatch.socket = new Socket('local_game', { gameId });
 		currentMatch.socket.addEventListenersGame();
 		currentMatch.socket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
 			if (data.game_data) {
-				this.initialiseGameData(data.game_data);
+				State.initialiseGameData(data.game_data);
 			}
 			if (data.game_state) {
-				this.updateState(data.game_state);
+				State.updateState(data.game_state);
 			}
 		});
 	}
 
-	initialiseGameData(gameData) {
-		const oldData = State.get('gameData', 'constants');
-		console.log("gameData", gameData);
-		const newData = {
-			...oldData,
-			mapHeight: gameData.map_height,
-			mapWidth: gameData.map_width,
-			player1Username: gameData.player1_username,
-			player2Username: gameData.player2_username,
-			paddleHeight: gameData.paddle_height,
-			paddleWidth: gameData.paddle_width,
-			ballRadius: gameData.ball_radius,
-			winner: ""
-		};
-
-		State.set('gameData', 'constants', newData);
-	}
-
-	updateState(newState) {
-		const oldData = State.get("gameData");
-		const newData = {
-			...oldData,
-			gameId: newState.game_id,
-			phase: newState.phase,
-			countdown: newState.countdown,
-			player1Score: newState.player1_score,
-			player2Score: newState.player2_score,
-			player1Pos: newState.player1_pos,
-			player2Pos: newState.player2_pos,
-			player1Dir: newState.player1_dir,
-			player2Dir: newState.player2_dir,
-			player1Ready: newState.player1_ready,
-			player2Ready: newState.player2_ready,
-			ball: {
-				x: newState.ball.x || 0,
-				y: newState.ball.y || 0,
-				dx: newState.ball_dir.x || 0,
-				dy: newState.ball_dir.y || 0,
-				speed: newState.ball_speed || 0
-			}
-		}
-
-		State.set('gameData', newData);
-	}
-
-	initPlayerStats() {
-		var players = State.get("tournament", "players");
-	
-		players = players.map(player => ({
-			...player,
-			rank: 0,
-			wins: 0,
-			losses: 0,
-			points: 0
-		}));
-	
-		State.set("tournament", "players", players);
-	}
-
-	generateMatches() {
-		const matches = [];
-		const tournament = State.get('tournament');
-
-		for (let i = 0; i < tournament.numberOfGames; i++) {
-			for (let j = 0; j < tournament.players.length; j++) {
-				for (let k = j + 1; k < tournament.players.length; k++) {
-					matches.push({
-						players: [
-							{ name: tournament.players[j].name, score: 0 },
-							{ name: tournament.players[k].name, score: 0 }
-						],
-						completed: false,
-						socket: null,
-					});
-				}
-			}
-		}
-
-		State.set('tournament', 'matches', matches);
-	}
-	
 	update() {
-		this.updateMatchList();
-		this.updateStandings();
 		this.updateTournamentInfo();
+		this.updateStandings();
+		this.updateMatchList();
 	}
 
 	updateTournamentInfo() {
 		const tournament = State.get('tournament');
-		const nextMatchButton = document.getElementById('goToNextMatch');
-		const tournamentInfoText = document.getElementById('tournamentInfoText');
-		const finishTournamentButton = document.getElementById('finishTournament');
 
 		if (tournament.currentMatchIndex < tournament.matches.length) {
-			// There is a next match
 			const nextMatch = tournament.matches[tournament.currentMatchIndex];
-			tournamentInfoText.textContent = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
-	
+			this.content.tournamentInfoText.textContent = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
 		} else {
-			// Tournament is completed
-			nextMatchButton.style.display = 'none';
-			finishTournamentButton.style.display = 'block';
-			tournamentInfoText.textContent = `Torunament Completed!`;
+			this.content.nextMatchButton.style.display = 'none';
+			this.content.finishTournamentButton.style.display = 'block';
+			this.content.tournamentInfoText.textContent = `Torunament Completed!`;
 		}
 	}
 	
-
 	updateStandings() {
-		var standings = this.getStandings();
-		//State.set("tournament", "standings", standings);
-		var tableRows = standings.map(playerStats => standingsTableRow(playerStats)).join('');
-		this.content.standingsTable.innerHTML = `${tableRows}`;
-	}
-
-	getStandings() {
-		return State.get('tournament', 'players')
+		var standings = State.get('tournament', 'players')
 			.sort((a, b) => b.points - a.points || (b.wins - b.losses) - (a.wins - a.losses))
 			.map((player, index) => ({
 				rank: index + 1,
@@ -220,6 +103,9 @@ export class LocalGameOverview {
 				losses: player.losses,
 				points: player.points
 			}));
+
+		var tableRows = standings.map(playerStats => standingsTableRow(playerStats)).join('');
+		this.content.standingsTable.innerHTML = `${tableRows}`;
 	}
 
 	updateMatchList() {
