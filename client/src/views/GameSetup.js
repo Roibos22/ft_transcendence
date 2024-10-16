@@ -13,9 +13,9 @@ export class GameSetupView {
 	async init() {
 		const content = await Router.loadTemplate('game-setup');
 		document.getElementById('app').innerHTML = content;
-
 		this.UIelements = this.getUIElements();
 		this.UIelements.player1Input.value = Cookies.getCookie("username");
+		State.reset();
 		this.addEventListeners();
 		this.update();
 	}

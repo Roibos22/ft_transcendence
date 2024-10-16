@@ -187,6 +187,7 @@ export class LocalGameOverview {
 		const tournament = State.get('tournament');
 		const nextMatchButton = document.getElementById('goToNextMatch');
 		const tournamentInfoText = document.getElementById('tournamentInfoText');
+		const finishTournamentButton = document.getElementById('finishTournament');
 
 		if (tournament.currentMatchIndex < tournament.matches.length) {
 			// There is a next match
@@ -196,6 +197,7 @@ export class LocalGameOverview {
 		} else {
 			// Tournament is completed
 			nextMatchButton.style.display = 'none';
+			finishTournamentButton.style.display = 'block';
 			tournamentInfoText.textContent = `Torunament Completed!`;
 		}
 	}
