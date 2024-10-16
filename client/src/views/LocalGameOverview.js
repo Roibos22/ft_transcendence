@@ -180,7 +180,38 @@ export class LocalGameOverview {
 	update() {
 		this.updateMatchList();
 		this.updateStandings();
+		this.updateTournamentInfo();
 	}
+
+	updateTournamentInfo() {
+		// Get the current tournament state
+		const tournament = State.get('tournament');
+	
+		// Get references to DOM elements
+		// const nextMatchElement = document.getElementById('nextMatch');
+		const nextMatchPlayersElement = document.getElementById('nextMatchPlayers');
+		// const goToNextMatchButton = document.getElementById('goToNextMatch');
+	
+		// Check if there are more matches to play
+		if (tournament.currentMatchIndex < tournament.matches.length) {
+			// There is a next match
+			const nextMatch = tournament.matches[tournament.currentMatchIndex];
+	
+			// Update the display
+			nextMatchPlayersElement.textContent = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
+			// nextMatchElement.style.display = 'block';
+			// goToNextMatchButton.style.display = 'block';
+	
+			// Add event listener to the "Start Match" button
+			// goToNextMatchButton.onclick = this.startNextMatch.bind(this);
+		} //else {
+		// 	// Tournament is completed
+		// 	// nextMatchElement.style.display = 'none';
+		// 	// goToNextMatchButton.style.display = 'none';
+		// }
+	
+	}
+	
 
 	updateStandings() {
 		var standings = this.getStandings();
@@ -220,7 +251,6 @@ export class LocalGameOverview {
 				matchContent = `
 					<div class="d-flex justify-content-between align-items-center">
 						<strong>${player1} vs ${player2}</strong>
-						<span class="badge bg-primary ms-3 fs-6">${match.players[0].score}:${match.players[1].score}</span>
 					</div>`;
 			} else {
 				matchContent = `
