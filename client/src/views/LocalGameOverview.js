@@ -184,32 +184,20 @@ export class LocalGameOverview {
 	}
 
 	updateTournamentInfo() {
-		// Get the current tournament state
 		const tournament = State.get('tournament');
-	
-		// Get references to DOM elements
-		// const nextMatchElement = document.getElementById('nextMatch');
-		const nextMatchPlayersElement = document.getElementById('nextMatchPlayers');
-		// const goToNextMatchButton = document.getElementById('goToNextMatch');
-	
-		// Check if there are more matches to play
+		const nextMatchButton = document.getElementById('goToNextMatch');
+		const tournamentInfoText = document.getElementById('tournamentInfoText');
+
 		if (tournament.currentMatchIndex < tournament.matches.length) {
 			// There is a next match
 			const nextMatch = tournament.matches[tournament.currentMatchIndex];
+			tournamentInfoText.textContent = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
 	
-			// Update the display
-			nextMatchPlayersElement.textContent = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
-			// nextMatchElement.style.display = 'block';
-			// goToNextMatchButton.style.display = 'block';
-	
-			// Add event listener to the "Start Match" button
-			// goToNextMatchButton.onclick = this.startNextMatch.bind(this);
-		} //else {
-		// 	// Tournament is completed
-		// 	// nextMatchElement.style.display = 'none';
-		// 	// goToNextMatchButton.style.display = 'none';
-		// }
-	
+		} else {
+			// Tournament is completed
+			nextMatchButton.style.display = 'none';
+			tournamentInfoText.textContent = `Torunament Completed!`;
+		}
 	}
 	
 
@@ -238,6 +226,7 @@ export class LocalGameOverview {
 			const player1 = match.players[0].name;
 			const player2 = match.players[1].name;
 			let matchClass = 'list-group-item';
+			let matchStyle = '';
 			let matchContent = '';
 	
 			if (match.completed) {
@@ -247,7 +236,7 @@ export class LocalGameOverview {
 						<span class="badge bg-secondary ms-3 fs-6">${match.players[0].score}:${match.players[1].score}</span>
 					</div>`;
 			} else if (index === tournament.currentMatchIndex) {
-				matchClass += ' active';
+				matchStyle += 'background-color: #f2f2f2;';
 				matchContent = `
 					<div class="d-flex justify-content-between align-items-center">
 						<strong>${player1} vs ${player2}</strong>
@@ -259,13 +248,13 @@ export class LocalGameOverview {
 						<span class="invisible">Placeholder</span>
 					</div>`;
 			}
-			return `<li class="${matchClass}">${matchContent}</li>`;
+			return `<li class="${matchClass}" style="${matchStyle}">${matchContent}</li>`;
 		}).join('');
 	
 		this.content.fixtures.innerHTML = `
 			<div class="card">
-				<div class="card-header bg-dark text-white text-center">
-					<h5 class="mb-0">Matches</h5>
+				<div class="card-header text-center rounded-top" style="background-color: #4CAF50;">
+					<h5 class="mb-0 fw-bold">Matches</h5>
 				</div>
 				<ul class="list-group list-group-flush">
 					${matchesList}

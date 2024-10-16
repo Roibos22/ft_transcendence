@@ -104,7 +104,7 @@ export class GameView {
 		};
 
 		// Update tournament state
-		State.set('tournament', updatedTournament);
+		State.data.tournament = updatedTournament;
 
 		// Always navigate back to overview after each game
 		this.navigateToOverview();
