@@ -40,4 +40,14 @@ export class PongGame {
 			this.AIplayer = new AIPlayer(this);
 		}
 	}
+
+	destroy() {
+		this.twoD = null;
+		this.threeD = null;
+		this.inputHandler.destroy();
+		this.inputHandler = null;
+		this.AIplayer = null;
+		this.tournament = null;
+		this.socket = null;
+	}
 }

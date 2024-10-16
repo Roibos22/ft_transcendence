@@ -15,13 +15,21 @@ export class GameView {
 	async init() {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
+		this.setupGame();
+	}
 
+	setupGame() {
 		const tournament = State.get('tournament');
 		const currentMatchIndex = tournament.currentMatchIndex;
 		const matches = tournament.matches;
 
-		this.game = new PongGame(matches[currentMatchIndex].socket);
-		this.UIManager = new UIManager();
+		if (currentMatchIndex < matches.length) {
+			this.game = new PongGame(matches[currentMatchIndex].socket);
+			this.UIManager = new UIManager();
+		} else {
+			console.log("Tournament completed");
+			this.navigateToOverview();
+		}
 	}
 
 	update() {
@@ -84,16 +92,7 @@ export class GameView {
 		}
 
 		// Clean up game resources
-		// if (this.game) {
-		// 	this.game.destroy();
-		// 	this.game = null;
-		// }
-
-		// Clean up UI Manager
-		// if (this.UIManager) {
-		// 	this.UIManager.destroy();
-		// 	this.UIManager = null;
-		// }
+		this.destroyCurrentGame();
 
 		// Prepare updated tournament state
 		const updatedTournament = {
@@ -107,12 +106,24 @@ export class GameView {
 		// Update tournament state
 		State.set('tournament', updatedTournament);
 
-		// Navigate back to overview
-		window.history.pushState({}, '', '/local-game-overview');
-		Router.handleLocationChange();
+		// Always navigate back to overview after each game
+		this.navigateToOverview();
 
 		this.isHandlingGameFinish = false;
 	}
+
+	navigateToOverview() {
+		window.history.pushState({}, '', '/local-game-overview');
+		Router.handleLocationChange();
+	}
+
+	destroyCurrentGame() {
+		if (this.game) {
+			this.game.destroy();
+			this.game = null;
+		}
+	}
+
 
 	calculateUpdatedPlayerStats(players, match) {
 		return players.map(player => {
