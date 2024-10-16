@@ -9,6 +9,7 @@ export class GameView {
 	constructor() {
 		this.game = null;
 		this.UIManager = null;
+		this.isHandlingGameFinish = false;
 	}
 
 	async init() {
@@ -27,9 +28,11 @@ export class GameView {
 		if (this.UIManager) {
 			this.UIManager.update();
 		}
-		this.updateTournamentData();
-		if (this.checkGameFinished()) {
-			this.handleGameFinished();
+		if (!this.isHandlingGameFinish) {
+			this.updateTournamentData();
+			if (this.checkGameFinished()) {
+				this.handleGameFinished();
+			}
 		}
 	}
 
@@ -40,14 +43,18 @@ export class GameView {
 		const tournament = State.get('tournament');
 		const index = tournament.currentMatchIndex;
 		
-		const matches = tournament.matches;
-		
-		if (matches[index] && matches[index].players) {
-			matches[index].players[0].score = gameData.player1Score;
-			matches[index].players[1].score = gameData.player2Score;
+		if (tournament.matches[index] && tournament.matches[index].players) {
+			const updatedMatches = [...tournament.matches];
+			updatedMatches[index] = {
+				...updatedMatches[index],
+				players: [
+					{ ...updatedMatches[index].players[0], score: gameData.player1Score },
+					{ ...updatedMatches[index].players[1], score: gameData.player2Score }
+				]
+			};
+			State.data.tournament.matches = updatedMatches;
+			//State.set('tournament', { ...tournament, matches: updatedMatches });
 		}
-		
-		State.data.tournament.matches = matches;
 	}
 
 	checkGameFinished() {
@@ -56,16 +63,20 @@ export class GameView {
 	}
 
 	handleGameFinished() {
+		if (this.isHandlingGameFinish) return;
+		this.isHandlingGameFinish = true;
+
 		console.log("Handling game finish");
 		const tournament = State.get('tournament');
 		const matchIndex = tournament.currentMatchIndex;
 		const currentMatch = tournament.matches[matchIndex];
 
 		// Update match in tournament
-		currentMatch.completed = true;
+		const updatedMatches = [...tournament.matches];
+		updatedMatches[matchIndex] = { ...currentMatch, completed: true };
 		
 		// Update player stats
-		this.updatePlayerStats(currentMatch);
+		const updatedPlayers = this.calculateUpdatedPlayerStats(tournament.players, currentMatch);
 
 		// Close socket
 		if (currentMatch.socket) {
@@ -73,52 +84,52 @@ export class GameView {
 		}
 
 		// Clean up game resources
-		if (this.game) {
-			this.game.destroy();
-			this.game = null;
-		}
+		// if (this.game) {
+		// 	this.game.destroy();
+		// 	this.game = null;
+		// }
 
 		// Clean up UI Manager
-		if (this.UIManager) {
-			this.UIManager.destroy();
-			this.UIManager = null;
-		}
+		// if (this.UIManager) {
+		// 	this.UIManager.destroy();
+		// 	this.UIManager = null;
+		// }
 
-		// Move to next match
-		tournament.currentMatchIndex++;
-
-		// Check if tournament is completed
-		if (tournament.currentMatchIndex >= tournament.matches.length) {
-			tournament.completed = true;
-		}
+		// Prepare updated tournament state
+		const updatedTournament = {
+			...tournament,
+			matches: updatedMatches,
+			players: updatedPlayers,
+			currentMatchIndex: matchIndex + 1,
+			completed: matchIndex + 1 >= tournament.matches.length
+		};
 
 		// Update tournament state
-		State.set('tournament', tournament);
+		State.set('tournament', updatedTournament);
 
 		// Navigate back to overview
 		window.history.pushState({}, '', '/local-game-overview');
 		Router.handleLocationChange();
+
+		this.isHandlingGameFinish = false;
 	}
 
-	updatePlayerStats(match) {
-		const tournament = State.get('tournament');
-		const player1 = tournament.players.find(p => p.name === match.players[0].name);
-		const player2 = tournament.players.find(p => p.name === match.players[1].name);
+	calculateUpdatedPlayerStats(players, match) {
+		return players.map(player => {
+			const matchPlayer = match.players.find(p => p.name === player.name);
+			if (!matchPlayer) return player;
 
-		if (match.players[0].score > match.players[1].score) {
-			player1.wins++;
-			player2.losses++;
-			player1.points += 3;
-		} else if (match.players[0].score < match.players[1].score) {
-			player2.wins++;
-			player1.losses++;
-			player2.points += 3;
-		} else {
-			player1.points++;
-			player2.points++;
-		}
+			const opponentScore = match.players.find(p => p.name !== player.name).score;
+			const playerWon = matchPlayer.score > opponentScore;
+			const isDraw = matchPlayer.score === opponentScore;
 
-		State.set('tournament', tournament);
+			return {
+				...player,
+				wins: player.wins + (playerWon ? 1 : 0),
+				losses: player.losses + (playerWon ? 0 : isDraw ? 0 : 1),
+				points: player.points + (playerWon ? 3 : isDraw ? 1 : 0)
+			};
+		});
 	}
 
 
