@@ -34,7 +34,7 @@ export const urlRoutes = {
 		view: ProfileView,
 	},
 	"/online-game": {
-		template: "../templates/online-game.html",
+		template: "../templates/game.html",
 		title: "Game",
 		view: OnlineGameView,
 	},

@@ -15,6 +15,7 @@ export class OnlineGameView {
 	async init() {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
+
 		this.initGameSocket(Cookies.getCookie("gameId"));
 		this.game = new PongGame(this.gameSocket);
 		this.UIManager = new UIManager();

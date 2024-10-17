@@ -9,7 +9,7 @@ import * as Utils from '../utils/utils.js';
 
 export class LocalGameOverview {
 	constructor() {
-		this.game = null
+		//this.game = null
 		this.content = {
 			fixtures: null,
 			standings: null,
