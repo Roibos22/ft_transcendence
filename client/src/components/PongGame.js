@@ -46,6 +46,7 @@ export class PongGame {
 		this.threeD = null;
 		this.inputHandler.destroy();
 		this.inputHandler = null;
+		this.AIplayer.destroy();
 		this.AIplayer = null;
 		this.tournament = null;
 		this.socket = null;

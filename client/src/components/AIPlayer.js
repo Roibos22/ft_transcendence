@@ -70,4 +70,8 @@ export default class AIPlayer {
 
 		return finalY;
 	}
+
+	destroy() {
+		this.game = null;
+	}
 }

@@ -43,6 +43,10 @@ class Router {
 			window.history.pushState({}, "", "/404");
 			return;
 		}
+
+		if (currentView.view && typeof currentView.view.cleanup === 'function') {
+			currentView.view.cleanup();
+		}
 	
 		delete currentView.view;
 		currentView.view = new ViewClass();

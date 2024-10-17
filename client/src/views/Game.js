@@ -86,13 +86,8 @@ export class GameView {
 		// Update player stats
 		const updatedPlayers = this.calculateUpdatedPlayerStats(tournament.players, currentMatch);
 
-		// Close socket
-		if (currentMatch.socket) {
-			currentMatch.socket.close();
-		}
-
 		// Clean up game resources
-		this.destroyCurrentGame();
+		// this.destroyCurrentGame(currentMatch);
 
 		// Prepare updated tournament state
 		const updatedTournament = {
@@ -118,6 +113,13 @@ export class GameView {
 	}
 
 	destroyCurrentGame() {
+		const tournament = State.get('tournament');
+		const matchIndex = tournament.currentMatchIndex;
+		const currentMatch = tournament.matches[matchIndex];
+
+		if (currentMatch.socket) {
+			currentMatch.socket.close();
+		}
 		if (this.game) {
 			this.game.destroy();
 			this.game = null;
@@ -143,5 +145,8 @@ export class GameView {
 		});
 	}
 
-
+	cleanup() {
+		console.log("Clean up GameView");
+		this.destroyCurrentGame();
+	}
 }
