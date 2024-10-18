@@ -25,8 +25,8 @@ export default class Socket {
 
 	addEventListenersMatchmaking() {
 		this.socket.addEventListener('open', (event) => {
-			console.log('WebSocket connection opened (Message Token Method)');
-			this.socket.send(JSON.stringify({
+			console.log('Matchmaking WebSocket connection opened (Message Token Method)');
+			this.send(JSON.stringify({
 				action: 'join_game',
 				token: `${this.authToken}`
 			}));
@@ -35,7 +35,7 @@ export default class Socket {
 
 	addEventListenersGame() {
 		this.socket.addEventListener('open', (event) => {
-			console.log('WebSocket connection opened (Message Token Method)');
+			console.log('Game WebSocket connection opened (Message Token Method)');
 			this.socket.send(JSON.stringify({
 				action: 'authenticate',
 				token: `${this.authToken}`
