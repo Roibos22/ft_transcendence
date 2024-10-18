@@ -59,7 +59,7 @@ export class OnlineGameLoadingView {
 			players: [
 				// { name: tournament.players[j].name, score: 0 },
 				// { name: tournament.players[k].name, score: 0 }
-				{ name: "Playe 1", score: 0 },
+				{ name: "Player 1", score: 0 },
 				{ name: "Player 2", score: 0 }
 			],
 			completed: false,
@@ -72,13 +72,13 @@ export class OnlineGameLoadingView {
 	}
 	
 	initGameSocket(gameId) {
-		const currentMatch = State.get('tournament', 'matches')[0];
+		const matches = State.get('tournament', 'matches');
 
-		currentMatch.socket = new Socket('online_game', { gameId });
-		currentMatch.socket.addEventListenersGame();
+		matches[0].socket = new Socket('online_game', { gameId });
+		matches[0].socket.addEventListenersGame();
 
 		// TODO refactor below into function above (also for local game)
-		currentMatch.socket.socket.addEventListener('message', (event) => {
+		matches[0].socket.socket.addEventListener('message', (event) => {
 			const data = JSON.parse(event.data);
 			if (data.game_data) {
 				State.initialiseGameData(data.game_data);
@@ -87,6 +87,8 @@ export class OnlineGameLoadingView {
 				State.updateState(data.game_state);
 			}
 		});
+		matches[0].players[0].name = "Updated Name";
+		State.set('tournament', 'mathches', matches);
 	}
 
 	update() {
