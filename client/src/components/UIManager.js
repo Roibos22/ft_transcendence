@@ -70,11 +70,6 @@ export class UIManager {
 
 	// tournament
 	updateScoreCard() {
-		const currentMatch = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')];
-		// this.content.scoreCard.player1Name.innerHTML = currentMatch.players[0].name;
-		// this.content.scoreCard.player2Name.innerHTML = currentMatch.players[1].name;
-		// this.content.scoreCard.player1Score.innerHTML = currentMatch.players[0].score;
-		// this.content.scoreCard.player2Score.innerHTML = currentMatch.players[1].score;
 		const gameData = State.get('gameData');
 		this.content.scoreCard.player1Name.innerHTML = gameData.constants.player1Username;
 		this.content.scoreCard.player2Name.innerHTML = gameData.constants.player2Username;
