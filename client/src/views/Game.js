@@ -87,15 +87,20 @@ export class GameView {
 		
 		const updatedPlayers = this.calculateUpdatedPlayerStats(tournament.players, currentMatch);
 
+		const wasLastMatch = matchIndex + 1 >= tournament.matches.length;
 		const updatedTournament = {
 			...tournament,
 			matches: updatedMatches,
 			players: updatedPlayers,
-			currentMatchIndex: matchIndex + 1,
-			completed: matchIndex + 1 >= tournament.matches.length
+			currentMatchIndex: wasLastMatch ? matchIndex : matchIndex + 1,
+			completed: wasLastMatch
 		};
 
-		State.data.tournament = updatedTournament;
+		console.log("index", updatedTournament.currentMatchIndex);
+
+		//State.data.tournament = updatedTournament;
+
+		State.set('tournament', updatedTournament);
 
 		if (State.get('gameSettings', 'mode') != "online") {
 			this.navigateToOverview();
@@ -110,13 +115,6 @@ export class GameView {
 	}
 
 	destroyCurrentGame() {
-		const tournament = State.get('tournament');
-		const matchIndex = tournament.currentMatchIndex;
-		const currentMatch = tournament.matches[matchIndex];
-
-		if (currentMatch.socket) {
-			currentMatch.socket.close();
-		}
 		if (this.game) {
 			this.game.destroy();
 			this.game = null;

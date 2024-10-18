@@ -8,7 +8,7 @@ export default class AIPlayer {
 		this.lastDecisionTime = 0;
 		this.targetY = 0;
 		this.paddleHeight = 50;
-        this.paddleWidth = 10;
+		this.paddleWidth = 10;
 		this.ballRadius = 5;
 
 		setInterval(() => this.calculateTargetY(), 1000);
@@ -52,6 +52,10 @@ export default class AIPlayer {
 	}
 
 	destroy() {
+		clearInterval(this.calculateInterval);
+		clearInterval(this.moveInterval);
+		this.calculateInterval = null;
+		this.moveInterval = null;
 		this.game = null;
 	}
 }

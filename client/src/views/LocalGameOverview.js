@@ -103,7 +103,7 @@ export class LocalGameOverview {
 	updateTournamentInfo() {
 		const tournament = State.get('tournament');
 
-		if (tournament.currentMatchIndex < tournament.matches.length) {
+		if (!State.get('tournament', 'completed')) {
 			const nextMatch = tournament.matches[tournament.currentMatchIndex];
 			this.content.tournamentInfoText.textContent = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
 		} else {

@@ -31,6 +31,9 @@ export default class Socket {
 				token: `${this.authToken}`
 			}));
 		});
+		this.socket.addEventListener('close', (event) => {
+			console.log('Matchmaking WebSocket Closed');
+		});
 	}
 
 	addEventListenersGame() {
@@ -52,6 +55,9 @@ export default class Socket {
 			if (data.game_state) {
 				State.updateState(data.game_state);
 			}
+		});
+		this.socket.addEventListener('close', (event) => {
+			console.log('Game WebSocket Closed');
 		});
 	}
 

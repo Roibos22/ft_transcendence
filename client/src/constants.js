@@ -70,6 +70,7 @@ export const initState = {
 		matches: null,
 		pointsToWin: 5,
 		numberOfGames: 1,
-		currentMatchIndex: 0
+		currentMatchIndex: 0,
+		completed: false
 	}
 };
