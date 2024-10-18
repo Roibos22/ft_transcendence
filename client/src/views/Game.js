@@ -4,96 +4,144 @@ import * as gameService from '../services/api/gameService.js';
 import Router from '../router.js';
 import State from '../State.js';
 import Socket from '../services/Socket.js';
+import { GameModes } from '../constants.js';
 
 export class GameView {
 	constructor() {
-		this.gameSocket = null;
 		this.game = null;
 		this.UIManager = null;
+		this.isHandlingGameFinish = false;
 	}
 
 	async init() {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
+		this.setupGame();
+	}
 
-		await this.getLocalGame();
+	setupGame() {
+		const tournament = State.get('tournament');
+		const currentMatchIndex = tournament.currentMatchIndex;
+		const matches = tournament.matches;
+		//const socket = this.game.gameMode == GameModes.ONLINE
 
-		this.game = new PongGame(this.gameSocket);
-		this.UIManager = new UIManager();
+		if (currentMatchIndex < matches.length) {
+			this.game = new PongGame(matches[currentMatchIndex].socket);
+			this.UIManager = new UIManager();
+		} else {
+			console.log("Tournament completed");
+			this.navigateToOverview();
+		}
 	}
 
 	update() {
-		this.game.update();
-		this.UIManager.update();
-	}
-
-	async getLocalGame() {
-		const response = await gameService.createLocalGame();
-		if (!response.success) {
-			throw new Error('Failed to create local game');
+		if (this.UIManager) {
+			this.UIManager.update();
 		}
-		const data = response.data;
-		this.initGameSocket(data.game_id);
+		if (!this.isHandlingGameFinish) {
+			this.updateTournamentData();
+			if (this.checkGameFinished()) {
+				this.handleGameFinished();
+			}
+		}
 	}
 
-	initGameSocket(gameId) {
-		this.gameSocket = new Socket('local_game', { gameId });
-		this.gameSocket.addEventListenersGame();
-		this.gameSocket.socket.addEventListener('message', (event) => {
-			const data = JSON.parse(event.data);
-			if (data.game_data) {
-				this.initialiseGameData(data.game_data);
-			}
-			if (data.game_state) {
-				this.updateState(data.game_state);
-			}
+	// end game
+
+	updateTournamentData() {
+		const gameData = State.get('gameData');
+		const tournament = State.get('tournament');
+		const index = tournament.currentMatchIndex;
+		
+		if (tournament.matches[index] && tournament.matches[index].players) {
+			const updatedMatches = [...tournament.matches];
+			updatedMatches[index] = {
+				...updatedMatches[index],
+				players: [
+					{ ...updatedMatches[index].players[0], score: gameData.player1Score },
+					{ ...updatedMatches[index].players[1], score: gameData.player2Score }
+				]
+			};
+			State.data.tournament.matches = updatedMatches;
+			//State.set('tournament', { ...tournament, matches: updatedMatches });
+		}
+	}
+
+	checkGameFinished() {
+		const gameData = State.get('gameData');
+		return gameData.phase === 'game_over';
+	}
+
+	handleGameFinished() {
+		if (this.isHandlingGameFinish) return;
+		this.isHandlingGameFinish = true;
+
+		console.log("Handling game finish");
+		this.UIManager.update();
+		const tournament = State.get('tournament');
+		const matchIndex = tournament.currentMatchIndex;
+		const currentMatch = tournament.matches[matchIndex];
+
+		const updatedMatches = [...tournament.matches];
+		updatedMatches[matchIndex] = { ...currentMatch, completed: true };
+		
+		const updatedPlayers = this.calculateUpdatedPlayerStats(tournament.players, currentMatch);
+
+		const wasLastMatch = matchIndex + 1 >= tournament.matches.length;
+		const updatedTournament = {
+			...tournament,
+			matches: updatedMatches,
+			players: updatedPlayers,
+			currentMatchIndex: wasLastMatch ? matchIndex : matchIndex + 1,
+			completed: wasLastMatch
+		};
+
+		console.log("index", updatedTournament.currentMatchIndex);
+
+		//State.data.tournament = updatedTournament;
+
+		State.set('tournament', updatedTournament);
+
+		if (State.get('gameSettings', 'mode') != "online") {
+			this.navigateToOverview();
+		}
+
+		this.isHandlingGameFinish = false;
+	}
+
+	navigateToOverview() {
+		window.history.pushState({}, '', '/local-game-overview');
+		Router.handleLocationChange();
+	}
+
+	destroyCurrentGame() {
+		if (this.game) {
+			this.game.destroy();
+			this.game = null;
+		}
+	}
+
+
+	calculateUpdatedPlayerStats(players, match) {
+		return players.map(player => {
+			const matchPlayer = match.players.find(p => p.name === player.name);
+			if (!matchPlayer) return player;
+
+			const opponentScore = match.players.find(p => p.name !== player.name).score;
+			const playerWon = matchPlayer.score > opponentScore;
+			const isDraw = matchPlayer.score === opponentScore;
+
+			return {
+				...player,
+				wins: player.wins + (playerWon ? 1 : 0),
+				losses: player.losses + (playerWon ? 0 : isDraw ? 0 : 1),
+				points: player.points + (playerWon ? 3 : isDraw ? 1 : 0)
+			};
 		});
 	}
 
-	initialiseGameData(gameData) {
-		const oldSettings = State.get('gameSettings');
-		const newSettings = {
-			...oldSettings,
-			ballRadius: gameData.ball_radius,
-			map: {
-				width: gameData.map_width,
-				height: gameData.map_height
-			},
-			paddle: {
-				width: gameData.paddle_width,
-				height: gameData.paddle_height
-			}
-		};
-
-		State.set('gameSettings', newSettings);
+	cleanup() {
+		console.log("Clean up GameView");
+		this.destroyCurrentGame();
 	}
-
-	updateState(newState) {
-		const oldData = State.get("gameData");
-
-		const newData = {
-			...oldData,
-			gameId: newState.game_id,
-			phase: newState.phase,
-			countdown: newState.countdown,
-			player1Pos: newState.player1_pos,
-			player2Pos: newState.player2_pos,
-			player1Dir: newState.player1_dir,
-			player2Dir: newState.player2_dir,
-			player1Ready: newState.player1_ready,
-			player2Ready: newState.player2_ready,
-			ball: {
-				x: newState.ball.x || 0,
-				y: newState.ball.y || 0,
-				velocity: {
-					x: newState.ball_velocity.x || 0,
-					y: newState.ball_velocity.y || 0,
-				}
-			}
-		}
-
-		//state.data.gameData = newData;
-		State.set('gameData', newData);
-	}
-
 }

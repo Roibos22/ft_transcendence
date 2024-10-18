@@ -3,14 +3,17 @@ import { GameModes } from "../constants.js";
 export default class InputHandler {
 	constructor(game) {
 		this.game = game;
-		this.init();
 		this.currentlyPressedKeys = {};
+		this.boundHandleKeyDown = this.handleKeyDown.bind(this);
+		this.boundHandleKeyUp = this.handleKeyUp.bind(this);
+		this.boundPreventDefaultScroll = this.preventDefaultScroll.bind(this);
+		this.init();
 	}
 
 	init() {
-		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
-		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
-		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
+		document.addEventListener('keydown', this.boundHandleKeyDown);
+		document.addEventListener('keyup', this.boundHandleKeyUp);
+		window.addEventListener('keydown', this.boundPreventDefaultScroll);
 	}
 
 	preventDefaultScroll(e) {
@@ -64,5 +67,18 @@ export default class InputHandler {
 	
 	sendSocketMessage(message) {
 		this.game.socket.send(JSON.stringify(message));
+	}
+
+	destroy() {
+		// Remove all event listeners
+		document.removeEventListener('keydown', this.boundHandleKeyDown);
+		document.removeEventListener('keyup', this.boundHandleKeyUp);
+		window.removeEventListener('keydown', this.boundPreventDefaultScroll);
+
+		// Clear any references
+		this.game = null;
+		this.currentlyPressedKeys = null;
+
+		console.log('InputHandler destroyed');
 	}
 }

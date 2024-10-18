@@ -2,6 +2,7 @@ import Router from '../router.js';
 import * as Cookies from '../services/cookies.js';
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';
+import State from '../State.js';
 
 export class LoginView {
 	constructor() {

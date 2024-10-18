@@ -41,14 +41,50 @@ export function buttonIdToGameMode(id) {
 	}
 }
 
-export function standingsTableRow(playerStats) {
+export function standingsTableRow(player) {
 	return `
 		<tr>
 			<td>${player.rank}</td>
 			<td>${player.name}</td>
 			<td>${player.wins}</td>
 			<td>${player.losses}</td>
-			<td>${player.draws}</td>
+			<td>${player.points}</td>
 		</tr>
 	`;
+}
+
+export function generateMatches() {
+	const matches = [];
+	const tournament = State.get('tournament');
+
+	for (let i = 0; i < tournament.numberOfGames; i++) {
+		for (let j = 0; j < tournament.players.length; j++) {
+			for (let k = j + 1; k < tournament.players.length; k++) {
+				matches.push({
+					players: [
+						{ name: tournament.players[j].name, score: 0 },
+						{ name: tournament.players[k].name, score: 0 }
+					],
+					completed: false,
+					socket: null,
+				});
+			}
+		}
+	}
+
+	State.set('tournament', 'matches', matches);
+}
+
+export function initPlayerStats() {
+	var players = State.get("tournament", "players");
+
+	players = players.map(player => ({
+		...player,
+		rank: 0,
+		wins: 0,
+		losses: 0,
+		points: 0
+	}));
+
+	State.set("tournament", "players", players);
 }

@@ -7,13 +7,15 @@ import { buttonIdToGameMode } from '../utils/utils.js';
 export class GameSetupView {
 	constructor() {
 		this.UIelements = null;
+		this.players = [];
 	}
 
 	async init() {
 		const content = await Router.loadTemplate('game-setup');
 		document.getElementById('app').innerHTML = content;
-
 		this.UIelements = this.getUIElements();
+		this.UIelements.player1Input.value = Cookies.getCookie("username");
+		State.reset();
 		this.addEventListeners();
 		this.update();
 	}
@@ -39,8 +41,10 @@ export class GameSetupView {
 				start: document.getElementById('startGameButton'),
 				oneVone: document.getElementById('online1v1Button'),
 				tournament: document.getElementById('joinTournamentButton')
-			}
-				
+			},
+			playerInputs: document.getElementById('playerInput'),
+			player1Input: document.getElementById('player1input'),
+			addPlayerButton: document.getElementById('addPlayerButton'),
 		};
 	}
 
@@ -50,7 +54,6 @@ export class GameSetupView {
 		const { pointsToWinButtons, numberOfGamesButtons } = this.UIelements.settingsButtons;
 
 		Cookies.setCookie("gameMode", GameModes.SINGLE, 24);
-		State.set('gameSettings', 'mode', GameModes.SINGLE);
 
 		Object.values(gameModeButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
@@ -58,44 +61,56 @@ export class GameSetupView {
 				const gameMode = buttonIdToGameMode(id);
 				Cookies.setCookie("gameMode", gameMode, 24);
 				State.set('gameSettings', 'mode', gameMode);
+				this.deleteAllPlayersButOne();
+				if (gameMode === GameModes.MULTI) {
+					this.addSecondPlayer();
+				}
 			});
 		});
 
 		Object.values(pointsToWinButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
 				const value = parseInt(e.target.dataset.value);
-				State.set('gameSettings', 'pointsToWin', value);
+				State.set('tournament', 'pointsToWin', value);
 			});
 		});
 
 		Object.values(numberOfGamesButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
 				const value = parseInt(e.target.dataset.value);
-				State.set('gameSettings', 'numberOfGames', value);
+				State.set('tournament', 'numberOfGames', value);
 			});
+		});
+
+		this.UIelements.addPlayerButton.addEventListener('click', () => {
+			this.addPlayerInput();
 		});
 
 		start.addEventListener('click', () => {
 			this.updatePlayers();
 		});
+
+		this.UIelements.playerInputs.addEventListener('click', (e) => {
+			if (e.target.classList.contains('delete-player-btn')) {
+				this.deletePlayer(e.target);
+			}
+		});
 	}
 
 	initSettingsUI() {
 		const username = Cookies.getCookie("username");
-		const player1Input = document.getElementById('player1');
-		if (player1Input && username) {
-			player1Input.value = username;
+		const playerInput = document.getElementById('player1');
+		if (playerInput && username) {
+			playerInput.value = username;
 		}
 	}
 
 	update() {
 		const gameMode = State.get('gameSettings', 'mode');
-		const pointsToWin = State.get('gameSettings', 'pointsToWin');
-		const numberOfGames = State.get('gameSettings', 'numberOfGames');
+		const pointsToWin = State.get('tournament', 'pointsToWin');
+		const numberOfGames = State.get('tournament', 'numberOfGames');
 
 		const gameModeButtons = this.UIelements.gameModeButtons;
-		const player1Input = this.UIelements.displayNameInputs.player1;
-		const player2container = this.UIelements.displayNameInputs.player2container;
 		const { start, oneVone, tournament } = this.UIelements.startGameButtons;
 		const { pointsToWinButtons, numberOfGamesButtons, settingsContainer } = this.UIelements.settingsButtons;
 
@@ -103,16 +118,12 @@ export class GameSetupView {
 		gameModeButtons.singlePlayer.classList.toggle('active', gameMode === GameModes.SINGLE);
 		gameModeButtons.online.classList.toggle('active', gameMode === GameModes.ONLINE);
 
-		//set player1 placeholder
-		//player1Input.placeholder = gameMode === GameModes.ONLINE ? State.get('user', 'username') : 'Player 1';
-		player1Input.placeholder = Cookies.getCookie('username');
-		player2container.classList.toggle('d-none', gameMode !== GameModes.MULTI);
+		this.UIelements.addPlayerButton.classList.toggle('d-none', gameMode !== GameModes.MULTI);
 
 		settingsContainer.style.display = gameMode === GameModes.ONLINE ? 'none' : 'inline';
 	
 		start.classList.toggle('d-none', gameMode === GameModes.ONLINE);
 		oneVone.classList.toggle('d-none', gameMode !== GameModes.ONLINE);
-		// tournament.classList.toggle('d-none', gameMode !== GameModes.ONLINE);
 	
 		Object.values(pointsToWinButtons).forEach(button => {
 			const value = parseInt(button.dataset.value);
@@ -125,15 +136,78 @@ export class GameSetupView {
 	}
 
 	updatePlayers() {
-		const { player1, player2 } = this.UIelements.displayNameInputs;
-
-		player1.value = player1.value || player1.placeholder;
-		player2.value = player2.value || player2.placeholder;
-
-		State.set('currentMatch', 'player1Name', player1.value);
-		if (State.get('gameSettings', 'mode') === GameModes.MULTI) {
-			State.set('currentMatch', 'player2Name', player2.value);
+		this.players = [];
+		const playerInputs = this.UIelements.playerInputs.querySelectorAll('input');
+		playerInputs.forEach((input, index) => {
+			const playerName = input.value.trim() || `Player ${index + 1}`;
+			this.players.push({
+				name: playerName
+			});
+		});
+		if (State.get('gameSettings', 'mode') === GameModes.SINGLE && this.players.length === 1) {
+			this.players.push({
+				name: "AI Player"
+			});
 		}
-		State.set('user', 'displayName', player1.value);
+		State.set('tournament', 'players', this.players);
 	}
+
+	addPlayerInput() {
+		const playerCount = this.UIelements.playerInputs.children.length + 1;
+		const newPlayerInput = document.createElement('div');
+		newPlayerInput.className = 'player-input-group mb-3';
+		newPlayerInput.innerHTML = `
+			<div class="input-group">
+				<input type="text" class="form-control player-name-input form-input" id="player${playerCount}" placeholder="Player ${playerCount}" autocomplete="off">
+				<button class="btn btn-outline-secondary delete-player-btn" type="button">X</button>
+			</div>
+		`;
+		this.UIelements.playerInputs.appendChild(newPlayerInput);
+		this.updatePlayers();
+	}
+
+	addSecondPlayer() {
+		const newPlayerInput = document.createElement('div');
+		newPlayerInput.className = 'player-input-group mb-3';
+		newPlayerInput.innerHTML = `
+			<div class="input-group">
+				<input type="text" class="form-control player-name-input form-input" id="player2" placeholder="Player 2" autocomplete="off">
+			</div>
+		`;
+		this.UIelements.playerInputs.appendChild(newPlayerInput);
+		this.updatePlayers();
+	}
+
+	deletePlayer(button) {
+		const playerInputGroup = button.closest('.player-input-group');
+		if (playerInputGroup) {
+			if (this.UIelements.playerInputs.children.length > 1) {
+				playerInputGroup.remove();
+				this.renumberPlayersInput();
+				this.updatePlayers();
+			}
+		} else {
+			console.error('Could not find parent .player-input-group');
+		}
+	}
+
+	deleteAllPlayersButOne() {
+		while (this.UIelements.playerInputs.children.length > 1) {
+			this.UIelements.playerInputs.removeChild(this.UIelements.playerInputs.lastChild);
+		}
+		this.updatePlayers();
+	}
+
+	renumberPlayersInput() {
+		const inputGroups = this.UIelements.playerInputs.querySelectorAll('.player-input-group');
+		console.log(inputGroups);
+		inputGroups.forEach((group, index) => {
+			const input = group.querySelector('input');
+			if (input) {
+				input.id = `player${index + 1}`;
+				input.placeholder = `Player ${index + 1}`;
+			}
+		});
+	}
+
 }
