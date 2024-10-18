@@ -24,7 +24,6 @@ class Paddle:
         else:
             self._y_position = new_y
 
-    # im not using the hit position yet
     def check_hit(self, ball_y_position):
         if ball_y_position > self._y_position and ball_y_position < self._y_position + self._paddle_height:
             return ball_y_position - (self._y_position + (self._paddle_height / 2))
@@ -48,10 +47,14 @@ class Ball:
     @property
     def direction(self):
         return {'x': self._direction_x, 'y': self._direction_y}
+    
+    @property
+    def velocity(self):
+        return {'x': self._velocity_x, 'y': self._velocity_y}
 
     def reset_ball(self):
         angle = random.uniform(-math.pi / 3, math.pi / 3)
-        self._direction_x = math.cos(angle)
+        self._direction_x = math.cos(angle) * random.choice([-1, 1])
         self._direction_y = math.sin(angle)
         self._speed = self._initial_speed
         self._position_x = int(self._map_width / 2)
@@ -214,8 +217,7 @@ class GameLogic:
             'player1_ready': self._player1_ready,
             'player2_ready': self._player2_ready,
             'ball': self._ball.position,
-            'ball_dir': self._ball.direction,
-            'ball_speed': self._ball._speed,
+            'ball_velocity': self._ball.velocity,
             'countdown': self._current_countdown,
             'player1_score': self._player1_score,
             'player2_score': self._player2_score,

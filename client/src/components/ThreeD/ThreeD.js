@@ -147,7 +147,7 @@ export default class ThreeD {
     }
 
     calculateElephantDirection(ball) {
-        const angle = Math.atan2(ball.dx, ball.dy);
+        const angle = Math.atan2(ball.velocity.x, ball.velocity.y);
         this.elephant.model.rotation.y = angle + Math.PI;
     }
 
