@@ -9,7 +9,6 @@ import * as Utils from '../utils/utils.js';
 
 export class LocalGameOverview {
 	constructor() {
-		//this.game = null
 		this.content = {
 			fixtures: null,
 			standings: null,
@@ -95,9 +94,15 @@ export class LocalGameOverview {
 	}
 
 	update() {
+		this.overwritePlayerNames();
 		this.updateTournamentInfo();
 		this.updateStandings();
 		this.updateMatchList();
+	}
+
+	overwritePlayerNames() {
+		const constants = State.get('gameData', 'constants');
+		State.data.gameData.constants.player2Username = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
 	}
 
 	updateTournamentInfo() {
