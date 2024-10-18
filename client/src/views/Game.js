@@ -77,21 +77,16 @@ export class GameView {
 		this.isHandlingGameFinish = true;
 
 		console.log("Handling game finish");
+		this.UIManager.update();
 		const tournament = State.get('tournament');
 		const matchIndex = tournament.currentMatchIndex;
 		const currentMatch = tournament.matches[matchIndex];
 
-		// Update match in tournament
 		const updatedMatches = [...tournament.matches];
 		updatedMatches[matchIndex] = { ...currentMatch, completed: true };
 		
-		// Update player stats
 		const updatedPlayers = this.calculateUpdatedPlayerStats(tournament.players, currentMatch);
 
-		// Clean up game resources
-		// this.destroyCurrentGame(currentMatch);
-
-		// Prepare updated tournament state
 		const updatedTournament = {
 			...tournament,
 			matches: updatedMatches,
@@ -100,11 +95,11 @@ export class GameView {
 			completed: matchIndex + 1 >= tournament.matches.length
 		};
 
-		// Update tournament state
 		State.data.tournament = updatedTournament;
 
-		// Always navigate back to overview after each game
-		this.navigateToOverview();
+		if (State.get('gameSettings', 'mode') != "online") {
+			this.navigateToOverview();
+		}
 
 		this.isHandlingGameFinish = false;
 	}

@@ -34,6 +34,7 @@ export class UIManager {
 		this.content.standings = document.getElementById('standings');
 		this.content.standingsTable = document.getElementById('standingsTable');
 		this.content.gameInformation = document.getElementById('gameInformation');
+		this.content.goBackButton = document.getElementById('goBackButton');
 		this.update();
 	}
 
@@ -44,6 +45,7 @@ export class UIManager {
 
 	updateGameInformation() {
 		const gamePhase = State.get('gameData', 'phase');
+		console.log("updateGameInformation");
 		switch (gamePhase) {
 			case GamePhases.WAITING_TO_START:
 				this.content.gameInformation.innerHTML = 'Press Enter to Start';
@@ -53,17 +55,17 @@ export class UIManager {
 				break;
 			case GamePhases.RUNNING:
 				this.content.gameInformation.innerHTML = '&nbsp;';
+				console.log("running");
 				break;
 			case GamePhases.MATCH_ENDED:
-				this.content.gameInformation.innerHTML = ' ';
-				//const winner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
-				//this.drawTopText(`${winner.name} wins the match!`);
+				this.content.gameInformation.innerHTML = 'Game Finished';
+				this.content.goBackButton.style.display = 'inline';
+				console.log("ended");
 				break;
 			case GamePhases.FINISHED:
-				this.content.gameInformation.innerHTML = 'Tournament Ended';
-				//this.drawTopText('Tournament Completed!');
-				//const tournamentWinner = currentMatch.players[0].score > currentMatch.players[1].score ? currentMatch.players[0] : currentMatch.players[1];
-				//this.drawBottomText(`${tournamentWinner.name} wins the tournament!`);
+				this.content.gameInformation.innerHTML = 'Tournament Finished';
+				this.content.goBackButton.style.display = 'inline';
+				console.log("finished");
 				break;
 		}
 	}

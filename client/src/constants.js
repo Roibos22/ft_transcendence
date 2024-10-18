@@ -18,8 +18,8 @@ export const GamePhases = {
 	WAITING_TO_START: 'waitingToStart',
 	COUNTDOWN: 'countdown',
 	RUNNING: 'running',
-	FINISHED: 'finished',
-	MATCH_ENDED: 'matchEnded'
+	FINISHED: 'finished', // I think this is redundant
+	MATCH_ENDED: 'game_over'
 };
 
 export const initState = {
