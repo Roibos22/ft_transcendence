@@ -72,19 +72,21 @@ export class OnlineGameLoadingView {
 	}
 	
 	initGameSocket(gameId) {
-		console.log("Init Game Socket Started");
 		const currentMatch = State.get('tournament', 'matches')[0];
-		console.log("current Match", currentMatch);
-		currentMatch.socket = new Socket('live_game', { gameId });
-		console.log("current Match Socket", currentMatch.socket);
 
-		//this.gameSocket = new Socket('live_game', { gameId });
-		//this.gameSocket.addEventListenersGame();
-		// this.gameSocket.socket.addEventListener('message', (event) => {
-		// 	const data = JSON.parse(event.data);
-		// 	console.log(data);
-		// });
-		console.log("Init Game Socket Finished");
+		currentMatch.socket = new Socket('online_game', { gameId });
+		currentMatch.socket.addEventListenersGame();
+
+		// TODO refactor below into function above (also for local game)
+		currentMatch.socket.socket.addEventListener('message', (event) => {
+			const data = JSON.parse(event.data);
+			if (data.game_data) {
+				State.initialiseGameData(data.game_data);
+			}
+			if (data.game_state) {
+				State.updateState(data.game_state);
+			}
+		});
 	}
 
 	update() {

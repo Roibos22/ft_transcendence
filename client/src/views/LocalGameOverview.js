@@ -20,8 +20,6 @@ export class LocalGameOverview {
 	async init() {
 
 		console.log("init local view");
-		//console.log("tournament", State.get('tournament'));
-		//this.handleTournamentSessionStorage();
 		
 		const content = await Router.loadTemplate('local-game-overview');
 		document.getElementById('app').innerHTML = content;
