@@ -16,6 +16,8 @@ export default class AIPlayer {
 	}
 
 	calculateTargetY() {
+		if (!this.game) return;
+
 		const currentTime = performance.now();
 		const ball = deepCopy(State.get('gameData', 'ball'));
 		if (ball.velocity.x < 0) return;
@@ -37,7 +39,7 @@ export default class AIPlayer {
 	}
 
 	movePaddle() {
-		if (State.get('gameData', 'phase') !== GamePhases.RUNNING) {
+		if (State.get('gameData', 'phase') !== GamePhases.RUNNING || (!this.game)) {
 			return;
 		}
 	
