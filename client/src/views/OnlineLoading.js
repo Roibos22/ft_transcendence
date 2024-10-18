@@ -77,16 +77,6 @@ export class OnlineGameLoadingView {
 		matches[0].socket = new Socket('online_game', { gameId });
 		matches[0].socket.addEventListenersGame();
 
-		// TODO refactor below into function above (also for local game)
-		matches[0].socket.socket.addEventListener('message', (event) => {
-			const data = JSON.parse(event.data);
-			if (data.game_data) {
-				State.initialiseGameData(data.game_data);
-			}
-			if (data.game_state) {
-				State.updateState(data.game_state);
-			}
-		});
 		matches[0].players[0].name = "Updated Name";
 		State.set('tournament', 'mathches', matches);
 	}

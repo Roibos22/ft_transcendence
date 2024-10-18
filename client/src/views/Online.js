@@ -20,20 +20,6 @@ export class OnlineGameView {
 		this.game = new PongGame(this.gameSocket);
 		this.UIManager = new UIManager();
 	}
-	
-	// initGameSocket(gameId) {
-	// 	this.gameSocket = new Socket('online_game', { gameId });
-	// 	this.gameSocket.addEventListenersGame();
-	// 	this.gameSocket.socket.addEventListener('message', (event) => {
-	// 		const data = JSON.parse(event.data);
-	// 		if (data.game_state) {
-	// 			this.updateState(data.game_state);
-	// 		}
-	// 		if (data.game_data) {
-	// 			this.initGameData(data.game_data);
-	// 		}
-	// 	});
-	// }
 
 	initGameData(data) {
 		const oldData = state.get("gameDataConstants");

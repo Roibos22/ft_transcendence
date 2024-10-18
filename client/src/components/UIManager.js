@@ -45,7 +45,6 @@ export class UIManager {
 
 	updateGameInformation() {
 		const gamePhase = State.get('gameData', 'phase');
-		console.log("updateGameInformation");
 		switch (gamePhase) {
 			case GamePhases.WAITING_TO_START:
 				this.content.gameInformation.innerHTML = 'Press Enter to Start';
@@ -55,17 +54,14 @@ export class UIManager {
 				break;
 			case GamePhases.RUNNING:
 				this.content.gameInformation.innerHTML = '&nbsp;';
-				console.log("running");
 				break;
 			case GamePhases.MATCH_ENDED:
 				this.content.gameInformation.innerHTML = 'Game Finished';
 				this.content.goBackButton.style.display = 'inline';
-				console.log("ended");
 				break;
 			case GamePhases.FINISHED:
 				this.content.gameInformation.innerHTML = 'Tournament Finished';
 				this.content.goBackButton.style.display = 'inline';
-				console.log("finished");
 				break;
 		}
 	}

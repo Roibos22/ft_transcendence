@@ -92,15 +92,6 @@ export class LocalGameOverview {
 	initGameSocket(currentMatch, gameId) {
 		currentMatch.socket = new Socket('local_game', { gameId });
 		currentMatch.socket.addEventListenersGame();
-		currentMatch.socket.socket.addEventListener('message', (event) => {
-			const data = JSON.parse(event.data);
-			if (data.game_data) {
-				State.initialiseGameData(data.game_data);
-			}
-			if (data.game_state) {
-				State.updateState(data.game_state);
-			}
-		});
 	}
 
 	update() {

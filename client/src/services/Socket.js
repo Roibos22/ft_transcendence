@@ -40,11 +40,18 @@ export default class Socket {
 				action: 'authenticate',
 				token: `${this.authToken}`
 			}));
-			console.log('Game Socket authenticate');
 			this.socket.send(JSON.stringify({
 				action: 'get_init_data'
 			}));
-			console.log('Game Socket init');
+		});
+		this.socket.addEventListener('message', (event) => {
+			const data = JSON.parse(event.data);
+			if (data.game_data) {
+				State.initialiseGameData(data.game_data);
+			}
+			if (data.game_state) {
+				State.updateState(data.game_state);
+			}
 		});
 	}
 
