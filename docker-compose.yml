@@ -4,10 +4,8 @@ services:
     container_name: postgres
     image: postgres
     hostname: localhost
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: trans_db
+    env_file:
+      - .env
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -25,6 +23,8 @@ services:
       - content:/app/avatars
     networks:
       - backend
+    env_file:
+      - .env
 
   nginx:
     container_name: nginx
