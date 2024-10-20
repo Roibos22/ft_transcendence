@@ -15,20 +15,26 @@ export class OnlineGameView {
 	async init() {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
-		this.initGameSocket(Cookies.getCookie("gameId"));
+
+		//this.initGameSocket(Cookies.getCookie("gameId"));
 		this.game = new PongGame(this.gameSocket);
 		this.UIManager = new UIManager();
 	}
-	
-	initGameSocket(gameId) {
-		this.gameSocket = new Socket('online_game', { gameId });
-		this.gameSocket.addEventListenersGame();
-		this.gameSocket.socket.addEventListener('message', (event) => {
-			const data = JSON.parse(event.data);
-			if (data.game_state) {
-				this.updateState(data.game_state);
-			}
-		});
+
+	initGameData(data) {
+		const oldData = state.get("gameDataConstants");
+		var newData = {
+			...oldData,
+			mapHeight: data.map_height,
+			mapWidth: data.map_width,
+			player1Username: data.player1_username,
+			player2Username: data.player2_username,
+			paddleHeight: data.paddle_height,
+			paddleWidth: data.paddle_width,
+			ballRadius: data.ball_radius,
+		}
+
+		state.set('gameDataConstants', newData);
 	}
 
 	updateState(newState) {
@@ -53,7 +59,6 @@ export class OnlineGameView {
 			}
 		}
 
-		//state.data.gameData = newData;
 		state.set('gameData', newData);
 	}
 

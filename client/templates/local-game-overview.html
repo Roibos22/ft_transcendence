@@ -1,0 +1,55 @@
+<div class="container"></div>
+	<h2 class="text-center mb-4 fs-1 fw-bold">Your Tournament</h2>
+	<!-- TOURNAMENT INFO -->
+	<div class="container-fluid px-0" style="max-width: 1000px;">
+		<div class="row g-3">
+			
+			<!-- NEXT MATCH -->
+			<div class="col-12">
+				<div id="tournamentInfo" class="rounded">
+					<div class="d-flex flex-column align-items-center p-3">
+						<h5 class="mb-3 text-center" id="tournamentInfoText"></h5>
+						<div class="mb-3 text-center" id="goToNextMatch">
+							<a href="/game" class="btn btn-primary fw-bold">Start Next Match</a>
+						</div>
+						<div class="mb-3 text-center" style="display: none;" id="finishTournament">
+							<a href="/game-setup" class="btn btn-primary fw-bold">Finish</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- FIXTURES -->
+			<div class="col-md-6">
+				<div id="fixtures">
+				</div>
+			</div>
+
+			<!-- STANDINGS -->
+			<div class="col-md-6">
+				<div id="standings" class="card rounded">
+					<div class="card-header text-center rounded-top" style="background-color: #4CAF50;">
+						<h5 class="mb-0 fw-bold">Table</h5>
+					</div>
+					<div class="card-body p-0 rounded-bottom">
+						<div class="table-responsive">
+							<table class="table table-striped mb-0 text-center">
+								<thead>
+									<tr>
+										<th>Rank</th>
+										<th>Name</th>
+										<th>Wins</th>
+										<th>Losses</th>
+										<th>Points</th>
+									</tr>
+								</thead>
+								<tbody id="standingsTable"></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
