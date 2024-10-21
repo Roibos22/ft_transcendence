@@ -1,6 +1,7 @@
 import { initState } from "./constants.js";
 import { deepCopy } from "./utils/utils.js";
 import { currentView } from "./constants.js";
+import Socket from './services/Socket.js';
 
 class State {
 	constructor() {
@@ -13,8 +14,27 @@ class State {
 		if (savedState) {
 			this.data = JSON.parse(savedState);
 			console.log("State loaded from Session Storage", this);
+			this.reconnect();
 		} else {
 			this.data = deepCopy(initState);
+		}
+	}
+
+	reconnect() {
+		if (this.data.gameData.gameId)
+		{
+			const index = this.get('tournament', 'currentMatchIndex');
+			const currentMatch = this.get('tournament', 'matches')[index];
+			const gameId = currentMatch.socket.data.gameId;
+			const oldUrl = currentMatch.socket.url;
+
+			this.data.tournament.matches[index].socket = new Socket(oldUrl, { gameId });
+			this.data.tournament.matches[index].socket.addEventListenersGame();
+
+			// const matches = this.get('tournament', 'matches');
+			// matches[index].socket = new Socket(oldUrl, { gameId });
+			// matches[index].socket.addEventListenersGame();
+			// this.set('tournament', 'matches', matches);
 		}
 	}
 
@@ -47,7 +67,7 @@ class State {
 	}
 
 	reset() {
-		this.init();
+		this.data = deepCopy(initState);
 		this.saveToSessionStorage();
 		console.log("State reset", this);
 	}
@@ -99,7 +119,7 @@ class State {
 
 	saveToSessionStorage() {
 		sessionStorage.setItem('appState', JSON.stringify(this.data));
-		console.log("State saved to Session Storage", this);
+		//console.log("State saved to Session Storage", this);
 	}
 }
 

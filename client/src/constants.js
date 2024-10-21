@@ -56,6 +56,7 @@ export const initState = {
 		player1Ready: false,
 		player2Ready: false,
 		countdown: -1,
+		gameId: null,
 		ball: {
 			x: 0,
 			y: 0,

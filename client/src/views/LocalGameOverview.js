@@ -89,8 +89,11 @@ export class LocalGameOverview {
 	}
 
 	initGameSocket(currentMatch, gameId) {
-		currentMatch.socket = new Socket('local_game', { gameId });
-		currentMatch.socket.addEventListenersGame();
+		//currentMatch.socket = new Socket('local_game', { gameId });
+		//currentMatch.socket.addEventListenersGame();
+		const socket = new Socket('local_game', { gameId });
+		socket.addEventListenersGame();
+		State.set('socket', socket);
 	}
 
 	update() {
@@ -100,8 +103,8 @@ export class LocalGameOverview {
 		this.updateMatchList();
 	}
 
+	// TODO PROTECT
 	overwritePlayerNames() {
-		const constants = State.get('gameData', 'constants');
 		State.data.gameData.constants.player2Username = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
 	}
 
