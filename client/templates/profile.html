@@ -13,7 +13,6 @@
 			<div class="row">
 				<!-- Profile Picture and Account Status -->
 				<div class="col-md-3 text-center">
-					<img id="avatarImg" src="https://via.placeholder.com/100" alt="Profile Picture" class="rounded-circle mb-3">
 					<h4 id="displayName" class="mb-0"></h4>
 					<p class="text-muted mb-0" id="username"></p>
 					<span class="badge bg-success mt-2" id="onlineStatus"></span>
@@ -42,8 +41,12 @@
 							<div>
 								<button id="editBtn" class="btn btn-primary me-2" style="width: 75px;">Edit</button>
 								<button id="saveBtn" class="btn btn-success me-2" style="width: 75px; display: none;">Save</button>
-								<button id="deleteUserBtn" class="btn btn-danger" title="Delete Account">
+								<button id="deleteUserBtn" class="btn btn-danger me-2" title="Delete Account">
 									<i class="bi-trash-fill"></i>
+								</button>
+								<!-- enable 2fa button -->
+								<button id="enable2faBtn" class="btn btn-primary" title="Enable Two-Factor Authentication">
+									<i class="bi-shield-lock-fill"></i>
 								</button>
 							</div>
 						</div>
@@ -84,26 +87,6 @@
 						</div>
 					</div>
 				</div>
-			
-			<!-- Games and Friends Placeholders -->
-			<div class="row mt-4">
-				<div class="col-md-6">
-					<h3>Games</h3>
-					<div class="placeholder-glow">
-						<p class="placeholder col-12"></p>
-						<p class="placeholder col-12"></p>
-						<p class="placeholder col-12"></p>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<h3>Friends</h3>
-					<div class="placeholder-glow">
-						<p class="placeholder col-12"></p>
-						<p class="placeholder col-12"></p>
-						<p class="placeholder col-12"></p>
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 </div>

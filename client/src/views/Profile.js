@@ -29,7 +29,6 @@ export class ProfileView {
 	getUIElements() {
 		return {
 			card: {
-				avatar: document.getElementById('avatarImg'),
 				displayName: document.getElementById('displayName'),
 				username: document.getElementById('username'),
 				onlineStatus: document.getElementById('onlineStatus'),
@@ -72,7 +71,6 @@ export class ProfileView {
 		this.userData = State.get('userData');
 		this.populateProfile();
 		this.updateOnlineStatus();
-		this.updateAvatar();
 	}
 
 	populateProfile() {
@@ -92,17 +90,6 @@ export class ProfileView {
 		personalInfo.email.display.textContent = data.email;
 		personalInfo.phoneNumber.display.textContent = data.phone_number || 'Not provided';
 
-	}
-
-	updateAvatar() {
-		const avatarImg = this.UIelements.card.avatar;
-
-		if (this.userData.avatar) {
-			avatarImg.src = userData.avatar;
-		} 
-		// else {
-		//     avatarImg.src = './default_avatar.png'; // Make sure to have a default avatar image
-		// }
 	}
 
 	updateOnlineStatus() {
