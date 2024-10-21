@@ -23,10 +23,11 @@ export const GamePhases = {
 };
 
 export const initState = {
+	userData: null,
 	user: {
 		username: "",
 		displayName: "",
-		onlineStatus: false
+		onlineStatus: false,
 	},
 	ThreeD: {
 		spritesLoaded: false,

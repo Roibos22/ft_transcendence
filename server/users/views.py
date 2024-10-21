@@ -120,6 +120,7 @@ def verify_email(request, user_id):
 # @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def verify_2fa(request, user_id):
+    print("VERIFYING 2FA")
     try:
         user: User = User.objects.get(id=user_id)
     except User.DoesNotExist:
@@ -144,6 +145,7 @@ def verify_2fa(request, user_id):
             }, status=status.HTTP_200_OK)
 
     sys_otp_codes.delete()
+    print(user)
     return Response({'detail': '2FA wrong OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
 # @debug_request

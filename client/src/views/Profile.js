@@ -16,6 +16,7 @@ export class ProfileView {
 
 		this.UIelements = this.getUIElements();
 		this.setupEditSave();
+		this.setup2FA();
 
 		try {
 			const userData = await UserService.fetchUserData();
@@ -62,15 +63,21 @@ export class ProfileView {
 				edit: document.getElementById('editBtn'),
 				save: document.getElementById('saveBtn'),
 				delete: document.getElementById('deleteUserBtn'),
-				confirmDelete: document.getElementById('confirmDeleteBtn')
+				confirmDelete: document.getElementById('confirmDeleteBtn'),
+				twoFactor: document.getElementById('enable2faBtn'),
 			}
 		};
+	}
+
+	update2FAStatus() {
+		this.UIelements.buttons.twoFactor.disabled = State.get("userData", "twoFA_active");
 	}
 
 	update() {
 		this.userData = State.get('userData');
 		this.populateProfile();
 		this.updateOnlineStatus();
+		this.update2FAStatus();
 	}
 
 	populateProfile() {
@@ -142,6 +149,23 @@ export class ProfileView {
 				console.error('Failed to update profile:', error);
 				// Error notification is handled in UserService.updateUserData
 			}
+		});
+	}
+
+	async send2faRequest() {
+		try {
+			await UserService.enableTwoFactorAuth()
+			State.set('userData', 'twoFA_active', true);
+		} catch (error) {
+			console.error('Failed to toggle 2FA:', error);
+			// Error notification is handled in UserService.toggle2fa
+		}
+	}
+
+	setup2FA() {
+		const twoFactorBtn = this.UIelements.buttons.twoFactor;
+		twoFactorBtn.addEventListener('click', async () => {
+			this.send2faRequest();
 		});
 	}
 }
