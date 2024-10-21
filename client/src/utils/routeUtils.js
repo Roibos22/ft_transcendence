@@ -1,11 +1,11 @@
 import { GameView } from "../views/Game.js";
 import { GameSetupView } from "../views/GameSetup.js";
 import { LoginView } from "../views/Login.js";
-// import { OnlineGameView } from "../views/Online.js";
 import { OnlineGameLoadingView } from "../views/OnlineLoading.js";
 import { ProfileView } from "../views/Profile.js";
 import { RegisterView } from "../views/Register.js";
 import { LocalGameOverview } from "../views/LocalGameOverview.js";
+import { NotFoundView } from "../views/NotFoundView.js";
 
 export const urlRoutes = {
 	"/": {
@@ -47,5 +47,10 @@ export const urlRoutes = {
 		template: "../templates/local-game-overview.html",
 		title: "Overview",
 		view: LocalGameOverview,
+	},
+	"404": {
+		template: "../templates/404.html",
+		title: "Page Not Found",
+		view: NotFoundView,
 	}
 };
