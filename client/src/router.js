@@ -37,12 +37,13 @@ class Router {
 	}
 
 	async initCurrentView(location) {
-		const ViewClass = this.routes[location].view;
-	
-		if (!ViewClass) {
-			window.history.pushState({}, "", "/404");
-			return;
-		}
+		const route = this.routes[location] || this.routes["404"];
+        const ViewClass = route.view;
+
+		// if (!ViewClass) {
+		// 	window.history.pushState({}, "", "/404");
+		// 	return;
+		// }
 
 		if (currentView.view && typeof currentView.view.cleanup === 'function') {
 			currentView.view.cleanup();
