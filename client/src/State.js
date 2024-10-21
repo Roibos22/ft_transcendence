@@ -9,7 +9,13 @@ class State {
 	}
 
 	async init() {
-		this.data = deepCopy(initState);
+		const savedState = sessionStorage.getItem('appState');
+		if (savedState) {
+			this.data = JSON.parse(savedState);
+			console.log("State loaded from Session Storage", this);
+		} else {
+			this.data = deepCopy(initState);
+		}
 	}
 
 	get(...args) {
@@ -36,12 +42,14 @@ class State {
 		});
 
 		path[lastKey] = value;
+		this.saveToSessionStorage();
 		currentView.view.update();
 	}
 
 	reset() {
 		this.init();
-		console.log("State reseted", this.data);
+		this.saveToSessionStorage();
+		console.log("State reset", this);
 	}
 
 	updateState(newState) {
@@ -87,6 +95,11 @@ class State {
 		};
 
 		this.set('gameData', 'constants', newData);
+	}
+
+	saveToSessionStorage() {
+		sessionStorage.setItem('appState', JSON.stringify(this.data));
+		console.log("State saved to Session Storage", this);
 	}
 }
 
