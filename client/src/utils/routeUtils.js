@@ -1,10 +1,10 @@
-import { GameView } from "../views/Game.js";
-import { GameSetupView } from "../views/GameSetup.js";
-import { LoginView } from "../views/Login.js";
-import { OnlineGameLoadingView } from "../views/OnlineLoading.js";
-import { ProfileView } from "../views/Profile.js";
-import { RegisterView } from "../views/Register.js";
-import { LocalGameOverview } from "../views/LocalGameOverview.js";
+import { GameView } from "../views/GameView.js";
+import { GameSetupView } from "../views/GameSetupView.js";
+import { LoginView } from "../views/LoginView.js";
+import { OnlineGameLoadingView } from "../views/OnlineLoadingView.js";
+import { ProfileView } from "../views/ProfileView.js";
+import { RegisterView } from "../views/RegisterView.js";
+import { LocalGameOverviewView } from "../views/LocalGameOverviewView.js";
 import { NotFoundView } from "../views/NotFoundView.js";
 
 export const urlRoutes = {
@@ -53,7 +53,7 @@ export const urlRoutes = {
 	"/local-game-overview": {
 		template: "../templates/local-game-overview.html",
 		title: "Overview",
-		view: LocalGameOverview,
+		view: LocalGameOverviewView,
 		public: false
 	},
 	"404": {

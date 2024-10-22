@@ -1,6 +1,5 @@
-import Router from '../router.js';
+import Router from '../Router.js';
 import Socket from '../services/Socket.js';
-import { PongGame } from '../components/PongGame.js';
 import State from '../State.js';
 import * as Cookies from '../services/cookies.js';
 

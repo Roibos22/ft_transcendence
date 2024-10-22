@@ -1,13 +1,12 @@
-import Router from '../router.js';
+import Router from '../Router.js';
 import { standingsTableRow } from '../utils/utils.js';
 import Socket from '../services/Socket.js';
-import * as Cookies from '../services/cookies.js';
 import State from '../State.js';
 import * as gameService from '../services/api/gameService.js';
 import * as Utils from '../utils/utils.js';
 
 
-export class LocalGameOverview {
+export class LocalGameOverviewView {
 	constructor() {
 		this.content = {
 			fixtures: null,

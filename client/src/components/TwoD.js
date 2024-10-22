@@ -1,5 +1,4 @@
 import State from '../State.js';
-import * as Cookies from '../services/cookies.js';
 
 export default class TwoD {
 	constructor(game) {

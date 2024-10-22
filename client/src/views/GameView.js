@@ -1,10 +1,7 @@
 import { PongGame } from '../components/PongGame.js';
 import { UIManager } from '../components/UIManager.js';
-import * as gameService from '../services/api/gameService.js';
-import Router from '../router.js';
+import Router from '../Router.js';
 import State from '../State.js';
-import Socket from '../services/Socket.js';
-import { GameModes } from '../constants.js';
 
 export class GameView {
 	constructor() {

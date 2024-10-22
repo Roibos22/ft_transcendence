@@ -1,4 +1,4 @@
-import Router from '../router.js';
+import Router from '../Router.js';
 
 export class NotFoundView {
 	constructor() {}

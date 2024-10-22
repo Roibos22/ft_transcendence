@@ -1,5 +1,5 @@
 import { GameModes } from '../constants.js';
-import Router from '../router.js';
+import Router from '../Router.js';
 import State from '../State.js';
 import * as Cookies from '../services/cookies.js';
 import { buttonIdToGameMode } from '../utils/utils.js';
