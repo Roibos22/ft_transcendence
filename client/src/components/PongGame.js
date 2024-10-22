@@ -15,6 +15,8 @@ export class PongGame {
 			height: State.get('gameData', 'constants', 'mapHeight'),
 		};
 
+		console.log(this.map.width);
+
 		this.twoD = null;
 		this.threeD = null;
 		this.inputHandler = null;

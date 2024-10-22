@@ -8,7 +8,6 @@ export class OnlineGameLoadingView {
 	constructor() {
 		this.matchMakingSocket = null;
 		this.gameSocket = null;
-		//this.game = null
 	}
 
 	async init() {
@@ -22,12 +21,12 @@ export class OnlineGameLoadingView {
 			const data = JSON.parse(event.data);
 			console.log("Matchmaking Socket Message received", data);
 			if (data.type === 'game_joined') {
-				//this.matchMakingSocket.close();
+				this.matchMakingSocket.close();
 				Cookies.setCookie("gameId", data.game_id, 24);
 				console.log("Matchmaking Done");
+				this.initGameSocket(Cookies.getCookie("gameId"));
 				window.history.pushState({}, "", "/online-game");
 				Router.handleLocationChange();
-				this.initGameSocket(Cookies.getCookie("gameId"));
 			}
 		});
 	}
@@ -35,7 +34,6 @@ export class OnlineGameLoadingView {
 	createTournament() {
 		const tournament = State.get('tournament');
 
-		// create players
 		const players = [];
 		players.push({
 			name: "Player 1",
@@ -57,6 +55,7 @@ export class OnlineGameLoadingView {
 		const matches = [];
 		matches.push({
 			players: [
+				// TODO
 				// { name: tournament.players[j].name, score: 0 },
 				// { name: tournament.players[k].name, score: 0 }
 				{ name: "Player 1", score: 0 },
