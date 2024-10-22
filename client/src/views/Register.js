@@ -61,16 +61,16 @@ export class RegisterView {
 				window.history.pushState({}, "", "/");
 				Router.handleLocationChange();
 			} else {
-				displayRegistrationError(response.error);
+				this.displayRegistrationError(response.error);
 			}
 		} catch (error) {
 			console.error('Failed to login', error);
-			displayRegistrationError(error);
+			this.displayRegistrationError(error);
 		}
 	}
 
-	displayRegistrationError() {
-		loginError = this.UIelements.registrationError;
+	displayRegistrationError(error) {
+		const loginError = this.UIelements.registrationError;
 		loginError.style.display = 'block';
 		let errorMessages = [];
 

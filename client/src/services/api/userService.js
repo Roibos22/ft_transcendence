@@ -49,7 +49,7 @@ export async function submitTwoFactorCode(code) {
 		}
 		return await API.fetchWithAuth(`${API.API_BASE_URL}/users/2fa/confirm/`, {
 			method: 'POST',
-			body: JSON.stringify({ 'otp': code })
+			body: JSON.stringify({ 'otp': code }),
 		});
 	} catch (error) {
 		Notification.showErrorNotification(["Wrong Code", "Please try again later"]);
