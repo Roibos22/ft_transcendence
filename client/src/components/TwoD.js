@@ -1,4 +1,5 @@
 import State from '../State.js';
+import * as Cookies from '../services/cookies.js';
 
 export default class TwoD {
 	constructor(game) {
@@ -22,6 +23,7 @@ export default class TwoD {
 	printGameStatus() {
 		setInterval(() => {
 			console.log(State);
+			console.log(Cookies.getCookie("accessToken"));
 		}, 2000);
 	}
 

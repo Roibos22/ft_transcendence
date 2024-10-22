@@ -1,5 +1,6 @@
 import { currentView } from './constants.js';
 import { urlRoutes } from './utils/routeUtils.js';
+import * as Cookies from './services/cookies.js';
 
 class Router {
 	constructor() {
@@ -18,6 +19,12 @@ class Router {
 		if (location.length === 0) {
 			location = "/";
 		}
+
+		if (!this.validateToken()) {
+			location = "/";
+			console.log("No Access Token Found");
+		}
+
 		const route = this.routes[location] || this.routes["404"];
 		
 		const html = await fetch(route.template).then(response => response.text());
@@ -25,6 +32,10 @@ class Router {
 		document.title = route.title;
 
 		this.initCurrentView(location);
+	}
+
+	validateToken() {
+		return Cookies.getCookie("accessToken");
 	}
 
 	handleLinkClick(event) {
