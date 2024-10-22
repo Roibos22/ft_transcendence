@@ -17,14 +17,14 @@ export class OnlineGameLoadingView {
 		this.createTournament();
 		this.matchMakingSocket = new Socket('matchmaking', {});
 		this.matchMakingSocket.addEventListenersMatchmaking();
-		this.matchMakingSocket.socket.addEventListener('message', (event) => {
+		this.matchMakingSocket.socket.addEventListener('message', async (event) => {
 			const data = JSON.parse(event.data);
 			console.log("Matchmaking Socket Message received", data);
 			if (data.type === 'game_joined') {
 				this.matchMakingSocket.close();
 				Cookies.setCookie("gameId", data.game_id, 24);
 				console.log("Matchmaking Done");
-				this.initGameSocket(Cookies.getCookie("gameId"));
+				await this.initGameSocket(Cookies.getCookie("gameId"));
 				window.history.pushState({}, "", "/online-game");
 				Router.handleLocationChange();
 			}
@@ -70,7 +70,7 @@ export class OnlineGameLoadingView {
 		console.log("State", State);
 	}
 	
-	initGameSocket(gameId) {
+	async initGameSocket(gameId) {
 		const matches = State.get('tournament', 'matches');
 
 		matches[0].socket = new Socket('online_game', { gameId });
@@ -78,6 +78,7 @@ export class OnlineGameLoadingView {
 
 		matches[0].players[0].name = "Updated Name";
 		State.set('tournament', 'mathches', matches);
+		await new Promise(resolve => setTimeout(resolve, 200));
 	}
 
 	update() {
