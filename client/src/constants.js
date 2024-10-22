@@ -23,11 +23,11 @@ export const GamePhases = {
 };
 
 export const initState = {
-	user: {
-		username: "",
-		displayName: "",
-		onlineStatus: false
-	},
+	// user: {
+	// 	username: "",
+	// 	displayName: "",
+	// 	onlineStatus: false
+	// },
 	ThreeD: {
 		spritesLoaded: false,
 	},
