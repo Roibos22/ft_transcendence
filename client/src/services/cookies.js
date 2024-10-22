@@ -15,7 +15,7 @@ export function getCookie(name){
 	let result = null;
 	
 	cArray.forEach(element => {
-		if(element.indexOf(name) == 0){
+		if(element.indexOf(name) == 0) {
 			result = element.substring(name.length + 1)
 		}
 	})

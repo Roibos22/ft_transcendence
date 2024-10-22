@@ -54,6 +54,7 @@ export class PongGame {
 			this.AIplayer = null;
 		}
 		this.tournament = null;
+		this.socket.close();
 		this.socket = null;
 	}
 }

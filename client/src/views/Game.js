@@ -113,14 +113,6 @@ export class GameView {
 		Router.handleLocationChange();
 	}
 
-	destroyCurrentGame() {
-		if (this.game) {
-			this.game.destroy();
-			this.game = null;
-		}
-	}
-
-
 	calculateUpdatedPlayerStats(players, match) {
 		return players.map(player => {
 			const matchPlayer = match.players.find(p => p.name === player.name);
@@ -142,5 +134,12 @@ export class GameView {
 	cleanup() {
 		console.log("Clean up GameView");
 		this.destroyCurrentGame();
+	}
+
+	destroyCurrentGame() {
+		if (this.game) {
+			this.game.destroy();
+			this.game = null;
+		}
 	}
 }

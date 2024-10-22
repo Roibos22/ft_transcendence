@@ -23,7 +23,6 @@ export default class TwoD {
 	printGameStatus() {
 		setInterval(() => {
 			console.log(State);
-			console.log(Cookies.getCookie("accessToken"));
 		}, 2000);
 	}
 
