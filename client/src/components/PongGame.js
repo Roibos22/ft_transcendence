@@ -9,6 +9,7 @@ import { GameModes, GameTypes } from "../constants.js";
 export class PongGame {
 	constructor(socket) {
 
+		// TODO
 		this.map = {
 			width: 1000,
 			height: 500,

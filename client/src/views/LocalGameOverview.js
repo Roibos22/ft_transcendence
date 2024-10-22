@@ -16,10 +16,7 @@ export class LocalGameOverview {
 		}
 	}
 
-	async init() {
-
-		console.log("init local view");
-		
+	async init() {		
 		const content = await Router.loadTemplate('local-game-overview');
 		document.getElementById('app').innerHTML = content;
 
@@ -39,32 +36,6 @@ export class LocalGameOverview {
 
 		this.update();
 	}
-
-	// handleTournamentSessionStorage() {
-	// 	const sessionTournament = JSON.parse(sessionStorage.getItem('tournament'));
-	// 	const stateTournament = State.get('tournament');
-	
-	// 	if (sessionTournament) {
-	// 		// If there's data in sessionStorage, update the state
-	// 		State.set('tournament', sessionTournament);
-	// 		console.log('Tournament loaded from sessionStorage');
-	// 	} else if (stateTournament) {
-	// 		// If there's no data in sessionStorage but there's data in the state, save it to sessionStorage
-	// 		sessionStorage.setItem('tournament', JSON.stringify(stateTournament));
-	// 		console.log('Tournament saved to sessionStorage');
-	// 	} else {
-	// 		// If there's no data in both sessionStorage and state, redirect to the previous page
-	// 		console.warn('No tournament data found. Redirecting...');
-	// 		window.history.back();
-	// 		return;
-	// 	}
-	
-	// 	// Update sessionStorage whenever the state changes
-	// 	State.subscribe('tournament', (updatedTournament) => {
-	// 		sessionStorage.setItem('tournament', JSON.stringify(updatedTournament));
-	// 		console.log('Tournament in sessionStorage updated');
-	// 	});
-	// }
 
 	createTournament() {
 		Utils.generateMatches();
@@ -89,11 +60,8 @@ export class LocalGameOverview {
 	}
 
 	initGameSocket(currentMatch, gameId) {
-		//currentMatch.socket = new Socket('local_game', { gameId });
-		//currentMatch.socket.addEventListenersGame();
-		const socket = new Socket('local_game', { gameId });
-		socket.addEventListenersGame();
-		State.set('socket', socket);
+		currentMatch.socket = new Socket('local_game', { gameId });
+		currentMatch.socket.addEventListenersGame();
 	}
 
 	update() {

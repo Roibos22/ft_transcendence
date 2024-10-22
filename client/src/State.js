@@ -30,11 +30,6 @@ class State {
 
 			this.data.tournament.matches[index].socket = new Socket(oldUrl, { gameId });
 			this.data.tournament.matches[index].socket.addEventListenersGame();
-
-			// const matches = this.get('tournament', 'matches');
-			// matches[index].socket = new Socket(oldUrl, { gameId });
-			// matches[index].socket.addEventListenersGame();
-			// this.set('tournament', 'matches', matches);
 		}
 	}
 
@@ -119,7 +114,6 @@ class State {
 
 	saveToSessionStorage() {
 		sessionStorage.setItem('appState', JSON.stringify(this.data));
-		//console.log("State saved to Session Storage", this);
 	}
 }
 
