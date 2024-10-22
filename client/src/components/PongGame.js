@@ -11,8 +11,8 @@ export class PongGame {
 
 		// TODO
 		this.map = {
-			width: 1000,
-			height: 500,
+			width: State.get('gameData', 'constants', 'mapWidth'),
+			height: State.get('gameData', 'constants', 'mapHeight'),
 		};
 
 		this.twoD = null;
