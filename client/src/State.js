@@ -62,17 +62,19 @@ class State {
 	}
 
 	reset() {
-		this.closeAllSocket();
+		this.closeAllSockets();
 		this.data = deepCopy(initState);
 		this.saveToSessionStorage();
 		console.log("State reset", this);
 	}
 
-	closeAllSocket() {
+	closeAllSockets() {
 		const matches = this.get('tournament', 'matches');
+		if (!Array.isArray(matches)) { return; }
 		const numberOfGames = this.get('tournament', 'numberOfGames');
+
 		for (var i = 0; i < numberOfGames; i++) {
-			if (matches && matches[i]) {
+			if (matches && matches[i] && matches[i].socket instanceof Socket) {
 				matches[i].socket.close();
 			}
 		}
