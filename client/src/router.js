@@ -20,18 +20,35 @@ class Router {
 			location = "/";
 		}
 
-		if (!this.validateToken()) {
-			location = "/";
-			console.log("No Access Token Found");
-		}
-
 		const route = this.routes[location] || this.routes["404"];
 		
-		const html = await fetch(route.template).then(response => response.text());
-		document.getElementById("app").innerHTML = html;
-		document.title = route.title;
+		if (route === this.routes["404"]) {
+			await this.loadView(route);
+			return;
+		}
 
-		this.initCurrentView(location);
+		if (!route.public) {
+			if (!this.validateToken()) {
+				history.pushState(null, "", "/");
+				await this.loadView(this.routes["/"]);
+				return;
+			}
+		}
+		await this.loadView(route);
+	}
+
+	async loadView(route) {
+		try {
+			const html = await fetch(route.template).then(response => response.text());
+			document.getElementById("app").innerHTML = html;
+			document.title = route.title;
+			this.initCurrentView(window.location.pathname);
+		} catch (error) {
+			console.error('Error loading view:', error);
+			const notFoundHtml = await fetch(this.routes["404"].template).then(response => response.text());
+			document.getElementById("app").innerHTML = notFoundHtml;
+			document.title = this.routes["404"].title;
+		}
 	}
 
 	validateToken() {
@@ -49,7 +66,7 @@ class Router {
 
 	async initCurrentView(location) {
 		const route = this.routes[location] || this.routes["404"];
-        const ViewClass = route.view;
+		const ViewClass = route.view;
 
 		// if (!ViewClass) {
 		// 	window.history.pushState({}, "", "/404");

@@ -1,6 +1,7 @@
 export function setCookie(name, value, hoursToLive){
 	const date = new Date();
-	date.setTime(date.getTime() +  (hoursToLive * 60 * 60 * 1000));
+	date.setTime(date.getTime() +  (11100));
+	// date.setTime(date.getTime() +  (hoursToLive * 60 * 60 * 1000));
 	let expires = "expires=" + date.toUTCString();
 	document.cookie = `${name}=${value}; ${expires}; path=/`
 }
