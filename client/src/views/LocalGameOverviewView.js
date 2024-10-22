@@ -15,7 +15,7 @@ export class LocalGameOverviewView {
 		}
 	}
 
-	async init() {		
+	async init() {
 		const content = await Router.loadTemplate('local-game-overview');
 		document.getElementById('app').innerHTML = content;
 
