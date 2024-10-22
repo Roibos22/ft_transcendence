@@ -1,6 +1,7 @@
 import { currentView } from './constants.js';
 import { urlRoutes } from './utils/routeUtils.js';
 import * as Cookies from './services/cookies.js';
+import * as Notification from './services/notification.js';
 
 class Router {
 	constructor() {
@@ -31,6 +32,7 @@ class Router {
 			if (!this.validateToken()) {
 				history.pushState(null, "", "/");
 				await this.loadView(this.routes["/"]);
+				Notification.showErrorNotification(["Session Expired", "Please log in again"]);
 				return;
 			}
 		}
