@@ -41,6 +41,22 @@ export async function fetchUserData() {
 	}
 }
 
+export async function submitTwoFactorCode(code) {
+	try {
+		const username = Cookies.getCookie("username");
+		if (!username) {
+			throw new Error("Username not found in cookies");
+		}
+		return await API.fetchWithAuth(`${API.API_BASE_URL}/users/2fa/confirm/`, {
+			method: 'POST',
+			body: JSON.stringify({ 'otp': code })
+		});
+	} catch (error) {
+		Notification.showErrorNotification(["Wrong Code", "Please try again later"]);
+		throw error;
+	}
+}
+
 export async function enableTwoFactorAuth() {
 	try {
 		const username = Cookies.getCookie("username");

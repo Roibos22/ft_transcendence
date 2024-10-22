@@ -54,8 +54,15 @@ export class LoginView {
 				Cookies.setCookie("accessToken", data.tokens.access, 24);
 				Cookies.setCookie("refreshToken", data.tokens.refresh, 24);
 				Cookies.setCookie("username", data.username, 24);
-				Notification.showNotification(["Login successful"]);
-				window.history.pushState({}, "", "/game-setup");
+				if (data["2fa_required"]) {
+					console.log('2FA required');
+					Notification.showNotification(["2FA required", "Please enter the code sent to your email"]);
+					window.history.pushState({}, "", "/two-factor")
+				} else {
+					console.log('Login successful');
+					Notification.showNotification(["Login successful"]);
+					window.history.pushState({}, "", "/game-setup");
+				}
 				Router.handleLocationChange();
 			} else {
 				this.displayLoginError(response.error);
