@@ -1,5 +1,6 @@
 export function setCookie(name, value, hoursToLive){
 	const date = new Date();
+	// date.setTime(date.getTime() +  (10000));
 	date.setTime(date.getTime() +  (hoursToLive * 60 * 60 * 1000));
 	let expires = "expires=" + date.toUTCString();
 	document.cookie = `${name}=${value}; ${expires}; path=/`
@@ -15,7 +16,7 @@ export function getCookie(name){
 	let result = null;
 	
 	cArray.forEach(element => {
-		if(element.indexOf(name) == 0){
+		if(element.indexOf(name) == 0) {
 			result = element.substring(name.length + 1)
 		}
 	})

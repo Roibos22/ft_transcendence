@@ -1,13 +1,12 @@
-import Router from '../router.js';
+import Router from '../Router.js';
 import { standingsTableRow } from '../utils/utils.js';
 import Socket from '../services/Socket.js';
-import * as Cookies from '../services/cookies.js';
 import State from '../State.js';
 import * as gameService from '../services/api/gameService.js';
 import * as Utils from '../utils/utils.js';
 
 
-export class LocalGameOverview {
+export class LocalGameOverviewView {
 	constructor() {
 		this.content = {
 			fixtures: null,
@@ -17,9 +16,6 @@ export class LocalGameOverview {
 	}
 
 	async init() {
-
-		console.log("init local view");
-		
 		const content = await Router.loadTemplate('local-game-overview');
 		document.getElementById('app').innerHTML = content;
 
@@ -39,32 +35,6 @@ export class LocalGameOverview {
 
 		this.update();
 	}
-
-	// handleTournamentSessionStorage() {
-	// 	const sessionTournament = JSON.parse(sessionStorage.getItem('tournament'));
-	// 	const stateTournament = State.get('tournament');
-	
-	// 	if (sessionTournament) {
-	// 		// If there's data in sessionStorage, update the state
-	// 		State.set('tournament', sessionTournament);
-	// 		console.log('Tournament loaded from sessionStorage');
-	// 	} else if (stateTournament) {
-	// 		// If there's no data in sessionStorage but there's data in the state, save it to sessionStorage
-	// 		sessionStorage.setItem('tournament', JSON.stringify(stateTournament));
-	// 		console.log('Tournament saved to sessionStorage');
-	// 	} else {
-	// 		// If there's no data in both sessionStorage and state, redirect to the previous page
-	// 		console.warn('No tournament data found. Redirecting...');
-	// 		window.history.back();
-	// 		return;
-	// 	}
-	
-	// 	// Update sessionStorage whenever the state changes
-	// 	State.subscribe('tournament', (updatedTournament) => {
-	// 		sessionStorage.setItem('tournament', JSON.stringify(updatedTournament));
-	// 		console.log('Tournament in sessionStorage updated');
-	// 	});
-	// }
 
 	createTournament() {
 		Utils.generateMatches();
@@ -100,8 +70,9 @@ export class LocalGameOverview {
 		this.updateMatchList();
 	}
 
+
+	// TODO PROTECT
 	overwritePlayerNames() {
-		const constants = State.get('gameData', 'constants');
 		State.data.gameData.constants.player2Username = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
 	}
 

@@ -1,5 +1,5 @@
 import { GameModes } from '../constants.js';
-import Router from '../router.js';
+import Router from '../Router.js';
 import State from '../State.js';
 import * as Cookies from '../services/cookies.js';
 import { buttonIdToGameMode } from '../utils/utils.js';
@@ -45,6 +45,8 @@ export class GameSetupView {
 			playerInputs: document.getElementById('playerInput'),
 			player1Input: document.getElementById('player1input'),
 			addPlayerButton: document.getElementById('addPlayerButton'),
+			profileButton: document.getElementById('btn_profile'),
+			logoutButton: document.getElementById('btn_logout')
 		};
 	}
 
@@ -54,6 +56,28 @@ export class GameSetupView {
 		const { pointsToWinButtons, numberOfGamesButtons } = this.UIelements.settingsButtons;
 
 		Cookies.setCookie("gameMode", GameModes.SINGLE, 24);
+
+		this.UIelements.profileButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			window.history.pushState({}, "", "/profile");
+			Router.handleLocationChange();
+		});
+
+		this.UIelements.logoutButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			State.reset();
+
+			//TODO
+			Cookies.deleteCookie("accessToken");
+			Cookies.deleteCookie("refreshToken");
+			Cookies.deleteCookie("gameId");
+			Cookies.deleteCookie("username");
+			Cookies.deleteCookie("gameMode");
+
+			window.history.pushState({}, "", "/");
+			Router.handleLocationChange();
+		});
+
 
 		Object.values(gameModeButtons).forEach(button => {
 			button.addEventListener('click', (e) => {

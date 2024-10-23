@@ -1,4 +1,4 @@
-import Router from '../router.js';
+import Router from '../Router.js';
 import * as Cookies from '../services/cookies.js'
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';

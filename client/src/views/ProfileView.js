@@ -1,4 +1,4 @@
-import Router from '../router.js';
+import Router from '../Router.js';
 import * as Notification from '../services/notification.js';
 import * as UserService from '../services/api/userService.js';
 import State from '../State.js';
