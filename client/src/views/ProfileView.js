@@ -1,6 +1,7 @@
 import Router from '../Router.js';
 import * as Notification from '../services/notification.js';
 import * as UserService from '../services/api/userService.js';
+import * as Cookies from '../services/cookies.js';
 import State from '../State.js';
 
 export class ProfileView {
@@ -20,7 +21,8 @@ export class ProfileView {
 
 		try {
 			const userData = await UserService.fetchUserData();
-			State.set('userData', userData);
+			this.userData = userData;
+			this.populateProfile();
 		}
 		catch (error) {
 			Notification.showErrorNotification(["Failed to load profile", "Please try again later"]);
@@ -74,7 +76,6 @@ export class ProfileView {
 	}
 
 	update() {
-		this.userData = State.get('userData');
 		this.populateProfile();
 		this.updateOnlineStatus();
 		this.update2FAStatus();
@@ -82,6 +83,9 @@ export class ProfileView {
 
 	populateProfile() {
 		const data = this.userData;
+		if (!data) {
+			return;
+		}
 		const card = this.UIelements.card;
 		const personalInfo = this.UIelements.personalInfo;
 
@@ -152,20 +156,27 @@ export class ProfileView {
 		});
 	}
 
-	async send2faRequest() {
-		try {
-			await UserService.enableTwoFactorAuth()
-			State.set('userData', 'twoFA_active', true);
-		} catch (error) {
-			console.error('Failed to toggle 2FA:', error);
-			// Error notification is handled in UserService.toggle2fa
-		}
-	}
-
 	setup2FA() {
 		const twoFactorBtn = this.UIelements.buttons.twoFactor;
-		twoFactorBtn.addEventListener('click', async () => {
-			this.send2faRequest();
+		twoFactorBtn.addEventListener('click', async (e) => {
+			e.preventDefault();
+
+			try {
+				await UserService.enableTwoFactorAuth();
+				State.reset();
+
+				Cookies.deleteCookie("accessToken");
+				Cookies.deleteCookie("refreshToken");
+				Cookies.deleteCookie("gameId");
+				Cookies.deleteCookie("username");
+				Cookies.deleteCookie("gameMode");
+
+				window.history.pushState({}, "", "/");
+				Router.handleLocationChange();
+				Notification.showNotification(["Check your email to finish setting up 2FA"]);
+			} catch (error) {
+				console.error('Failed to toggle 2FA:', error);
+			}
 		});
 	}
 }
