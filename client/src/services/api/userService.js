@@ -47,13 +47,14 @@ export async function submitTwoFactorCode(code) {
 		if (!username) {
 			throw new Error("Username not found in cookies");
 		}
-		return await API.fetchWithAuth(`${API.API_BASE_URL}/users/2fa/confirm/`, {
+		const data = await API.fetchWithAuth(`${API.API_BASE_URL}/users/2fa/confirm/`, {
 			method: 'POST',
 			body: JSON.stringify({ 'otp': code }),
 		});
+		return {success: true, data}
 	} catch (error) {
 		Notification.showErrorNotification(["Wrong Code", "Please try again later"]);
-		throw error;
+		return {success: false, error}
 	}
 }
 

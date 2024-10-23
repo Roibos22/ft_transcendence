@@ -1,4 +1,5 @@
 import Router from '../router.js';
+import * as Cookies from '../services/cookies.js'
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';
 
@@ -30,6 +31,12 @@ export class TwoFactorView {
         try {
             const response = await UserService.submitTwoFactorCode(code);
             if (response.success) {
+                const data = response.data;
+                Cookies.setCookie("accessToken", data.tokens.access, 24);
+				Cookies.setCookie("refreshToken", data.tokens.refresh, 24);
+				Cookies.setCookie("username", data.username, 24);
+                console.log('Login successful');
+                Notification.showNotification(["Login successful"]);
                 window.history.pushState({}, "", "/game-setup");
                 Router.handleLocationChange();
             } else {
