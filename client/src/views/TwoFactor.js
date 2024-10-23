@@ -33,7 +33,7 @@ export class TwoFactorView {
                 window.history.pushState({}, "", "/game-setup");
                 Router.handleLocationChange();
             } else {
-                Notification
+                Notification.showErrorNotification(["invalid code"])
                 console.log('Invalid code');
             }
         } catch (error) {
