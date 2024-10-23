@@ -61,27 +61,28 @@ export class RegisterView {
 				window.history.pushState({}, "", "/");
 				Router.handleLocationChange();
 			} else {
-				displayRegistrationError(response.error);
+				this.displayRegistrationError(response.error);
 			}
 		} catch (error) {
-			console.error('Failed to login', error);
-			displayRegistrationError(error);
+			console.error('Failed to register', error);
+			this.displayRegistrationError(error);
 		}
 	}
 
-	displayRegistrationError() {
-		loginError = this.UIelements.registrationError;
-		loginError.style.display = 'block';
+	displayRegistrationError(error) {
+		const registrationError = this.UIelements.registrationError;
+		registrationError.style.display = 'block';
 		let errorMessages = [];
 
 		if (error.message.includes("400")) {
-			errorMessages.push(`Username already taken`);
+			errorMessages.push(`Username already taken.`);
 		} else {
 			errorMessages.push(`Something went wrong.`);
 		}
 		errorMessages.push(`Please try again.`);
 
-		loginError.innerHTML = errorMessages.join('<br>');
+		registrationError.innerHTML = errorMessages.join('<br>');
+		Notification.showErrorNotification(["Registration failed"]);
 	}
 
 }

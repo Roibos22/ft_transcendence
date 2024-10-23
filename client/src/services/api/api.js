@@ -31,6 +31,8 @@ export async function fetchWithAuth(url, options = {}) {
 
 export async function fetchWithoutAuth(url, options = {}) {
 
+	console.log("fetch", url, options)
+
 	const defaultOptions = {
 		headers: {
 			'Content-Type': 'application/json',
