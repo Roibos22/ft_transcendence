@@ -34,6 +34,8 @@ export async function fetchUserData() {
 		if (!username) {
 			throw new Error("Username not found in cookies");
 		}
+
+		// TODO need to change this to userId
 		return await API.fetchWithAuth(`${API.API_BASE_URL}/users/profile/${username}/`);
 	} catch (error) {
 		console.error('Error fetching user data:', error);
@@ -43,6 +45,7 @@ export async function fetchUserData() {
 
 export async function updateUserData(updatedData) {
 	try {
+		// TODO
 		//const username = Cookies.getCookie("username");
 		const username = 1;
 		if (!username) {
