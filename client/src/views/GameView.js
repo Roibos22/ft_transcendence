@@ -1,10 +1,7 @@
 import { PongGame } from '../components/PongGame.js';
 import { UIManager } from '../components/UIManager.js';
-import * as gameService from '../services/api/gameService.js';
-import Router from '../router.js';
+import Router from '../Router.js';
 import State from '../State.js';
-import Socket from '../services/Socket.js';
-import { GameModes } from '../constants.js';
 
 export class GameView {
 	constructor() {
@@ -23,7 +20,6 @@ export class GameView {
 		const tournament = State.get('tournament');
 		const currentMatchIndex = tournament.currentMatchIndex;
 		const matches = tournament.matches;
-		//const socket = this.game.gameMode == GameModes.ONLINE
 
 		if (currentMatchIndex < matches.length) {
 			this.game = new PongGame(matches[currentMatchIndex].socket);
@@ -114,14 +110,6 @@ export class GameView {
 		Router.handleLocationChange();
 	}
 
-	destroyCurrentGame() {
-		if (this.game) {
-			this.game.destroy();
-			this.game = null;
-		}
-	}
-
-
 	calculateUpdatedPlayerStats(players, match) {
 		return players.map(player => {
 			const matchPlayer = match.players.find(p => p.name === player.name);
@@ -143,5 +131,12 @@ export class GameView {
 	cleanup() {
 		console.log("Clean up GameView");
 		this.destroyCurrentGame();
+	}
+
+	destroyCurrentGame() {
+		if (this.game) {
+			this.game.destroy();
+			this.game = null;
+		}
 	}
 }

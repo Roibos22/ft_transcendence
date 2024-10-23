@@ -18,16 +18,11 @@ export const GamePhases = {
 	WAITING_TO_START: 'waitingToStart',
 	COUNTDOWN: 'countdown',
 	RUNNING: 'running',
-	FINISHED: 'finished', // I think this is redundant
+	// FINISHED: 'finished', // I think this is redundant
 	MATCH_ENDED: 'game_over'
 };
 
 export const initState = {
-	user: {
-		username: "",
-		displayName: "",
-		onlineStatus: false
-	},
 	ThreeD: {
 		spritesLoaded: false,
 	},
@@ -56,6 +51,7 @@ export const initState = {
 		player1Ready: false,
 		player2Ready: false,
 		countdown: -1,
+		gameId: null,
 		ball: {
 			x: 0,
 			y: 0,
