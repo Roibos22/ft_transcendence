@@ -50,23 +50,16 @@ export class OnlineGameLoadingView {
 		});
 		State.set("tournament", "players", players);
 
-		// create one Match only
 		const matches = [];
 		matches.push({
 			players: [
-				// TODO
-				// { name: tournament.players[j].name, score: 0 },
-				// { name: tournament.players[k].name, score: 0 }
-				{ name: "Player 1", score: 0 },
-				{ name: "Player 2", score: 0 }
+				{ name: tournament.players[0].name, score: 0 },
+				{ name: tournament.players[1].name, score: 0 }
 			],
 			completed: false,
 			socket: null,
 		});
 		State.set('tournament', 'matches', matches);
-
-		// setup next match
-		console.log("State", State);
 	}
 	
 	async initGameSocket(gameId) {
