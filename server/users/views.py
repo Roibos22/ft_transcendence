@@ -144,6 +144,7 @@ def verify_2fa(request, username: str):
             }, status=status.HTTP_200_OK)
 
     sys_otp_codes.delete()
+    print(user)
     return Response({'detail': '2FA wrong OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
 # @debug_request

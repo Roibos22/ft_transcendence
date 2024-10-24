@@ -1,106 +1,95 @@
 <div class="container" id="profileView"></div>
 
-		<!-- Profile Icon -->
-	<div class="position-absolute top-0 start-0 m-3">
-		<a href="/game-setup" class="text-decoration-none">
-			<span class="profile-link">Back</span>
-		</a>
-	</div>
+<!-- Profile Icon -->
+<div class="position-absolute top-0 start-0 m-3">
+	<a href="/game-setup" class="text-decoration-none">
+		<span class="profile-link">Back</span>
+	</a>
+</div>
 
-	<div class="main-card profile-card">
-		<div class="card-body profile-card">
-			<h2 class="text-center mb-4 fs-1 fw-bold">Your Profile</h2>
-			<div class="row">
-				<!-- Profile Picture and Account Status -->
-				<div class="col-md-3 text-center">
-					<img id="avatarImg" src="https://via.placeholder.com/100" alt="Profile Picture" class="rounded-circle mb-3">
-					<h4 id="displayName" class="mb-0"></h4>
-					<p class="text-muted mb-0" id="username"></p>
-					<span class="badge bg-success mt-2" id="onlineStatus"></span>
-					
-					<!-- Account Status (Smaller) -->
-					<div class="mt-3 account-status">
-						<div class="status-item">
-							<strong>Verified</strong>
-							<span id="emailVerified"></span>
-						</div>
-						<div class="status-item">
-							<strong>Date Joined:</strong>
-							<span id="dateJoined"></span>
-						</div>
-						<div class="status-item">
-							<strong>Last Login:</strong>
-							<span id="lastLogin"></span>
-						</div>
+<div class="main-card profile-card">
+	<div class="card-body profile-card">
+		<h2 class="text-center mb-4 fs-1 fw-bold">Your Profile</h2>
+		<div class="row">
+			<!-- Profile Picture and Account Status -->
+			<div class="col-md-3 text-center">
+				<h4 id="displayName" class="mb-0"></h4>
+				<p class="text-muted mb-0" id="username"></p>
+				<span class="badge bg-success mt-2" id="onlineStatus"></span>
+
+				<!-- Account Status (Smaller) -->
+				<div class="mt-3 account-status">
+					<div class="status-item">
+						<strong>Verified</strong>
+						<span id="emailVerified"></span>
+					</div>
+					<div class="status-item">
+						<strong>Date Joined:</strong>
+						<span id="dateJoined"></span>
+					</div>
+					<div class="status-item">
+						<strong>Last Login:</strong>
+						<span id="lastLogin"></span>
 					</div>
 				</div>
-				
-				<div class="col-md-9">
-					
-					<div id="personalInfo">
-						<div class="d-flex justify-content-between align-items-center mb-3">
-							<div>
-								<button id="editBtn" class="btn btn-primary me-2" style="width: 75px;">Edit</button>
-								<button id="saveBtn" class="btn btn-success me-2" style="width: 75px; display: none;">Save</button>
-								<button id="deleteUserBtn" class="btn btn-danger" title="Delete Account">
-									<i class="bi-trash-fill"></i>
-								</button>
-							</div>
-						</div>
-						<div class="mb-3 d-flex align-items-center">
-							<label for="displayNameInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>Display Name:</strong></label>
-							<div class="flex-grow-1 infoField">
-								<span id="displayNameDisplay" class="form-control-plaintext"></span>
-								<input type="text" id="displayNameInput" class="form-control form-input d-none" />
-							</div>
-						</div>
-						<div class="mb-3 d-flex align-items-center">
-							<label for="firstNameInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>First Name:</strong></label>
-							<div class="flex-grow-1 infoField">
-								<span id="firstNameDisplay" class="form-control-plaintext"></span>
-								<input type="text" id="firstNameInput" class="form-control form-input d-none" />
-							</div>
-						</div>
-						<div class="mb-3 d-flex align-items-center">
-							<label for="lastNameInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>Last Name:</strong></label>
-							<div class="flex-grow-1 infoField">
-								<span id="lastNameDisplay" class="form-control-plaintext"></span>
-								<input type="text" id="lastNameInput" class="form-control form-input d-none" />
-							</div>
-						</div>
-						<div class="mb-3 d-flex align-items-center">
-							<label for="emailInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>Email:</strong></label>
-							<div class="flex-grow-1 infoField">
-								<span id="emailDisplay" class="form-control-plaintext"></span>
-								<input type="email" id="emailInput" class="form-control form-input d-none" />
-							</div>
-						</div>
-						<div class="mb-3 d-flex align-items-center">
-							<label for="phoneNumberInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>Phone Number:</strong></label>
-							<div class="flex-grow-1 infoField">
-								<span id="phoneNumberDisplay" class="form-control-plaintext"></span>
-								<input type="tel" id="phoneNumberInput" class="form-control form-input d-none" />
-							</div>
+			</div>
+
+			<div class="col-md-9">
+
+				<div id="personalInfo">
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<div>
+							<button id="editBtn" class="btn btn-primary me-2" style="width: 75px;">Edit</button>
+							<button id="saveBtn" class="btn btn-success me-2"
+								style="width: 75px; display: none;">Save</button>
+							<button id="deleteUserBtn" class="btn btn-danger me-2" title="Delete Account">
+								<i class="bi-trash-fill"></i>
+							</button>
+							<!-- enable 2fa button -->
+							<button id="enable2faBtn" class="btn btn-primary" title="Enable Two Factor Authentification">
+								<i class="bi-shield-lock-fill"></i>
+							</button>
 						</div>
 					</div>
-				</div>
-			
-			<!-- Games and Friends Placeholders -->
-			<div class="row mt-4">
-				<div class="col-md-6">
-					<h3>Games</h3>
-					<div class="placeholder-glow">
-						<p class="placeholder col-12"></p>
-						<p class="placeholder col-12"></p>
-						<p class="placeholder col-12"></p>
+					<div class="mb-3 d-flex align-items-center">
+						<label for="displayNameInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>Display
+								Name:</strong></label>
+						<div class="flex-grow-1 infoField">
+							<span id="displayNameDisplay" class="form-control-plaintext"></span>
+							<input type="text" id="displayNameInput" class="form-control form-input d-none" />
+						</div>
 					</div>
-				</div>
-				<div class="col-md-6">
-					<h3>Friends</h3>
-					<div class="placeholder-glow">
-						<p class="placeholder col-12"></p>
-						<p class="placeholder col-12"></p>
-						<p class="placeholder col-12"></p>
+					<div class="mb-3 d-flex align-items-center">
+						<label for="firstNameInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>First
+								Name:</strong></label>
+						<div class="flex-grow-1 infoField">
+							<span id="firstNameDisplay" class="form-control-plaintext"></span>
+							<input type="text" id="firstNameInput" class="form-control form-input d-none" />
+						</div>
+					</div>
+					<div class="mb-3 d-flex align-items-center">
+						<label for="lastNameInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>Last
+								Name:</strong></label>
+						<div class="flex-grow-1 infoField">
+							<span id="lastNameDisplay" class="form-control-plaintext"></span>
+							<input type="text" id="lastNameInput" class="form-control form-input d-none" />
+						</div>
+					</div>
+					<div class="mb-3 d-flex align-items-center">
+						<label for="emailInput" class="me-2 flex-shrink-0"
+							style="width: 120px;"><strong>Email:</strong></label>
+						<div class="flex-grow-1 infoField">
+							<span id="emailDisplay" class="form-control-plaintext"></span>
+							<input type="email" id="emailInput" class="form-control form-input d-none" />
+						</div>
+					</div>
+					<div class="mb-3 d-flex align-items-center">
+						<label for="phoneNumberInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>Phone
+								Number:</strong></label>
+						<div class="flex-grow-1 infoField">
+							<span id="phoneNumberDisplay" class="form-control-plaintext"></span>
+							<input type="tel" id="phoneNumberInput" class="form-control form-input d-none" />
+						</div>
 					</div>
 				</div>
 			</div>

@@ -1,9 +1,13 @@
 import State from '../State.js';
-import { GamePhases } from '../constants.js';
+import { GamePhases, GameTypes } from '../constants.js';
 
 export class UIManager {
 	constructor() {
 		this.content = {
+			canvases: {
+				twoD: document.getElementById('gameCanvas2D'),
+				threeD: document.getElementById('gameCanvas3D'),
+			},
 			displayToggle: null,
 			scoreCard: {
 				player1Name: null,
@@ -21,7 +25,8 @@ export class UIManager {
 	init() {
 		this.content.displayToggle = document.getElementById('viewToggle');
 		this.content.displayToggle.addEventListener('change', () => {
-			State.set('gameSettings', 'displayType', this.content.displayToggle.checked ? '3D' : '2D');
+			const show3D = this.content.displayToggle.checked;
+			State.set('gameSettings', 'displayType', show3D ? GameTypes.THREE_D : GameTypes.TWO_D);
 		});
 
 		this.content.scoreCard = {
@@ -38,8 +43,16 @@ export class UIManager {
 		this.update();
 	}
 
+	updateCanvases() {
+		const displayType = State.get('gameSettings', 'displayType');
+		this.content.canvases.twoD.style.display = displayType === GameTypes.TWO_D ? 'inline' : 'none';
+		this.content.canvases.threeD.style.display = displayType === GameTypes.THREE_D ? 'inline' : 'none';
+	}
+
+
 	update() {
-		this.updateScoreCard()
+		this.updateCanvases();
+		this.updateScoreCard();
 		this.updateGameInformation();
 	}
 

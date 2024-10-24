@@ -6,6 +6,7 @@ import { ProfileView } from "../views/ProfileView.js";
 import { RegisterView } from "../views/RegisterView.js";
 import { LocalGameOverviewView } from "../views/LocalGameOverviewView.js";
 import { NotFoundView } from "../views/NotFoundView.js";
+import { TwoFactorView } from "../views/TwoFactor.js";
 
 export const urlRoutes = {
 	"/": {
@@ -13,6 +14,12 @@ export const urlRoutes = {
 		title: "Login",
 		view: LoginView,
 		public: true
+	},
+	"/two-factor": {
+		template: "../templates/two-factor.html",
+		title: "Two Factor Authentication",
+		view: TwoFactorView,
+		public: false
 	},
 	"/register": {
 		template: "../templates/register.html",

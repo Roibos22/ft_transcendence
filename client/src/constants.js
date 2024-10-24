@@ -23,6 +23,9 @@ export const GamePhases = {
 };
 
 export const initState = {
+	userData: {
+		twoFA_active: false,
+	},
 	ThreeD: {
 		spritesLoaded: false,
 	},
@@ -64,7 +67,6 @@ export const initState = {
 	tournament: {
 		players: null,
 		matches: null,
-		pointsToWin: 5,
 		numberOfGames: 1,
 		currentMatchIndex: 0,
 		completed: false

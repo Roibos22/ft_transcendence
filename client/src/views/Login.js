@@ -12,11 +12,10 @@ export class LoginView {
 
 	async init() {
 		const content = await Router.loadTemplate(this.template);
-		document.getElementById('app').innerHTML = content;
+        document.getElementById('app').innerHTML = content;
 		
 		this.UIelements = this.getUIElements();
 		this.addEventListeners();
-		State.reset();
 	}
 
 	update() {}
