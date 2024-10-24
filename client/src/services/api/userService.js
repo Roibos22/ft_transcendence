@@ -94,22 +94,22 @@ export async function updateUserData(updatedData) {
 	}
 }
 
-// export async function deleteUserAccount() {
-// 	try {
-// 		const username = Cookies.getCookie("username");
-// 		if (!username) {
-// 			throw new Error("Username not found in cookies");
-// 		}
-// 		await API.fetchWithAuth(`${API.API_BASE_URL}/users/delete/${username}/`, {
-// 			method: 'DELETE'
-// 		});
-// 		Cookies.deleteCookie("username");
-// 		Cookies.deleteCookie("userId");
-// 		Cookies.deleteCookie("accessToken");
-// 		Notification.showNotification(["Account deleted successfully"]);
-// 	} catch (error) {
-// 		console.error('Error deleting user account:', error);
-// 		Notification.showErrorNotification(["Failed to delete account", "Please try again later"]);
-// 		throw error;
-// 	}
-// }
+export async function deleteUserAccount() {
+	try {
+		const username = Cookies.getCookie("username");
+		if (!username) {
+			throw new Error("Username not found in cookies");
+		}
+		await API.fetchWithAuth(`${API.API_BASE_URL}/users/profile/${username}/delete/`, {
+			method: 'DELETE'
+		});
+		Cookies.deleteCookie("username");
+		Cookies.deleteCookie("userId");
+		Cookies.deleteCookie("accessToken");
+		Notification.showNotification(["Account deleted successfully"]);
+	} catch (error) {
+		console.error('Error deleting user account:', error);
+		Notification.showErrorNotification(["Failed to delete account", "Please try again later"]);
+		throw error;
+	}
+}
