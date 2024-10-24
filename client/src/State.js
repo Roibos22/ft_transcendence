@@ -2,6 +2,8 @@ import { initState } from "./constants.js";
 import { deepCopy } from "./utils/utils.js";
 import { currentView } from "./constants.js";
 import Socket from './services/Socket.js';
+import Router from "./Router.js";
+import { GameView } from "./views/GameView.js";
 
 class State {
 	constructor() {
@@ -21,15 +23,19 @@ class State {
 	}
 
 	reconnect() {
-		if (this.data.gameData.gameId)
+		if (this.data.gameData.gameId && window.location.pathname === '/game')
 		{
+			console.log("reconnecting to Socket");
 			const index = this.get('tournament', 'currentMatchIndex');
 			const currentMatch = this.get('tournament', 'matches')[index];
 			const gameId = currentMatch.socket.data.gameId;
 			const oldUrl = currentMatch.socket.url;
 
-			this.data.tournament.matches[index].socket = new Socket(oldUrl, { gameId });
-			this.data.tournament.matches[index].socket.addEventListenersGame();
+			if (currentMatch.socket && currentMatch.socket.readyState === WebSocket.OPEN) {
+				currentMatch.socket.close();
+			}
+			currentMatch.socket = new Socket(oldUrl, { gameId });
+			currentMatch.socket.addEventListenersGame();
 		}
 	}
 

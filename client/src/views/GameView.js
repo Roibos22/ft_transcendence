@@ -1,5 +1,6 @@
 import { PongGame } from '../components/PongGame.js';
 import { UIManager } from '../components/UIManager.js';
+import { GameModes } from '../constants.js';
 import Router from '../Router.js';
 import State from '../State.js';
 
@@ -15,9 +16,9 @@ export class GameView {
 		document.getElementById('app').innerHTML = content;
 
 		// if we come here, there is no socket but we have a game id -> try to reconnect
-		setTimeout(() => {
-			State.reconnect();
-		}, 100);
+		// setTimeout(() => {
+		// 	State.reconnect();
+		// }, 100);
 		this.setupGame();
 	}
 
@@ -139,7 +140,7 @@ export class GameView {
 	}
 
 	destroyCurrentGame() {
-		if (this.game) {
+		if (this.game && State.get('gameSettings', 'mode') !== GameModes.ONLINE) {
 			this.game.destroy();
 			this.game = null;
 		}

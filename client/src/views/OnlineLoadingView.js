@@ -76,5 +76,9 @@ export class OnlineGameLoadingView {
 	update() {
 
 	}
+
+	cleanup() {
+		
+	}
 }
 

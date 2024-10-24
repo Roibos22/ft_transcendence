@@ -70,12 +70,11 @@ class Router {
 		const route = this.routes[location] || this.routes["404"];
 		const ViewClass = route.view;
 
-		// if (!ViewClass) {
-		// 	window.history.pushState({}, "", "/404");
-		// 	return;
-		// }
-
 		if (currentView.view && typeof currentView.view.cleanup === 'function') {
+			if (currentView.view instanceof ViewClass) {
+				console.log("Same View loaded. no cleanup called");
+				return;
+			}
 			currentView.view.cleanup();
 		}
 	

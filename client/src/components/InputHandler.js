@@ -75,12 +75,10 @@ export default class InputHandler {
 	}
 
 	destroy() {
-		// Remove all event listeners
 		document.removeEventListener('keydown', this.boundHandleKeyDown);
 		document.removeEventListener('keyup', this.boundHandleKeyUp);
 		window.removeEventListener('keydown', this.boundPreventDefaultScroll);
 
-		// Clear any references
 		this.game = null;
 		this.currentlyPressedKeys = null;
 

@@ -33,6 +33,8 @@ export class LocalGameOverviewView {
 			this.setupNextMatch();
 		}
 
+		console.log("Local Overview Init", State);
+
 		this.update();
 	}
 
@@ -59,6 +61,10 @@ export class LocalGameOverviewView {
 	}
 
 	initGameSocket(currentMatch, gameId) {
+		console.log("INIT GAME SOCKET");
+		if (currentMatch.socket && currentMatch.socket.readyState === WebSocket.OPEN) {
+			currentMatch.socket.close();
+		}
 		currentMatch.socket = new Socket('local_game', { gameId });
 		currentMatch.socket.addEventListenersGame();
 	}
@@ -68,6 +74,14 @@ export class LocalGameOverviewView {
 		this.updateTournamentInfo();
 		this.updateStandings();
 		this.updateMatchList();
+	}
+
+	cleanup() {
+		// console.log("Clean up Local Overview");
+		// const tournament = State.get('tournament');
+		// const currentMatchIndex = tournament.currentMatchIndex;
+		// const currentMatch = tournament.matches[currentMatchIndex];
+		// currentMatch.socket.close();
 	}
 
 	overwritePlayerNames() {

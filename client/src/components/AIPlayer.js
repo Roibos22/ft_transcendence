@@ -11,8 +11,8 @@ export default class AIPlayer {
 		this.paddleWidth = 10;
 		this.ballRadius = 5;
 
-		setInterval(() => this.calculateTargetY(), 1000);
-		setInterval(() => this.movePaddle(), 1000 / 10);
+		this.calculateInterval = setInterval(() => this.calculateTargetY(), 1000);
+		this.moveInterval = setInterval(() => this.movePaddle(), 1000 / 10);
 	}
 
 	calculateTargetY() {
@@ -39,17 +39,19 @@ export default class AIPlayer {
 	}
 
 	movePaddle() {
-		if (State.get('gameData', 'phase') !== GamePhases.RUNNING || (!this.game)) {
+		const index = State.get('tournament', 'currentMatchIndex');
+		const socket = State.get('tournament', 'matches')[index].socket;
+		if (State.get('gameData', 'phase') !== GamePhases.RUNNING || (!socket)) {
 			return;
 		}
 	
 		const playerY = State.get('gameData', 'player2Pos');
 		if (playerY < this.targetY && playerY + this.paddleHeight > this.targetY) {
-			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '0'}));
+			socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '0'}));
 		} else if (playerY < this.targetY && playerY + this.paddleHeight < this.targetY) {
-			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '1'}));
+			socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '1'}));
 		} else {
-			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '-1'}));
+			socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '-1'}));
 		}
 	}
 
