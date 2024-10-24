@@ -1,7 +1,8 @@
-import Router from '../router.js';
+import Router from '../Router.js';
 import * as Cookies from '../services/cookies.js';
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';
+import State from '../State.js';
 
 export class LoginView {
 	constructor() {
@@ -11,10 +12,11 @@ export class LoginView {
 
 	async init() {
 		const content = await Router.loadTemplate(this.template);
-        document.getElementById('app').innerHTML = content;
+		document.getElementById('app').innerHTML = content;
 		
 		this.UIelements = this.getUIElements();
 		this.addEventListeners();
+		State.reset();
 	}
 
 	update() {}

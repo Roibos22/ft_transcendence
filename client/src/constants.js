@@ -18,35 +18,32 @@ export const GamePhases = {
 	WAITING_TO_START: 'waitingToStart',
 	COUNTDOWN: 'countdown',
 	RUNNING: 'running',
-	FINISHED: 'finished',
-	MATCH_ENDED: 'matchEnded'
+	// FINISHED: 'finished', // I think this is redundant
+	MATCH_ENDED: 'game_over'
 };
 
 export const initState = {
-	user: {
-		username: "",
-		displayName: "",
-		onlineStatus: false
-	},
 	ThreeD: {
 		spritesLoaded: false,
 	},
 	gameSettings: {
-		numberOfGames: 1,
 		displayType: GameTypes.TWO_D,
-		mode: GameModes.SINGLE,
-		pointsToWin: 5,
-	},
-	currentMatch: {
-		player1Name: "Player 1",
-		player2Name: "Player 2",
-		player1Score: 0,
-		player2Score: 0,
-		winner: ""
+		mode: GameModes.SINGLE
 	},
 	gameData: {
-		gameId: 0,
+		constants: {
+			mapHeight: 0,
+			mapWidth: 0,
+			player1Username: "",
+			player2Username: "",
+			paddleHeight: 0,
+			paddleWidth: 0,
+			ballRadius: 0,
+			winner: ""
+		},
 		phase: GamePhases.WAITING_TO_START,
+		player1Score: 0,
+		player2Score: 0,
 		player1Pos: 0,
 		player2Pos: 0,
 		player1Dir: 0,
@@ -54,6 +51,7 @@ export const initState = {
 		player1Ready: false,
 		player2Ready: false,
 		countdown: -1,
+		gameId: null,
 		ball: {
 			x: 0,
 			y: 0,
@@ -63,13 +61,12 @@ export const initState = {
 			}
 		}
 	},
-	tournament:
-		null
-	// {
-	// 	players: ["player1", "player2", "player3", "player4"],
-	// 	results: [],
-	// 	matches: [],
-	// 	currentMatch: {},
-	// 	currentMatchIndex: 0
-	// },
+	tournament: {
+		players: null,
+		matches: null,
+		pointsToWin: 5,
+		numberOfGames: 1,
+		currentMatchIndex: 0,
+		completed: false
+	}
 };
