@@ -14,6 +14,16 @@ export class OnlineGameLoadingView {
 		document.getElementById('app').innerHTML = content;
 
 		this.createTournament();
+		this.connectMatchmakingSocket()
+	}
+
+	connectMatchmakingSocket() {
+
+		const matches = State.get('tournament', 'matches');
+		if (matches[0].socket && matches[0].socket.readyState === WebSocket.OPEN) {
+			return;
+		}
+
 		this.matchMakingSocket = new Socket('matchmaking', {});
 		this.matchMakingSocket.addEventListenersMatchmaking();
 		this.matchMakingSocket.socket.addEventListener('message', async (event) => {
@@ -65,6 +75,9 @@ export class OnlineGameLoadingView {
 	async initGameSocket(gameId) {
 		const matches = State.get('tournament', 'matches');
 
+		if (matches[0].socket && matches[0].socket.readyState === WebSocket.OPEN) {
+			currentMatch.socket.close();
+		}
 		matches[0].socket = new Socket('online_game', { gameId });
 		matches[0].socket.addEventListenersGame();
 
