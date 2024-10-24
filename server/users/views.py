@@ -88,9 +88,9 @@ def user_login(request):
 
 @debug_request
 @api_view(['GET'])
-def verify_email(request, user_id):
+def verify_email(request, username: str):
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -119,10 +119,9 @@ def verify_email(request, user_id):
 # @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 @api_view(['GET'])
-def verify_2fa(request, user_id):
-    print("VERIFYING 2FA")
+def verify_2fa(request, username: str):
     try:
-        user: User = User.objects.get(id=user_id)
+        user: User = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -255,9 +254,9 @@ def setup_2fa(request):
 @debug_request
 @api_view(['PATCH'])
 @permission_classes([Is2FAComplete])
-def update_user(request, user_id):
+def update_user(request, username: str):
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     if request.user != user:
@@ -274,9 +273,9 @@ def update_user(request, user_id):
 @debug_request
 @api_view(['DELETE'])
 @permission_classes([Is2FAComplete])
-def delete_user(request, user_id: int):
+def delete_user(request, username: str):
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     if request.user != user:

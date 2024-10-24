@@ -10,6 +10,7 @@
 4. setup email
 5. Check authentication in asgi
 6. player disconnected
+7. udate online status
 
 ## Basic information
 
