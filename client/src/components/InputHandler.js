@@ -35,8 +35,9 @@ export default class InputHandler {
 		};
 
 		if (this.game.gameMode === GameModes.SINGLE) {
-			delete keyActions['ArrowUp'];
-			delete keyActions['ArrowDown'];
+			keyActions['ArrowUp'].player_no = '1';
+			keyActions['ArrowDown'].player_no = '1';
+			keyActions['Enter'].player_no = '1';
 		}
 	
 		if (keyActions[e.key] && !this.currentlyPressedKeys[e.key]) {
@@ -51,7 +52,9 @@ export default class InputHandler {
 		const keyReleaseActions = ['w', 's', 'ArrowUp', 'ArrowDown'];
 	
 		if (keyReleaseActions.includes(e.key)) {
-			const player_no = ['w', 's'].includes(e.key) ? '1' : '2';
+			let player_no = ['w', 's'].includes(e.key) ? '1' : '2';
+			if (this.game.gameMode === GameModes.SINGLE)
+				player_no = '1';
 			this.sendSocketMessage({ action: 'move_player', player_no, direction: '0' });
 			this.currentlyPressedKeys[e.key] = false;
 		}
@@ -66,6 +69,8 @@ export default class InputHandler {
 	}
 	
 	sendSocketMessage(message) {
+		if (this.game.gameMode === GameModes.SINGLE && message.action === 'player_ready')
+			this.game.socket.send(JSON.stringify({ action: 'player_ready', player_no: '2' }))
 		this.game.socket.send(JSON.stringify(message));
 	}
 

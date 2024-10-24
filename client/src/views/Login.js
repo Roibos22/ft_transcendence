@@ -12,11 +12,10 @@ export class LoginView {
 
 	async init() {
 		const content = await Router.loadTemplate(this.template);
-		document.getElementById('app').innerHTML = content;
+        document.getElementById('app').innerHTML = content;
 		
 		this.UIelements = this.getUIElements();
 		this.addEventListeners();
-		State.reset();
 	}
 
 	update() {}
@@ -52,7 +51,6 @@ export class LoginView {
 	
 			if (response.success) {
 				const data = response.data;
-				console.log(response.data);
 				Cookies.setCookie("accessToken", data.tokens.access, 24);
 				Cookies.setCookie("refreshToken", data.tokens.refresh, 24);
 				Cookies.setCookie("username", data.username, 24);

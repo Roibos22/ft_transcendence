@@ -43,11 +43,43 @@ export async function fetchUserData() {
 	}
 }
 
+export async function submitTwoFactorCode(code) {
+	try {
+		const username = Cookies.getCookie("username");
+		if (!username) {
+			throw new Error("Username not found in cookies");
+		}
+		const data = await API.fetchWithAuth(`${API.API_BASE_URL}/users/2fa/confirm/`, {
+			method: 'POST',
+			body: JSON.stringify({ 'otp': code }),
+		});
+		return {success: true, data}
+	} catch (error) {
+		Notification.showErrorNotification(["Wrong Code", "Please try again later"]);
+		return {success: false, error}
+	}
+}
+
+export async function enableTwoFactorAuth() {
+	try {
+		const username = Cookies.getCookie("username");
+		if (!username) {
+			throw new Error("User ID not found in cookies");
+		}
+		await API.fetchWithAuth(`${API.API_BASE_URL}/users/2fa/setup/`, {
+			method: 'GET',
+			// body: JSON.stringify(updatedData)
+		});
+	} catch (error) {
+		Notification.showErrorNotification(["Failed to enable 2FA", "Please try again later"]);
+		throw error;
+	}
+}
+
 export async function updateUserData(updatedData) {
 	try {
-		// TODO
-		//const username = Cookies.getCookie("username");
-		const username = 1;
+		const username = Cookies.getCookie("username");
+		// const username = 1;
 		if (!username) {
 			throw new Error("User ID not found in cookies");
 		}

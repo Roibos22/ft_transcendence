@@ -25,7 +25,7 @@ class User:
     def authorized_request(self):
         headers = self.auth_header()
         username_encoded = urllib.parse.quote(self.username)
-        response = requests.get(f'{url}profile/{username_encoded}/', headers=headers)
+        response = requests.get(f'{url}profile/{username_encoded}/', headers=headers, verify=False)
         return response
 
     def fetch_data(self):
@@ -42,7 +42,7 @@ class User:
 
     def login(self, data):
         # Send a GET request to the API
-        response = requests.post(f'{url}login/', json=data)
+        response = requests.post(f'{url}login/', json=data, verify=False)
 
         # Check if the request was successful
         if response.status_code == 200:
@@ -100,7 +100,7 @@ class User:
             key, value = line.split(": ", 1)
             key = serial_dict.get(key)
             data_dict[key] = value
-        response = requests.patch(f'{url}profile/{self.id}/update/', json=data_dict, headers=headers)
+        response = requests.patch(f'{url}profile/{self.id}/update/', json=data_dict, headers=headers, verify=False)
         if response.status_code == 200:
             print('Your data updated')
             print(Fore.GREEN + '---------------------')
@@ -112,7 +112,7 @@ class User:
         file_data = {
             'avatar': open(path, 'rb')
         }
-        response = requests.patch(f'{url}profile/{self.id}/update/', headers=headers, files=file_data)
+        response = requests.patch(f'{url}profile/{self.id}/update/', headers=headers, files=file_data, verify=False)
         if response.status_code == 200:
             print('Your avatar updated')
             print(Fore.GREEN + '---------------------')
@@ -121,7 +121,7 @@ class User:
             print(Fore.GREEN + '---------------------')
     def delete(self):
         headers = self.auth_header()
-        response = requests.delete(f'{url}profile/{self.id}/delete/', headers=headers)
+        response = requests.delete(f'{url}profile/{self.id}/delete/', headers=headers, verify=False)
         if response.status_code == 204:
             print('Your profile deleted')
             print(Fore.GREEN + '---------------------')
@@ -139,7 +139,7 @@ class User:
 
     def setup2FA(self):
         headers = self.auth_header()
-        response = requests.get(f'{url}2fa/setup/', headers=headers)
+        response = requests.get(f'{url}2fa/setup/', headers=headers, verify=False)
         if response.status_code == 200:
             print(f"link for 2FA OTP: {response.json()['qr_code_url']}")
             print(Fore.GREEN + '---------------------')
@@ -149,7 +149,7 @@ class User:
 
     def verify(self, token):
         headers = self.auth_header()
-        response = requests.post(f'{url}2fa/verify/', headers=headers, json={'otp':token})
+        response = requests.post(f'{url}2fa/verify/', headers=headers, json={'otp':token}, verify=False)
         if response.status_code == 200:
             print('You are logged in')
             print(Fore.GREEN + '---------------------')
@@ -171,7 +171,7 @@ class User:
         print('User logged out')
         print(Fore.GREEN + '---------------------')
     def sign_up(self, answers):
-        response = requests.post(f'{url}create/', json=answers)
+        response = requests.post(f'{url}create/', json=answers, verify=False)
         if response.status_code == 201:
             print('User created')
             print(Fore.GREEN + '---------------------')
@@ -180,14 +180,19 @@ class User:
             print(Fore.GREEN + '---------------------')
         # answers = answers['form']
 
+
 class Websocket:
     def __init__(self, uri, token):
+        import ssl
         self.uri = uri
         self.token = token
         self.websocket = None
+        self.ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        self.ssl_context.check_hostname = False
+        self.ssl_context.verify_mode = ssl.CERT_NONE
 
     async def  connect(self):
-        self.websocket = await websockets.connect(self.uri, extra_headers={'Authorization': f'Bearer {self.token}'})
+        self.websocket = await websockets.connect(self.uri, extra_headers={'Authorization': f'Bearer {self.token}'}, ssl=self.ssl_context)
     async def send(self, data):
         try:
             await self.websocket.send(json.dumps(data))
@@ -210,11 +215,15 @@ class Websocket:
 class Game:
     def __init__(self, data: dict, websocket):
         self.websocket: Websocket = websocket
-        self._game_width = data['maze']['width']
-        self._game_height = data['maze']['height']
-        self._paddle_size = data['paddle_size']
-        self._no_players = data['no_players']
-        self._player_no = data['player_no']
+        self.ratio = 20
+        self._game_width: int = int(data['map_width'] / self.ratio)
+        self._game_height: int = int(data['map_height'] / self.ratio)
+        self._paddle_size: int = int(data['paddle_height'] / self.ratio)
+        self._no_players = 2
+        # self._player_no = data['player_no']
+        self.player1_username = data['player1_username']
+        self.player2_username = data['player2_username']
+        # self.ballradius = data['ball_radius'] / 10
 
     def retrieve_data(self):
         pass
@@ -224,11 +233,11 @@ class Game:
     def main(self, stdscr):
         self._stdscr = stdscr
         curses.curs_set(0)
-        curses.noecho()
-        stdscr.keypad(True)
-        self._stdscr.clear()
-        self._stdscr.nodelay(1)
-        self._stdscr.timeout(100)
+        stdscr.nodelay(1)
+        stdscr.timeout(100)
+        # curses.noecho()
+        # stdscr.keypad(True)
+        # self._stdscr.clear()
 
     def check_window(self):
         max_y, max_x = self._stdscr.getmaxyx()
@@ -247,13 +256,10 @@ class Game:
                 self._stdscr.addstr(0, 0, f"Current size: {max_x}x{max_y}. Please resize your terminal to {self._game_width}x{self._game_height}.")
                 self._stdscr.refresh()
 
-    def draw_vert_paddle(self, paddle: dict):
-        pos_bot: int = int(paddle.get('bot_position'))
-        pos_top: int = int(paddle.get('top_position'))
-        x: int = 1 if paddle.get('side') == 'Left' else self._game_width - 2
+    def draw_vert_paddle(self, pos_top: int, pos_bot: int, side: int):
+        x: int = 1 if side == 0 else self._game_width - 2
         for i in range(pos_top, pos_bot):
             max_y, max_x = self._stdscr.getmaxyx()
-            # print(f'Max_y: {max_y}, max_x: {max_x}, paddle_top: {pos_top}, paddle_bot: {pos_bot}, current_y: {i}')
             if 0 <= i < max_y and 0 <= x < max_x:
                 self._stdscr.addch(i, x, '|')
             if x == self._game_width - 1:
@@ -262,14 +268,15 @@ class Game:
             else:
                 if 0 <= i < max_y and 0 <= x + 1 < max_x:
                     self._stdscr.addch(i, x + 1, '|')
-        self._stdscr.refresh()
 
     def draw_ball(self, ball_pos:dict):
-        ball_y: int = int(ball_pos.get('y'))
-        ball_x: int = int(ball_pos.get('x'))
+        ball_y: int = int(ball_pos.get('y') / self.ratio)
+        ball_x: int = int(ball_pos.get('x') / self.ratio)
+        # print(ball_x, ball_y)
         if 0 <= ball_y <= self._game_height - 1 and 0 <= ball_x <= self._game_width - 1:
+            # print('ball')
             self._stdscr.addch(ball_y, ball_x, '0')
-        self._stdscr.refresh()
+        # self._stdscr.refresh()
 
     async def move_paddle(self, key):
         if key == curses.KEY_UP:

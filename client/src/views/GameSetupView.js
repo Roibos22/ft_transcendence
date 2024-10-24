@@ -34,7 +34,6 @@ export class GameSetupView {
 			},
 			settingsButtons: {
 				settingsContainer: document.getElementById('settingsView'),
-				pointsToWinButtons: document.querySelectorAll('[data-setting="pointsToWin"]'),
 				numberOfGamesButtons: document.querySelectorAll('[data-setting="numberOfGames"]')
 			},
 			startGameButtons: {
@@ -53,7 +52,7 @@ export class GameSetupView {
 	addEventListeners() {
 		const gameModeButtons = this.UIelements.gameModeButtons;
 		const { start } = this.UIelements.startGameButtons;
-		const { pointsToWinButtons, numberOfGamesButtons } = this.UIelements.settingsButtons;
+		const { numberOfGamesButtons } = this.UIelements.settingsButtons;
 
 		Cookies.setCookie("gameMode", GameModes.SINGLE, 24);
 
@@ -82,13 +81,6 @@ export class GameSetupView {
 				if (gameMode === GameModes.MULTI) {
 					this.addSecondPlayer();
 				}
-			});
-		});
-
-		Object.values(pointsToWinButtons).forEach(button => {
-			button.addEventListener('click', (e) => {
-				const value = parseInt(e.target.dataset.value);
-				State.set('tournament', 'pointsToWin', value);
 			});
 		});
 
@@ -124,12 +116,11 @@ export class GameSetupView {
 
 	update() {
 		const gameMode = State.get('gameSettings', 'mode');
-		const pointsToWin = State.get('tournament', 'pointsToWin');
 		const numberOfGames = State.get('tournament', 'numberOfGames');
 
 		const gameModeButtons = this.UIelements.gameModeButtons;
 		const { start, oneVone, tournament } = this.UIelements.startGameButtons;
-		const { pointsToWinButtons, numberOfGamesButtons, settingsContainer } = this.UIelements.settingsButtons;
+		const { numberOfGamesButtons, settingsContainer } = this.UIelements.settingsButtons;
 
 		gameModeButtons.multiPlayer.classList.toggle('active', gameMode === GameModes.MULTI);
 		gameModeButtons.singlePlayer.classList.toggle('active', gameMode === GameModes.SINGLE);
@@ -142,10 +133,6 @@ export class GameSetupView {
 		start.classList.toggle('d-none', gameMode === GameModes.ONLINE);
 		oneVone.classList.toggle('d-none', gameMode !== GameModes.ONLINE);
 	
-		Object.values(pointsToWinButtons).forEach(button => {
-			const value = parseInt(button.dataset.value);
-			button.classList.toggle('active', pointsToWin === value);
-		});
 		Object.values(numberOfGamesButtons).forEach(button => {
 			const value = parseInt(button.dataset.value);
 			button.classList.toggle('active', numberOfGames === value);

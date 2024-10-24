@@ -47,7 +47,7 @@ class Ball:
     @property
     def direction(self):
         return {'x': self._direction_x, 'y': self._direction_y}
-    
+
     @property
     def velocity(self):
         return {'x': self._velocity_x, 'y': self._velocity_y}
@@ -128,7 +128,7 @@ class GameLogic:
         self._player2_score = 0
         self._score_to_win = 5
         self._map_width = 1000
-        self._map_height = 500 
+        self._map_height = 500
         self._paddle_height = 50
         self._paddle_width = 5
         self._paddle_speed = 5
@@ -181,7 +181,7 @@ class GameLogic:
         self._phase = "game_over"
 
     async def render_countdown(self):
-        
+
         self._current_countdown = self._initial_countdown_value
         start_time = time.time() + self._initial_countdown_value
 

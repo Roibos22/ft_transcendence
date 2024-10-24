@@ -1,6 +1,7 @@
 import Router from '../Router.js';
 import * as Notification from '../services/notification.js';
 import * as UserService from '../services/api/userService.js';
+import * as Cookies from '../services/cookies.js';
 import State from '../State.js';
 
 export class ProfileView {
@@ -16,10 +17,12 @@ export class ProfileView {
 
 		this.UIelements = this.getUIElements();
 		this.setupEditSave();
+		this.setup2FA();
 
 		try {
 			const userData = await UserService.fetchUserData();
-			State.set('userData', userData);
+			this.userData = userData;
+			this.populateProfile();
 		}
 		catch (error) {
 			Notification.showErrorNotification(["Failed to load profile", "Please try again later"]);
@@ -29,7 +32,6 @@ export class ProfileView {
 	getUIElements() {
 		return {
 			card: {
-				avatar: document.getElementById('avatarImg'),
 				displayName: document.getElementById('displayName'),
 				username: document.getElementById('username'),
 				onlineStatus: document.getElementById('onlineStatus'),
@@ -63,20 +65,27 @@ export class ProfileView {
 				edit: document.getElementById('editBtn'),
 				save: document.getElementById('saveBtn'),
 				delete: document.getElementById('deleteUserBtn'),
-				confirmDelete: document.getElementById('confirmDeleteBtn')
+				confirmDelete: document.getElementById('confirmDeleteBtn'),
+				twoFactor: document.getElementById('enable2faBtn'),
 			}
 		};
 	}
 
+	update2FAStatus() {
+		this.UIelements.buttons.twoFactor.disabled = State.get("userData", "twoFA_active");
+	}
+
 	update() {
-		this.userData = State.get('userData');
 		this.populateProfile();
 		this.updateOnlineStatus();
-		this.updateAvatar();
+		this.update2FAStatus();
 	}
 
 	populateProfile() {
 		const data = this.userData;
+		if (!data) {
+			return;
+		}
 		const card = this.UIelements.card;
 		const personalInfo = this.UIelements.personalInfo;
 
@@ -92,17 +101,6 @@ export class ProfileView {
 		personalInfo.email.display.textContent = data.email;
 		personalInfo.phoneNumber.display.textContent = data.phone_number || 'Not provided';
 
-	}
-
-	updateAvatar() {
-		const avatarImg = this.UIelements.card.avatar;
-
-		if (this.userData.avatar) {
-			avatarImg.src = userData.avatar;
-		} 
-		// else {
-		//     avatarImg.src = './default_avatar.png'; // Make sure to have a default avatar image
-		// }
 	}
 
 	updateOnlineStatus() {
@@ -154,6 +152,30 @@ export class ProfileView {
 			} catch (error) {
 				console.error('Failed to update profile:', error);
 				// Error notification is handled in UserService.updateUserData
+			}
+		});
+	}
+
+	setup2FA() {
+		const twoFactorBtn = this.UIelements.buttons.twoFactor;
+		twoFactorBtn.addEventListener('click', async (e) => {
+			e.preventDefault();
+
+			try {
+				await UserService.enableTwoFactorAuth();
+				State.reset();
+
+				Cookies.deleteCookie("accessToken");
+				Cookies.deleteCookie("refreshToken");
+				Cookies.deleteCookie("gameId");
+				Cookies.deleteCookie("username");
+				Cookies.deleteCookie("gameMode");
+
+				window.history.pushState({}, "", "/");
+				Router.handleLocationChange();
+				Notification.showNotification(["Check your email to finish setting up 2FA"]);
+			} catch (error) {
+				console.error('Failed to toggle 2FA:', error);
 			}
 		});
 	}
