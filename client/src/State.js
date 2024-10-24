@@ -2,8 +2,6 @@ import { GameModes, initState } from "./constants.js";
 import { deepCopy } from "./utils/utils.js";
 import { currentView } from "./constants.js";
 import Socket from './services/Socket.js';
-import Router from "./Router.js";
-import { GameView } from "./views/GameView.js";
 
 class State {
 	constructor() {
@@ -26,8 +24,7 @@ class State {
 		if (this.data.gameData.gameId && (window.location.pathname === '/game' || window.location.pathname === '/online-game' || window.location.pathname == '/online-game-loading'))
 		{
 			console.log("reconnecting to Socket");
-			const index = this.get('tournament', 'currentMatchIndex');
-			const currentMatch = this.get('tournament', 'matches')[index];
+			const currentMatch = this.get('tournament', 'matches')[this.get('tournament', 'currentMatchIndex')];
 			const gameId = this.data.gameData.gameId;
 			const oldUrl = this.get('gameSettings', 'mode') === GameModes.ONLINE ? 'online_game' : 'local_game';
 

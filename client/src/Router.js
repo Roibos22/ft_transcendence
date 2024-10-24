@@ -12,7 +12,7 @@ class Router {
 	init() {
 		window.onpopstate = this.handleLocationChange.bind(this);
 		document.addEventListener("click", (e) => this.handleLinkClick(e));
-		this.handleLocationChange();  // Initial route load
+		this.handleLocationChange();
 	}
 
 	async handleLocationChange() {

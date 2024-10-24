@@ -76,14 +76,6 @@ export class LocalGameOverviewView {
 		this.updateMatchList();
 	}
 
-	cleanup() {
-		// console.log("Clean up Local Overview");
-		// const tournament = State.get('tournament');
-		// const currentMatchIndex = tournament.currentMatchIndex;
-		// const currentMatch = tournament.matches[currentMatchIndex];
-		// currentMatch.socket.close();
-	}
-
 	overwritePlayerNames() {
 		State.data.gameData.constants.player2Username = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
 	}

@@ -18,11 +18,8 @@ export class OnlineGameLoadingView {
 	}
 
 	connectMatchmakingSocket() {
-
-		const matches = State.get('tournament', 'matches');
-		if (matches[0].socket && matches[0].socket.readyState === WebSocket.OPEN) {
-			return;
-		}
+		const socket = State.get('tournament', 'matches')[0];
+		if (socket && socket.readyState === WebSocket.OPEN) { return; }
 
 		this.matchMakingSocket = new Socket('matchmaking', {});
 		this.matchMakingSocket.addEventListenersMatchmaking();
@@ -31,13 +28,17 @@ export class OnlineGameLoadingView {
 			console.log("Matchmaking Socket Message received", data);
 			if (data.type === 'game_joined') {
 				this.matchMakingSocket.close();
-				Cookies.setCookie("gameId", data.game_id, 24);
-				console.log("Matchmaking Done");
-				await this.initGameSocket(Cookies.getCookie("gameId"));
-				window.history.pushState({}, "", "/online-game");
-				Router.handleLocationChange();
+				this.connectGameSocket(data);
 			}
 		});
+	}
+
+	async connectGameSocket(data) {
+		Cookies.setCookie("gameId", data.game_id, 24);
+		console.log("Matchmaking Done");
+		await this.initGameSocket(Cookies.getCookie("gameId"));
+		window.history.pushState({}, "", "/online-game");
+		Router.handleLocationChange();
 	}
 
 	createTournament() {
