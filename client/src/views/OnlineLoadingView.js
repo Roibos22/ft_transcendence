@@ -69,7 +69,7 @@ export class OnlineGameLoadingView {
 		matches[0].socket.addEventListenersGame();
 
 		matches[0].players[0].name = "Updated Name";
-		State.set('tournament', 'mathches', matches);
+		//State.set('tournament', 'matches', matches);
 		await new Promise(resolve => setTimeout(resolve, 200));
 	}
 

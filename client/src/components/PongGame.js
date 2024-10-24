@@ -50,6 +50,7 @@ export class PongGame {
 		}
 		this.tournament = null;
 		this.socket.close();
+		console.log("SOCKET DESTROYED");
 		this.socket = null;
 	}
 }

@@ -13,6 +13,11 @@ export class GameView {
 	async init() {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
+
+		// if we come here, there is no socket but we have a game id -> try to reconnect
+		setTimeout(() => {
+			State.reconnect();
+		}, 100);
 		this.setupGame();
 	}
 
