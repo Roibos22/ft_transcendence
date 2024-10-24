@@ -215,9 +215,10 @@ class Websocket:
 class Game:
     def __init__(self, data: dict, websocket):
         self.websocket: Websocket = websocket
-        self._game_width = data['map_width'] / 10
-        self._game_height = data['map_height'] / 20
-        self._paddle_size = data['paddle_height'] / 10
+        self.ratio = 20
+        self._game_width: int = int(data['map_width'] / self.ratio)
+        self._game_height: int = int(data['map_height'] / self.ratio)
+        self._paddle_size: int = int(data['paddle_height'] / self.ratio)
         self._no_players = 2
         # self._player_no = data['player_no']
         self.player1_username = data['player1_username']
@@ -232,11 +233,11 @@ class Game:
     def main(self, stdscr):
         self._stdscr = stdscr
         curses.curs_set(0)
-        curses.noecho()
-        stdscr.keypad(True)
-        self._stdscr.clear()
-        self._stdscr.nodelay(1)
-        self._stdscr.timeout(100)
+        stdscr.nodelay(1)
+        stdscr.timeout(100)
+        # curses.noecho()
+        # stdscr.keypad(True)
+        # self._stdscr.clear()
 
     def check_window(self):
         max_y, max_x = self._stdscr.getmaxyx()
@@ -267,14 +268,15 @@ class Game:
             else:
                 if 0 <= i < max_y and 0 <= x + 1 < max_x:
                     self._stdscr.addch(i, x + 1, '|')
-        self._stdscr.refresh()
 
     def draw_ball(self, ball_pos:dict):
-        ball_y: int = int(ball_pos.get('y'))
-        ball_x: int = int(ball_pos.get('x'))
+        ball_y: int = int(ball_pos.get('y') / self.ratio)
+        ball_x: int = int(ball_pos.get('x') / self.ratio)
+        # print(ball_x, ball_y)
         if 0 <= ball_y <= self._game_height - 1 and 0 <= ball_x <= self._game_width - 1:
+            # print('ball')
             self._stdscr.addch(ball_y, ball_x, '0')
-        self._stdscr.refresh()
+        # self._stdscr.refresh()
 
     async def move_paddle(self, key):
         if key == curses.KEY_UP:

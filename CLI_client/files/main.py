@@ -18,7 +18,7 @@ async def play(user: User):
         "token": user.access_tocken
     })
     data = await websocket.recieve()
-    print(data)
+    # print(data)
     game_id = data.get('game_id')
     url = f'{url_game}ws/online_game/{game_id}/'
     websocket = Websocket(url, user.access_tocken)
@@ -33,12 +33,10 @@ async def play(user: User):
     print('Waiting for data')
     while True:
         data: dict = await websocket.recieve()
-        print(data)
         if data and data.get('game_data'):
             game = Game(data.get('game_data'), websocket)
             break
         await websocket.send({"action": "get_init_data"})
-    print(game)
     game.start()
     game.check_window()
     await websocket.send({
@@ -48,34 +46,45 @@ async def play(user: User):
     await websocket.send({
         "action": "player_ready"
     })
+    # while True:
+    #     data: dict = await websocket.recieve()
+    #     print(data)
+    #     time.sleep(3)
+    curr_time = time.time()
+    game._stdscr.refresh()
     while True:
         game._stdscr.clear()
         data: dict = await websocket.recieve()
         if data == None:
             break
         data = data.get('game_state', None)
-        if data and data['countdown'] != 0:
-            print(f'Game will start in {int(data.get("countdown"))}')
-        elif data:
-            game.draw_vert_paddle(data.get('player1_pos'), data.get('player1_pos') + game._paddle_size, 0)
-            game.draw_vert_paddle(data.get('player2_pos'), data.get('player2_pos') + game._paddle_size, 1)
-            game.draw_ball(data.get('ball'))
+        # if data and data['countdown'] != 0:
+        #     print(f'Game will start in {int(data.get("countdown"))}')
+        # if data and time.time() - curr_time > 1:
+        #     # game.draw_vert_paddle(data.get('player2_pos'), data.get('player2_pos') + game._paddle_size, 1)
+        #     curr_time = time.time()
+        if data:
+            game.draw_ball(dict(data.get('ball')))
+            game.draw_vert_paddle(int(data.get('player1_pos') / game.ratio), int(data.get('player1_pos') / game.ratio) + game._paddle_size, 0)
+            game.draw_vert_paddle(int(data.get('player2_pos') / game.ratio), int(data.get('player2_pos') / game.ratio) + game._paddle_size, 1)
+            game._stdscr.refresh()
+            # print(data.get('ball'))
+
         key = game._stdscr.getch()
         # await game.move_paddle(key)
         if key == ord('w'):
-            # print("key up")
-            websocket.send({
+            await websocket.send({
                 "action": "move_player",
                 "direction": 1
             })
+            key = None
         elif key == ord('s'):
-            # print("key up")
-            websocket.send({
+            await websocket.send({
                 "action": "move_player",
                 "direction": -1
             })
-        game._stdscr.refresh()
-        time.sleep(0.016)
+            key = None
+        # time.sleep(0.01)
 
 
 
