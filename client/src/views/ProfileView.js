@@ -23,10 +23,12 @@ export class ProfileView {
 		try {
 			const userData = await UserService.fetchUserData();
 			this.userData = userData;
+			console.log(userData);
 			this.populateProfile();
 		}
 		catch (error) {
 			Notification.showErrorNotification(["Failed to load profile", "Please try again later"]);
+			console.log(error);
 		}
 	}
 
@@ -35,8 +37,6 @@ export class ProfileView {
 			card: {
 				displayName: document.getElementById('displayName'),
 				username: document.getElementById('username'),
-				onlineStatus: document.getElementById('onlineStatus'),
-				emailVerified: document.getElementById('emailVerified'),
 				dateJoined: document.getElementById('dateJoined'),
 			},
 			personalInfo : {
@@ -88,7 +88,6 @@ export class ProfileView {
 
 		card.displayName.textContent = data.display_name;
 		card.username.textContent = '@' + data.username;
-		card.emailVerified.textContent = data.email_verified ? 'Yes' : 'No';
 		card.dateJoined.textContent = new Date(data.date_joined).toLocaleDateString();
 
 		personalInfo.displayName.display.textContent = data.display_name;
@@ -96,15 +95,6 @@ export class ProfileView {
 		personalInfo.lastName.display.textContent = data.last_name;
 		personalInfo.email.display.textContent = data.email;
 
-	}
-
-	updateOnlineStatus() {
-		const onlineStatusElement = this.UIelements.card.onlineStatus;
-		const isOnline = this.userData.is_online;
-		
-		onlineStatusElement.textContent = isOnline ? 'Online' : 'Offline';
-		onlineStatusElement.classList.remove(isOnline ? 'bg-danger' : 'bg-success');
-		onlineStatusElement.classList.add(isOnline ? 'bg-success' : 'bg-danger');
 	}
 
 	setupEditSave() {

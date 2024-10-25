@@ -35,7 +35,6 @@ export async function fetchUserData() {
 			throw new Error("Username not found in cookies");
 		}
 
-		// TODO need to change this to userId
 		return await API.fetchWithAuth(`${API.API_BASE_URL}/users/profile/${username}/`);
 	} catch (error) {
 		console.error('Error fetching user data:', error);
@@ -79,7 +78,6 @@ export async function enableTwoFactorAuth() {
 export async function updateUserData(updatedData) {
 	try {
 		const username = Cookies.getCookie("username");
-		// const username = 1;
 		if (!username) {
 			throw new Error("User ID not found in cookies");
 		}
@@ -105,9 +103,7 @@ export async function deleteUserAccount() {
 		await API.fetchWithAuth(`${API.API_BASE_URL}/users/profile/${username}/delete/`, {
 			method: 'DELETE'
 		});
-		Cookies.deleteCookie("username");
-		Cookies.deleteCookie("userId");
-		Cookies.deleteCookie("accessToken");
+		Cookies.deleteAllCookies();
 		Notification.showNotification(["Account deleted successfully"]);
 	} catch (error) {
 		console.error('Error deleting user account:', error);

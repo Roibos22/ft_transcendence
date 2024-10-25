@@ -72,7 +72,9 @@ export default class InputHandler {
 		if ((this.game.gameMode === GameModes.SINGLE || this.game.gameMode === GameModes.MULTI) && message.action === 'player_ready') {
 			this.game.socket.send(JSON.stringify({ action: 'player_ready', player_no: '1' }))
 			this.game.socket.send(JSON.stringify({ action: 'player_ready', player_no: '2' }))
+			return ;
 		}
+		this.game.socket.send(JSON.stringify(message));
 	}
 
 	destroy() {
