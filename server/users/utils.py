@@ -68,7 +68,7 @@ def send_email_verification_link_via_mail(user):
     otp_code = two_factor.code
     send_mail(
         'Email Verification',
-        f'Press here to verify your email: {EMAIL_VERIFICATION_LINK}{user.id}/?token={otp_code}',
+        f'Press here to verify your email: {EMAIL_VERIFICATION_LINK}{user.username}/?token={otp_code}',
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
         fail_silently=False,
@@ -79,7 +79,7 @@ def send_2fa_verification_link_via_mail(user):
     otp_code = two_factor.code
     send_mail(
         '2fa Verification',
-        f'Press here to complete 2fa setup: {TWOFA_VERIFICATION_LINK}{user.id}/?token={otp_code}',
+        f'Press here to complete 2fa setup: {TWOFA_VERIFICATION_LINK}{user.username}/?token={otp_code}',
         settings.DEFAULT_FROM_EMAIL,
         [user.email],
         fail_silently=False,
