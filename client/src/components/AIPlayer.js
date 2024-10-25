@@ -8,7 +8,7 @@ export default class AIPlayer {
 		this.lastDecisionTime = 0;
 		this.targetY = 0;
 		this.paddleHeight = 50;
-        this.paddleWidth = 10;
+		this.paddleWidth = 10;
 		this.ballRadius = 5;
 
 		setInterval(() => this.calculateTargetY(), 1000);
@@ -16,6 +16,8 @@ export default class AIPlayer {
 	}
 
 	calculateTargetY() {
+		if (!this.game) return;
+
 		const currentTime = performance.now();
 		const ball = deepCopy(State.get('gameData', 'ball'));
 		if (ball.velocity.x < 0) return;
@@ -37,7 +39,7 @@ export default class AIPlayer {
 	}
 
 	movePaddle() {
-		if (State.get('gameData', 'phase') !== GamePhases.RUNNING) {
+		if (State.get('gameData', 'phase') !== GamePhases.RUNNING || (!this.game)) {
 			return;
 		}
 	
@@ -49,5 +51,13 @@ export default class AIPlayer {
 		} else {
 			this.game.socket.send(JSON.stringify({action: 'move_player', player_no: '2', direction: '-1'}));
 		}
+	}
+
+	destroy() {
+		clearInterval(this.calculateInterval);
+		clearInterval(this.moveInterval);
+		this.calculateInterval = null;
+		this.moveInterval = null;
+		this.game = null;
 	}
 }

@@ -122,11 +122,6 @@ html, body {
 	width: 150px;
 }
 
-/* Points to Win Buttons */
-.btn-group-points-to-win .btn-setting {
-	width: 60px;
-}
-
 /* Number of Games Buttons */
 .btn-group-number-of-games .btn-setting {
 	width: 60px;

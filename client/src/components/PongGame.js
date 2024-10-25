@@ -9,10 +9,13 @@ import { GameModes, GameTypes } from "../constants.js";
 export class PongGame {
 	constructor(socket) {
 
+		// TODO
 		this.map = {
-			width: 1000,
-			height: 500,
+			width: State.get('gameData', 'constants', 'mapWidth'),
+			height: State.get('gameData', 'constants', 'mapHeight'),
 		};
+
+		console.log(this.map.width);
 
 		this.twoD = null;
 		this.threeD = null;
@@ -39,5 +42,19 @@ export class PongGame {
 			console.log('AIPlayer created');
 			this.AIplayer = new AIPlayer(this);
 		}
+	}
+
+	destroy() {
+		this.twoD = null;
+		this.threeD = null;
+		this.inputHandler.destroy();
+		this.inputHandler = null;
+		if (this.AIplayer) {
+			this.AIplayer.destroy();
+			this.AIplayer = null;
+		}
+		this.tournament = null;
+		this.socket.close();
+		this.socket = null;
 	}
 }

@@ -31,7 +31,7 @@ export class Tournament {
 		return State.get('tournament', 'currentMatch');
 	}
 
-	getNextMatch() {
+	getNextMatch() { 
 		return State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex') + 1];
 	}
 

@@ -5,10 +5,9 @@
 			<h2 class="text-center mb-4 fs-1 fw-bold">Welcome to ElePong!</h2>
 
 			<!-- Profile Icon -->
-			<div class="position-absolute top-0 start-0 m-3">
-				<a href="/profile" class="text-decoration-none">
-					<span class="profile-link">Profile</span>
-				</a>
+			<div class="position-absolute top-0 start-0 m-3 d-flex gap-2">
+				<button id="btn_profile" class="btn">Profile</button>
+				<button id="btn_logout" class="btn">Logout</button>
 			</div>
 
 			<!-- SEGMENTED PICKER GAME MODE -->
@@ -26,50 +25,34 @@
 					</div>
 				</div>
 			</div>
-			  
 
 			<!-- PLAYER INPUT FIELDS -->
-			<div id="player1Input" class="player-input-fields">
-				<div class="player-input-group mb-3">
+			<div id="playerInput" class="player-input-fields">
+				<div class="player-input-group mb-0">
 					<div class="input-group mb-3">
 						<input type="text" class="form-control player-name-input form-input" id="player1input" placeholder="Player 1" autocomplete=off>
-					</div>
-					<div class="input-group mb-1" id="player2container">
-						<input type="text" class="form-control player-name-input form-input" id="player2input" placeholder="Player 2" autocomplete=off>
 					</div>
 				</div>
 			</div>
 
 			<!-- BUTTONS -->
 			<div class="d-flex flex-column align-items-center">
-				<div class="mt-4 text-center">
+				<div class="mt-2 text-center">
+					<p class="mb-3">
+						<a id ="addPlayerButton" class="btn btn-action fw-bold">Add Player</a>
+					</p>
 					<p class="mb-0">
-						<a id ="startGameButton" href="/game" class="btn btn-action fw-bold">Start Game</a>
+						<a id ="startGameButton" href="/local-game-overview" class="btn btn-action fw-bold">Start Game</a>
 					</p>
 					<p class="mb-0">
 						<a id="online1v1Button" href="/online-game-loading" class="btn btn-action fw-bold">Start Game</a>
 					</p>
-					<!-- <p class="mb-0">
-						<a id="joinTournamentButton" href="/game" class="btn btn-action fw-bold">Join Tournament</a>
-					</p> -->
 				</div>
 			</div>
 
 			<!-- TOURNAMENT SETTINGS -->
 			<div id="settingsView" class="container-md settings-input-fields mt-4">
 				<!-- <h5 class="text-center mt-4 mb-4">Tournament Settings</h5> -->
-			
-				<!-- POINTS TO WIN -->
-				<div class="mb-3 settings-group points-to-win">
-					<label class="form-label text-center fw-bold">Points to win:</label>
-					<div class="btn-container d-flex flex-wrap justify-content-center btn-group-points-to-win" role="group" aria-label="Points to win">
-						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="3">3</button>
-						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="5">5</button>
-						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="10">10</button>
-						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="15">15</button>
-						<button type="button" class="btn btn-setting" data-setting="pointsToWin" data-value="20">20</button>
-					</div>
-				</div>
 		
 				<!-- Number of Games Buttons -->
 				<div class="mb-3 settings-group number-of-games">

@@ -3,14 +3,17 @@ import { GameModes } from "../constants.js";
 export default class InputHandler {
 	constructor(game) {
 		this.game = game;
-		this.init();
 		this.currentlyPressedKeys = {};
+		this.boundHandleKeyDown = this.handleKeyDown.bind(this);
+		this.boundHandleKeyUp = this.handleKeyUp.bind(this);
+		this.boundPreventDefaultScroll = this.preventDefaultScroll.bind(this);
+		this.init();
 	}
 
 	init() {
-		document.addEventListener('keydown', (e) => this.handleKeyDown(e));
-		document.addEventListener('keyup', (e) => this.handleKeyUp(e));
-		window.addEventListener('keydown', (e) => this.preventDefaultScroll(e));
+		document.addEventListener('keydown', this.boundHandleKeyDown);
+		document.addEventListener('keyup', this.boundHandleKeyUp);
+		window.addEventListener('keydown', this.boundPreventDefaultScroll);
 	}
 
 	preventDefaultScroll(e) {
@@ -32,8 +35,9 @@ export default class InputHandler {
 		};
 
 		if (this.game.gameMode === GameModes.SINGLE) {
-			delete keyActions['ArrowUp'];
-			delete keyActions['ArrowDown'];
+			keyActions['ArrowUp'].player_no = '1';
+			keyActions['ArrowDown'].player_no = '1';
+			keyActions['Enter'].player_no = '1';
 		}
 	
 		if (keyActions[e.key] && !this.currentlyPressedKeys[e.key]) {
@@ -48,7 +52,9 @@ export default class InputHandler {
 		const keyReleaseActions = ['w', 's', 'ArrowUp', 'ArrowDown'];
 	
 		if (keyReleaseActions.includes(e.key)) {
-			const player_no = ['w', 's'].includes(e.key) ? '1' : '2';
+			let player_no = ['w', 's'].includes(e.key) ? '1' : '2';
+			if (this.game.gameMode === GameModes.SINGLE)
+				player_no = '1';
 			this.sendSocketMessage({ action: 'move_player', player_no, direction: '0' });
 			this.currentlyPressedKeys[e.key] = false;
 		}
@@ -63,6 +69,21 @@ export default class InputHandler {
 	}
 	
 	sendSocketMessage(message) {
+		if (this.game.gameMode === GameModes.SINGLE && message.action === 'player_ready')
+			this.game.socket.send(JSON.stringify({ action: 'player_ready', player_no: '2' }))
 		this.game.socket.send(JSON.stringify(message));
+	}
+
+	destroy() {
+		// Remove all event listeners
+		document.removeEventListener('keydown', this.boundHandleKeyDown);
+		document.removeEventListener('keyup', this.boundHandleKeyUp);
+		window.removeEventListener('keydown', this.boundPreventDefaultScroll);
+
+		// Clear any references
+		this.game = null;
+		this.currentlyPressedKeys = null;
+
+		console.log('InputHandler destroyed');
 	}
 }
