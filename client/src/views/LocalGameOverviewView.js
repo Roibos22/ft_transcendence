@@ -70,14 +70,9 @@ export class LocalGameOverviewView {
 	}
 
 	update() {
-		this.overwritePlayerNames();
 		this.updateTournamentInfo();
 		this.updateStandings();
 		this.updateMatchList();
-	}
-
-	overwritePlayerNames() {
-		State.data.gameData.constants.player2Username = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
 	}
 
 	updateTournamentInfo() {
