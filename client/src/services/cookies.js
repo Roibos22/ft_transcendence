@@ -17,6 +17,7 @@ export function deleteAllCookies() {
 		deleteCookie(cookieName);
 	});
 
+	console.log("All cookies deleted");
 }
 
 export function getCookie(name) {
