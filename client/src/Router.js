@@ -6,6 +6,7 @@ import * as Notification from './services/notification.js';
 class Router {
 	constructor() {
 		this.routes = urlRoutes;
+		this.currentPath = null;
 		this.init();
 	}
 
@@ -19,6 +20,11 @@ class Router {
 		let location = window.location.pathname;
 		if (location.length === 0) {
 			location = "/";
+		}
+
+		if (this.currentPath === location) {
+			console.log("Already on this route, skipping reload");
+			return;
 		}
 
 		const route = this.routes[location] || this.routes["404"];
@@ -36,6 +42,8 @@ class Router {
 				return;
 			}
 		}
+
+		this.currentPath = location;
 		await this.loadView(route);
 	}
 
@@ -44,7 +52,7 @@ class Router {
 			const html = await fetch(route.template).then(response => response.text());
 			document.getElementById("app").innerHTML = html;
 			document.title = route.title;
-			this.initCurrentView(window.location.pathname);
+			await this.initCurrentView(route);
 		} catch (error) {
 			console.error('Error loading view:', error);
 			const notFoundHtml = await fetch(this.routes["404"].template).then(response => response.text());
@@ -61,14 +69,25 @@ class Router {
 		const { target } = event;
 		if (target.matches("nav a, a[href^='/']")) {
 			event.preventDefault();
+			const newPath = new URL(target.href).pathname;
+			
+			if (this.currentPath === newPath) {
+				console.log("Already on this route, skipping navigation");
+				return;
+			}
+
 			window.history.pushState({}, "", target.href);
 			this.handleLocationChange();
 		}
 	}
 
-	async initCurrentView(location) {
-		const route = this.routes[location] || this.routes["404"];
+	async initCurrentView(route) {
 		const ViewClass = route.view;
+
+		if (currentView.view instanceof ViewClass) {
+			console.log("Same view type already loaded, skipping initialization");
+			return;
+		}
 
 		if (currentView.view && typeof currentView.view.cleanup === 'function') {
 			if (currentView.view instanceof ViewClass) {
@@ -82,6 +101,7 @@ class Router {
 		currentView.view = new ViewClass();
 	
 		await currentView.view.init();
+		console.log(`Initialized ${ViewClass.name}`);
 	}
 
 	async loadTemplate(name) {
