@@ -196,11 +196,13 @@ def update_user(request, username: str):
 @debug_request
 @api_view(['DELETE'])
 @permission_classes([Is2FAComplete])
-def delete_user(request):
-    print("delete user")
+def delete_user(request, username: str):
     user = request.user
+    if (username != user.username):
+        return Response({'error': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
     user.delete()
-    return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    # return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    return Response({'message': 'User deleted successfully'}, status=status.HTTP_200_OK)
 
 
 @debug_request
