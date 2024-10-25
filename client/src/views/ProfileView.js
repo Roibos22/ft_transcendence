@@ -17,6 +17,7 @@ export class ProfileView {
 
 		this.UIelements = this.getUIElements();
 		this.setupEditSave();
+		this.setupDeleteUser();
 		this.setup2FA();
 
 		try {
@@ -37,7 +38,6 @@ export class ProfileView {
 				onlineStatus: document.getElementById('onlineStatus'),
 				emailVerified: document.getElementById('emailVerified'),
 				dateJoined: document.getElementById('dateJoined'),
-				lastLogin: document.getElementById('lastLogin'),
 			},
 			personalInfo : {
 				displayName: {
@@ -55,10 +55,6 @@ export class ProfileView {
 				email: {
 					display: document.getElementById('emailDisplay'),
 					input: document.getElementById('emailInput'),
-				},
-				phoneNumber: {
-					display: document.getElementById('phoneNumberDisplay'),
-					input: document.getElementById('phoneNumberInput'),
 				}
 			},
 			buttons: {
@@ -67,7 +63,8 @@ export class ProfileView {
 				delete: document.getElementById('deleteUserBtn'),
 				confirmDelete: document.getElementById('confirmDeleteBtn'),
 				twoFactor: document.getElementById('enable2faBtn'),
-			}
+			},
+			deleteUserModal: document.getElementById('deleteUserModal')
 		};
 	}
 
@@ -93,13 +90,11 @@ export class ProfileView {
 		card.username.textContent = '@' + data.username;
 		card.emailVerified.textContent = data.email_verified ? 'Yes' : 'No';
 		card.dateJoined.textContent = new Date(data.date_joined).toLocaleDateString();
-		card.lastLogin.textContent = data.last_login ? new Date(data.last_login).toLocaleDateString() : 'Never';
 
 		personalInfo.displayName.display.textContent = data.display_name;
 		personalInfo.firstName.display.textContent = data.first_name;
 		personalInfo.lastName.display.textContent = data.last_name;
 		personalInfo.email.display.textContent = data.email;
-		personalInfo.phoneNumber.display.textContent = data.phone_number || 'Not provided';
 
 	}
 
@@ -137,7 +132,6 @@ export class ProfileView {
 				first_name: personalInfo.firstName.input.value,
 				last_name: personalInfo.lastName.input.value,
 				email: personalInfo.email.input.value,
-				phone_number: personalInfo.phoneNumber.input.value,
 				display_name: personalInfo.displayName.input.value
 			};
 
@@ -179,26 +173,29 @@ export class ProfileView {
 			}
 		});
 	}
+
+	setupDeleteUser() {
+		const deleteUserBtn = this.UIelements.buttons.delete;
+		const confirmDeleteBtn = this.UIelements.buttons.confirmDelete;
+		const deleteUserModal = new bootstrap.Modal(this.UIelements.deleteUserModal);
+	
+		deleteUserBtn.addEventListener('click', () => {
+			deleteUserModal.show();
+		});
+	
+		confirmDeleteBtn.addEventListener('click', async () => {
+			try {
+				await UserService.deleteUserAccount();
+				deleteUserModal.hide();
+
+				window.history.pushState({}, "", "/");
+				Router.handleLocationChange();
+				Notification.showNotification(["Account has been deleted"]);
+
+			} catch (error) {
+				console.error('Error deleting user:', error);
+				// Error notification is handled in UserService.deleteUserAccount
+			}
+		});
+	}
 }
-
-// function setupDeleteUser() {
-// 	const deleteUserBtn = document.getElementById('deleteUserBtn');
-// 	const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-// 	const deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
-
-// 	deleteUserBtn.addEventListener('click', () => {
-// 		deleteUserModal.show();
-// 	});
-
-// 	confirmDeleteBtn.addEventListener('click', async () => {
-// 		try {
-// 			await UserService.deleteUserAccount();
-// 			deleteUserModal.hide();
-// 			// Redirect to login page
-// 			window.location.href = '/login';
-// 		} catch (error) {
-// 			console.error('Error deleting user:', error);
-// 			// Error notification is handled in UserService.deleteUserAccount
-// 		}
-// 	});
-// }
