@@ -112,6 +112,19 @@ export class GameSetupView {
 				this.deletePlayer(e.target);
 			}
 		});
+
+		this.UIelements.player1Input.addEventListener('input', () => {
+			const input = this.UIelements.player1Input;
+			const name = input.value;
+			const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
+
+			if (newName !== name) {
+				Notification.showErrorNotification('Player name can only contain letters and numbers');
+			}
+
+			input.value = newName;
+		}
+		);
 	}
 
 	initSettingsUI() {

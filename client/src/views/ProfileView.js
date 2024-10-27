@@ -16,6 +16,7 @@ export class ProfileView {
 		document.getElementById('app').innerHTML = content;
 
 		this.UIelements = this.getUIElements();
+		this.addEventListeners();
 		this.setupEditSave();
 		this.setupDeleteUser();
 		this.setup2FA();
@@ -65,6 +66,27 @@ export class ProfileView {
 			},
 			deleteUserModal: document.getElementById('deleteUserModal')
 		};
+	}
+
+	addEventListeners() {
+		const inputs = [
+			this.UIelements.personalInfo.displayName.input,
+			this.UIelements.personalInfo.firstName.input,
+			this.UIelements.personalInfo.lastName.input
+		];
+	
+		inputs.forEach(input => {
+			input.addEventListener('input', () => {
+				const name = input.value;
+				const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
+	
+				if (newName !== name) {
+					Notification.showErrorNotification('This field can only contain letters and numbers');
+				}
+	
+				input.value = newName;
+			});
+		});
 	}
 
 	update2FAStatus() {
