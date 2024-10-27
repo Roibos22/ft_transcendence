@@ -3,6 +3,7 @@ import Router from '../Router.js';
 import State from '../State.js';
 import * as Cookies from '../services/cookies.js';
 import { buttonIdToGameMode } from '../utils/utils.js';
+import * as Notification from '../services/notification.js';
 
 export class GameSetupView {
 	constructor() {
@@ -169,10 +170,23 @@ export class GameSetupView {
 		newPlayerInput.className = 'player-input-group mb-3';
 		newPlayerInput.innerHTML = `
 			<div class="input-group">
-				<input type="text" class="form-control player-name-input form-input" id="player${playerCount}" placeholder="Player ${playerCount}" autocomplete="off">
+				<input type="text" class="form-control player-name-input form-input" id="player${playerCount}" placeholder="Player ${playerCount}" autocomplete="off" pattern="^[a-zA-Z0-9 ]+$">
 				<button class="btn btn-outline-secondary delete-player-btn" type="button">X</button>
 			</div>
 		`;
+
+		newPlayerInput.querySelector('input').addEventListener('input', () => {
+			const input = newPlayerInput.querySelector('input');
+			const name = input.value;
+			const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
+
+			if (newName !== name) {
+				Notification.showErrorNotification('Player name can only contain letters and numbers');
+			}
+
+			input.value = newName;
+		});
+
 		this.UIelements.playerInputs.appendChild(newPlayerInput);
 		this.updatePlayers();
 	}
@@ -185,6 +199,19 @@ export class GameSetupView {
 				<input type="text" class="form-control player-name-input form-input" id="player2" placeholder="Player 2" autocomplete="off">
 			</div>
 		`;
+
+		newPlayerInput.querySelector('input').addEventListener('input', () => {
+			const input = newPlayerInput.querySelector('input');
+			const name = input.value;
+			const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
+
+			if (newName !== name) {
+				Notification.showErrorNotification('Player name can only contain letters and numbers');
+			}
+
+			input.value = newName;
+		});
+
 		this.UIelements.playerInputs.appendChild(newPlayerInput);
 		this.updatePlayers();
 	}
