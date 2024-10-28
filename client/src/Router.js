@@ -2,6 +2,7 @@ import { currentView } from './constants.js';
 import { urlRoutes } from './utils/routeUtils.js';
 import * as Cookies from './services/cookies.js';
 import * as Notification from './services/notification.js';
+import * as UserService from './services/api/userService.js';
 import State from './State.js';
 
 class Router {
@@ -39,7 +40,6 @@ class Router {
 		const location = this.getValidLocation();
 		this.handleAuthRoutes(location);
 
-
 		if (this.currentPath === location) {
 			console.log("Already on this route, skipping reload");
 			return;
@@ -52,7 +52,9 @@ class Router {
 			return;
 		}
 
-		if (!route.public && !this.validateToken()) {
+		const token_validity = await this.validateToken();
+
+		if (!route.public && !token_validity) {
 			await this.handleUnauthenticatedAccess(route);
 			return;
 		}
@@ -84,8 +86,14 @@ class Router {
 		}
 	}
 
-	validateToken() {
-		return Cookies.getCookie("accessToken");
+	async validateToken() {
+		try {
+			await UserService.fetchUserData();
+		} catch (error) {
+			console.error('Error validating token');
+			return false;
+		}
+		return true;
 	}
 
 	isNavigationLink(target) {
