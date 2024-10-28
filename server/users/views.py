@@ -28,7 +28,7 @@ def create_user(request):
         user = serializer.save()
         data = clean_response_data(serializer.data)
         generate_otp(user=user)
-        send_email_verification_link_via_mail(user=user)
+        # send_email_verification_link_via_mail(user=user)
         return Response(data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

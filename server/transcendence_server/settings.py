@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-7f^-%ra#sj3m)1h=)@!!6dud8d9@fk+b!*!lyqp$va@u*(7^vh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['server', 'localhost', 'localhost.com']
+ALLOWED_HOSTS = ['server', 'localhost', 'localhost.com', '10.15.203.4']
 
 # Application definition
 
@@ -92,6 +92,7 @@ SIMPLE_JWT = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -100,12 +101,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_otp.middleware.OTPMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 # CORS_ALLOWED_ORIGINS = [
 #     'http://localhost:3000',
 #     'http://127.0.0.1:3000',
+# ]
+
+# CORS_ALLOWED_ORIGINS = [
+#     'https://10.15.203.4:8443',  # Adjust as needed
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000'
 # ]
 
 CORS_ALLOW_ALL_ORIGINS = True
