@@ -8,15 +8,10 @@ import { GameModes, GameTypes } from "../constants.js";
 
 export class PongGame {
 	constructor(socket) {
-
-		// TODO
 		this.map = {
 			width: State.get('gameData', 'constants', 'mapWidth'),
 			height: State.get('gameData', 'constants', 'mapHeight'),
 		};
-
-		console.log(this.map.width);
-
 		this.twoD = null;
 		this.threeD = null;
 		this.inputHandler = null;

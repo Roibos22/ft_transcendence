@@ -23,6 +23,10 @@ export default class Socket {
 		console.log('Message sent: ', data)
 	}
 
+	isOpen() {
+		return this.socket && this.socket.readyState === WebSocket.OPEN;
+	}
+
 	addEventListenersMatchmaking() {
 		this.socket.addEventListener('open', (event) => {
 			console.log('Matchmaking WebSocket connection opened (Message Token Method)');

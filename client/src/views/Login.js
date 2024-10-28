@@ -8,12 +8,16 @@ export class LoginView {
 	constructor() {
 		this.template = 'login';
 		this.UIelements = null;
+		
+		this.init();
 	}
 
 	async init() {
 		const content = await Router.loadTemplate(this.template);
-        document.getElementById('app').innerHTML = content;
+		document.getElementById('app').innerHTML = content;
 		
+		
+
 		this.UIelements = this.getUIElements();
 		this.addEventListeners();
 	}

@@ -1,11 +1,13 @@
 <div class="container" id="profileView"></div>
 
-<!-- Profile Icon -->
-<div class="position-absolute top-0 start-0 m-3">
-	<a href="/game-setup" class="text-decoration-none">
-		<span class="profile-link">Back</span>
-	</a>
-</div>
+		<!-- Profile Icon -->
+	<div class="position-absolute top-0 start-0 m-3">
+		<div class="row">
+			<div class="col-12 text-center">
+				<a id="goHomeButton" href="/game-setup" class="btn fw-bold" style="width: 100px">Back</a>
+			</div>
+		</div>
+	</div>
 
 <div class="main-card profile-card">
 	<div class="card-body profile-card">
@@ -19,10 +21,6 @@
 
 				<!-- Account Status (Smaller) -->
 				<div class="mt-3 account-status">
-					<div class="status-item">
-						<strong>Verified</strong>
-						<span id="emailVerified"></span>
-					</div>
 					<div class="status-item">
 						<strong>Date Joined:</strong>
 						<span id="dateJoined"></span>
@@ -48,24 +46,21 @@
 						</div>
 					</div>
 					<div class="mb-3 d-flex align-items-center">
-						<label for="displayNameInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>Display
-								Name:</strong></label>
+						<label for="displayNameInput" class="me-2 flex-shrink-0" style="width: 150px;"><strong>Display Name:</strong></label>
 						<div class="flex-grow-1 infoField">
 							<span id="displayNameDisplay" class="form-control-plaintext"></span>
 							<input type="text" id="displayNameInput" class="form-control form-input d-none" />
 						</div>
 					</div>
 					<div class="mb-3 d-flex align-items-center">
-						<label for="firstNameInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>First
-								Name:</strong></label>
+						<label for="firstNameInput" class="me-2 flex-shrink-0" style="width: 150px;"><strong>First Name:</strong></label>
 						<div class="flex-grow-1 infoField">
 							<span id="firstNameDisplay" class="form-control-plaintext"></span>
 							<input type="text" id="firstNameInput" class="form-control form-input d-none" />
 						</div>
 					</div>
 					<div class="mb-3 d-flex align-items-center">
-						<label for="lastNameInput" class="me-2 flex-shrink-0" style="width: 120px;"><strong>Last
-								Name:</strong></label>
+						<label for="lastNameInput" class="me-2 flex-shrink-0" style="width: 150px;"><strong>Last Name:</strong></label>
 						<div class="flex-grow-1 infoField">
 							<span id="lastNameDisplay" class="form-control-plaintext"></span>
 							<input type="text" id="lastNameInput" class="form-control form-input d-none" />
@@ -73,7 +68,7 @@
 					</div>
 					<div class="mb-3 d-flex align-items-center">
 						<label for="emailInput" class="me-2 flex-shrink-0"
-							style="width: 120px;"><strong>Email:</strong></label>
+							style="width: 150px;"><strong>Email:</strong></label>
 						<div class="flex-grow-1 infoField">
 							<span id="emailDisplay" class="form-control-plaintext"></span>
 							<input type="email" id="emailInput" class="form-control form-input d-none" />

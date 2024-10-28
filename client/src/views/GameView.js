@@ -1,5 +1,6 @@
 import { PongGame } from '../components/PongGame.js';
 import { UIManager } from '../components/UIManager.js';
+import { GameModes } from '../constants.js';
 import Router from '../Router.js';
 import State from '../State.js';
 
@@ -14,6 +15,7 @@ export class GameView {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
 		this.setupGame();
+		console.log("GameView INIT");
 	}
 
 	setupGame() {
@@ -24,10 +26,15 @@ export class GameView {
 		if (currentMatchIndex < matches.length) {
 			this.game = new PongGame(matches[currentMatchIndex].socket);
 			this.UIManager = new UIManager();
+			this.overwritePlayerNames();
 		} else {
 			console.log("Tournament completed");
 			this.navigateToOverview();
 		}
+	}
+
+	overwritePlayerNames() {
+		State.data.gameData.constants.player2Username = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
 	}
 
 	update() {
@@ -134,7 +141,7 @@ export class GameView {
 	}
 
 	destroyCurrentGame() {
-		if (this.game) {
+		if (this.game && State.get('gameSettings', 'mode') !== GameModes.ONLINE) {
 			this.game.destroy();
 			this.game = null;
 		}
