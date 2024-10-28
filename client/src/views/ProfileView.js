@@ -24,7 +24,6 @@ export class ProfileView {
 		try {
 			const userData = await UserService.fetchUserData();
 			this.userData = userData;
-			console.log(userData);
 			this.populateProfile();
 		}
 		catch (error) {
@@ -38,7 +37,7 @@ export class ProfileView {
 			card: {
 				displayName: document.getElementById('displayName'),
 				username: document.getElementById('username'),
-				emailVerified: document.getElementById('emailVerified'),
+				dateJoined: document.getElementById('dateJoined'),
 			},
 			personalInfo : {
 				displayName: {
