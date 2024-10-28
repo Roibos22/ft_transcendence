@@ -26,15 +26,10 @@ export class GameView {
 		if (currentMatchIndex < matches.length) {
 			this.game = new PongGame(matches[currentMatchIndex].socket);
 			this.UIManager = new UIManager();
-			this.overwritePlayerNames();
 		} else {
 			console.log("Tournament completed");
 			this.navigateToOverview();
 		}
-	}
-
-	overwritePlayerNames() {
-		State.data.gameData.constants.player2Username = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
 	}
 
 	update() {
@@ -98,10 +93,6 @@ export class GameView {
 			currentMatchIndex: wasLastMatch ? matchIndex : matchIndex + 1,
 			completed: wasLastMatch
 		};
-
-		console.log("index", updatedTournament.currentMatchIndex);
-
-		//State.data.tournament = updatedTournament;
 
 		State.set('tournament', updatedTournament);
 
