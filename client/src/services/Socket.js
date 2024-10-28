@@ -15,7 +15,7 @@ export default class Socket {
 	init() {
 		this.authToken = Cookies.getCookie("accessToken");
 		const gameIndex = this.data.gameId ? this.data.gameId + '/' : '';
-		this.socket = new WebSocket(`wss://localhost:8443/ws/${this.url}/${gameIndex}`);
+		this.socket = new WebSocket(`wss://${window.location.host}/ws/${this.url}/${gameIndex}`);
 	}
 
 	send(data) {
