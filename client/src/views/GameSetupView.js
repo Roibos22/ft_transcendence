@@ -71,7 +71,6 @@ export class GameSetupView {
 			Router.handleLocationChange();
 		});
 
-
 		Object.values(gameModeButtons).forEach(button => {
 			button.addEventListener('click', (e) => {
 				const id = e.target.id;

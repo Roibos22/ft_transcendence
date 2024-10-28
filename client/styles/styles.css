@@ -3,11 +3,22 @@
 
 html, body {
 	height: 100%;
-	background-color: black;
+	margin: 0;
+	padding: 0;
+	/* background-color: black; */
 }
 
 #app {
 	padding: 5rem;
+	position: relative;
+	min-height: 100vh;
+	overflow-y: auto;  /* Makes content scrollable */
+	z-index: 1;        /* Ensures content stays above background */
+}
+
+.content {
+	position: relative;
+	z-index: 1;
 }
 
 .title {
@@ -15,6 +26,19 @@ html, body {
 	color: #6c757d;
 	font-size: 5rem;
 	padding-bottom: 1rem;
+}
+
+.background-image {
+	background-image: url('../public/background/background.png');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	width: 100%;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: -1;
 }
 
 .background-gradient {
