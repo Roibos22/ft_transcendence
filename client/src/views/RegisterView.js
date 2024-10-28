@@ -32,6 +32,25 @@ export class RegisterView {
 	}
 
 	addEventListeners() {
+		const inputs = [
+			this.UIelements.firstName,
+			this.UIelements.lastName,
+			this.UIelements.username
+		];
+		
+		inputs.forEach(input => {
+			input.addEventListener('input', () => {
+				console.log('input', input);
+				const name = input.value;
+				const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
+	
+				if (newName !== name) {
+					Notification.showErrorNotification('This field can only contain letters and numbers');
+				}
+	
+				input.value = newName;
+			});
+		});
 		this.UIelements.registrationForm.addEventListener('submit', async (e) => {
 			e.preventDefault();
 			await this.registerUser();
