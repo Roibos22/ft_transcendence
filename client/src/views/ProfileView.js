@@ -24,10 +24,12 @@ export class ProfileView {
 		try {
 			const userData = await UserService.fetchUserData();
 			this.userData = userData;
+			console.log(userData);
 			this.populateProfile();
 		}
 		catch (error) {
 			Notification.showErrorNotification(["Failed to load profile", "Please try again later"]);
+			console.log(error);
 		}
 	}
 
@@ -37,7 +39,6 @@ export class ProfileView {
 				displayName: document.getElementById('displayName'),
 				username: document.getElementById('username'),
 				emailVerified: document.getElementById('emailVerified'),
-				dateJoined: document.getElementById('dateJoined'),
 			},
 			personalInfo : {
 				displayName: {
@@ -109,7 +110,6 @@ export class ProfileView {
 
 		card.displayName.textContent = data.display_name;
 		card.username.textContent = '@' + data.username;
-		card.emailVerified.textContent = data.email_verified ? 'Yes' : 'No';
 		card.dateJoined.textContent = new Date(data.date_joined).toLocaleDateString();
 
 		personalInfo.displayName.display.textContent = data.display_name;

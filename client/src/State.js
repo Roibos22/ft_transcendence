@@ -1,4 +1,4 @@
-import { initState } from "./constants.js";
+import { GameModes, initState } from "./constants.js";
 import { deepCopy } from "./utils/utils.js";
 import { currentView } from "./constants.js";
 import Socket from './services/Socket.js';
@@ -21,15 +21,18 @@ class State {
 	}
 
 	reconnect() {
-		if (this.data.gameData.gameId)
+		if (this.data.gameData.gameId && (window.location.pathname === '/game' || window.location.pathname === '/online-game' || window.location.pathname == '/online-game-loading'))
 		{
-			const index = this.get('tournament', 'currentMatchIndex');
-			const currentMatch = this.get('tournament', 'matches')[index];
-			const gameId = currentMatch.socket.data.gameId;
-			const oldUrl = currentMatch.socket.url;
+			console.log("reconnecting to Socket");
+			const currentMatch = this.get('tournament', 'matches')[this.get('tournament', 'currentMatchIndex')];
+			const gameId = this.data.gameData.gameId;
+			const oldUrl = this.get('gameSettings', 'mode') === GameModes.ONLINE ? 'online_game' : 'local_game';
 
-			this.data.tournament.matches[index].socket = new Socket(oldUrl, { gameId });
-			this.data.tournament.matches[index].socket.addEventListenersGame();
+			if (currentMatch.socket && currentMatch.socket.readyState === WebSocket.OPEN) {
+				currentMatch.socket.close();
+			}
+			currentMatch.socket = new Socket(oldUrl, { gameId });
+			currentMatch.socket.addEventListenersGame();
 		}
 	}
 

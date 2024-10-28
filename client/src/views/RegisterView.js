@@ -81,26 +81,28 @@ export class RegisterView {
 				Router.handleLocationChange();
 			} else {
 				this.displayRegistrationError(response.error);
+				this.displayRegistrationError(response.error);
 			}
 		} catch (error) {
-			console.error('Failed to login', error);
+			console.error('Failed to register', error);
 			this.displayRegistrationError(error);
 		}
 	}
 
 	displayRegistrationError(error) {
-		const loginError = this.UIelements.registrationError;
-		loginError.style.display = 'block';
+		const registrationError = this.UIelements.registrationError;
+		registrationError.style.display = 'block';
 		let errorMessages = [];
 
 		if (error.message.includes("400")) {
-			errorMessages.push(`Username already taken`);
+			errorMessages.push(`Username already taken.`);
 		} else {
 			errorMessages.push(`Something went wrong.`);
 		}
 		errorMessages.push(`Please try again.`);
 
-		loginError.innerHTML = errorMessages.join('<br>');
+		registrationError.innerHTML = errorMessages.join('<br>');
+		Notification.showErrorNotification(["Registration failed"]);
 	}
 
 }

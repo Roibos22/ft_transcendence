@@ -66,14 +66,7 @@ export class GameSetupView {
 		this.UIelements.logoutButton.addEventListener('click', (e) => {
 			e.preventDefault();
 			State.reset();
-
-			//TODO
-			Cookies.deleteCookie("accessToken");
-			Cookies.deleteCookie("refreshToken");
-			Cookies.deleteCookie("gameId");
-			Cookies.deleteCookie("username");
-			Cookies.deleteCookie("gameMode");
-
+			Cookies.deleteAllCookies();
 			window.history.pushState({}, "", "/");
 			Router.handleLocationChange();
 		});

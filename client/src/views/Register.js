@@ -12,6 +12,9 @@ export class RegisterView {
 		const content = await Router.loadTemplate(this.template);
 		document.getElementById('app').innerHTML = content;
 
+		State.reset();
+		Cookies.deleteAllCookies();
+		
 		this.UIelements = this.getUIElements();
 		this.addEventListeners();
 	}

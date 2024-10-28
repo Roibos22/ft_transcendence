@@ -33,6 +33,8 @@ export class LocalGameOverviewView {
 			this.setupNextMatch();
 		}
 
+		console.log("Local Overview Init", State);
+
 		this.update();
 	}
 
@@ -59,21 +61,18 @@ export class LocalGameOverviewView {
 	}
 
 	initGameSocket(currentMatch, gameId) {
+		console.log("INIT GAME SOCKET");
+		if (currentMatch.socket && currentMatch.socket.readyState === WebSocket.OPEN) {
+			currentMatch.socket.close();
+		}
 		currentMatch.socket = new Socket('local_game', { gameId });
 		currentMatch.socket.addEventListenersGame();
 	}
 
 	update() {
-		this.overwritePlayerNames();
 		this.updateTournamentInfo();
 		this.updateStandings();
 		this.updateMatchList();
-	}
-
-
-	// TODO PROTECT
-	overwritePlayerNames() {
-		State.data.gameData.constants.player2Username = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
 	}
 
 	updateTournamentInfo() {

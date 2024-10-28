@@ -2,23 +2,47 @@ import { currentView } from './constants.js';
 import { urlRoutes } from './utils/routeUtils.js';
 import * as Cookies from './services/cookies.js';
 import * as Notification from './services/notification.js';
+import State from './State.js';
 
 class Router {
 	constructor() {
 		this.routes = urlRoutes;
+		this.currentPath = null;
 		this.init();
 	}
 
 	init() {
 		window.onpopstate = this.handleLocationChange.bind(this);
 		document.addEventListener("click", (e) => this.handleLinkClick(e));
-		this.handleLocationChange();  // Initial route load
+		this.handleLocationChange();
+	}
+
+	getValidLocation() {
+		const location = window.location.pathname;
+		return location.length === 0 ? "/" : location;
+	}
+
+	handleAuthRoutes(location) {
+		if (location === "/" || location === "/register") {
+			State.reset();
+			Cookies.deleteAllCookies();
+		}
+	}
+
+	async handleUnauthenticatedAccess(route) {
+		history.pushState(null, "", "/");
+		await this.loadView(this.routes["/"]);
+		Notification.showErrorNotification(["Session Expired", "Please log in again"]);
 	}
 
 	async handleLocationChange() {
-		let location = window.location.pathname;
-		if (location.length === 0) {
-			location = "/";
+		const location = this.getValidLocation();
+		this.handleAuthRoutes(location);
+
+
+		if (this.currentPath === location) {
+			console.log("Already on this route, skipping reload");
+			return;
 		}
 
 		const route = this.routes[location] || this.routes["404"];
@@ -28,28 +52,35 @@ class Router {
 			return;
 		}
 
-		if (!route.public) {
-			if (!this.validateToken()) {
-				history.pushState(null, "", "/");
-				await this.loadView(this.routes["/"]);
-				Notification.showErrorNotification(["Session Expired", "Please log in again"]);
-				return;
-			}
+		if (!route.public && !this.validateToken()) {
+			await this.handleUnauthenticatedAccess(route);
+			return;
 		}
+
+		this.currentPath = location;
 		await this.loadView(route);
+	}
+
+	async loadViewContent(route) {
+		const response = await fetch(route.template);
+		const html = await response.text();
+		document.getElementById("app").innerHTML = html;
+		document.title = route.title;
+	}
+
+	async handleError() {
+		const notFoundHtml = await fetch(this.routes["404"].template);
+		document.getElementById("app").innerHTML = await notFoundHtml.text();
+		document.title = this.routes["404"].title;
 	}
 
 	async loadView(route) {
 		try {
-			const html = await fetch(route.template).then(response => response.text());
-			document.getElementById("app").innerHTML = html;
-			document.title = route.title;
-			this.initCurrentView(window.location.pathname);
+			await this.loadViewContent(route);
+			await this.initCurrentView(route);
 		} catch (error) {
 			console.error('Error loading view:', error);
-			const notFoundHtml = await fetch(this.routes["404"].template).then(response => response.text());
-			document.getElementById("app").innerHTML = notFoundHtml;
-			document.title = this.routes["404"].title;
+			await this.handleError();
 		}
 	}
 
@@ -57,32 +88,59 @@ class Router {
 		return Cookies.getCookie("accessToken");
 	}
 
-	handleLinkClick(event) {
-		const { target } = event;
-		if (target.matches("nav a, a[href^='/']")) {
-			event.preventDefault();
-			window.history.pushState({}, "", target.href);
-			this.handleLocationChange();
-		}
+	isNavigationLink(target) {
+		return target.matches("nav a, a[href^='/']");
 	}
 
-	async initCurrentView(location) {
-		const route = this.routes[location] || this.routes["404"];
+	shouldSkipNavigation(newPath) {
+		return this.currentPath === newPath;
+	}
+
+	handleLinkClick(event) {
+		const { target } = event;
+		if (!this.isNavigationLink(target)) return;
+
+		event.preventDefault();
+		const newPath = new URL(target.href).pathname;
+		
+		if (this.shouldSkipNavigation(newPath)) {
+			console.log("Already on this route, skipping navigation");
+			return;
+		}
+
+		window.history.pushState({}, "", target.href);
+		this.handleLocationChange();
+	}
+
+	shouldSkipViewInitialization(ViewClass) {
+		return currentView.view instanceof ViewClass;
+	}
+
+	cleanupCurrentView(ViewClass) {
+		if (!currentView.view?.cleanup) return;
+		if (currentView.view instanceof ViewClass) {
+			console.log("Same View loaded. no cleanup called");
+			return;
+		}
+		currentView.view.cleanup();
+	}
+
+	async initCurrentView(route) {
 		const ViewClass = route.view;
 
-		// if (!ViewClass) {
-		// 	window.history.pushState({}, "", "/404");
-		// 	return;
-		// }
-
-		if (currentView.view && typeof currentView.view.cleanup === 'function') {
-			currentView.view.cleanup();
+		if (this.shouldSkipViewInitialization(ViewClass)) {
+			console.log("Same view type already loaded, skipping initialization");
+			return;
 		}
-	
+
+		this.cleanupCurrentView(ViewClass);
+		
 		delete currentView.view;
 		currentView.view = new ViewClass();
 	
 		await currentView.view.init();
+		console.log(`Initialized ${ViewClass.name}`);
+		console.log(Cookies.getAllCookies());
 	}
 
 	async loadTemplate(name) {
