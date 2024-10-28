@@ -37,7 +37,6 @@ export class ProfileView {
 			card: {
 				displayName: document.getElementById('displayName'),
 				username: document.getElementById('username'),
-				emailVerified: document.getElementById('emailVerified'),
 				dateJoined: document.getElementById('dateJoined'),
 			},
 			personalInfo : {
