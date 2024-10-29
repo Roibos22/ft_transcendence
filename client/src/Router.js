@@ -52,9 +52,7 @@ class Router {
 			return;
 		}
 
-		const token_validity = await this.validateToken();
-
-		if (!route.public && !token_validity) {
+		if (!route.public && !this.validateToken()) {
 			await this.handleUnauthenticatedAccess(route);
 			return;
 		}
@@ -87,6 +85,8 @@ class Router {
 	}
 
 	async validateToken() {
+		if (!Cookies.getCookie('accessToken'))
+			return false;
 		try {
 			await UserService.fetchUserData();
 		} catch (error) {

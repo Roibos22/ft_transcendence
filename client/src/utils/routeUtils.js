@@ -19,7 +19,7 @@ export const urlRoutes = {
 		template: "../templates/two-factor.html",
 		title: "Two Factor Authentication",
 		view: TwoFactorView,
-		public: false
+		public: true
 	},
 	"/register": {
 		template: "../templates/register.html",
