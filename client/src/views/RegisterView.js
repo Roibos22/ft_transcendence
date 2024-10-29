@@ -1,6 +1,7 @@
 import Router from '../Router.js';
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';
+import { checkInput } from '../utils/utils.js';
 
 export class RegisterView {
 	constructor() {
@@ -40,15 +41,7 @@ export class RegisterView {
 		
 		inputs.forEach(input => {
 			input.addEventListener('input', () => {
-				console.log('input', input);
-				const name = input.value;
-				const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
-	
-				if (newName !== name) {
-					Notification.showErrorNotification('This field can only contain letters and numbers');
-				}
-	
-				input.value = newName;
+				input.value = checkInput(input);
 			});
 		});
 		this.UIelements.registrationForm.addEventListener('submit', async (e) => {

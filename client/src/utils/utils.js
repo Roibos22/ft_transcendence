@@ -1,5 +1,6 @@
 import State from '../State.js';
 import { GameModes } from '../constants.js';
+import * as Notification from '../services/notification.js';
 
 export function deepCopy(obj) {
 	if (obj === null || typeof obj !== 'object') {
@@ -87,4 +88,19 @@ export function initPlayerStats() {
 	}));
 
 	State.set("tournament", "players", players);
+}
+
+export function checkInput(input) {
+	const name = input.value;
+	const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
+
+	if (newName !== name) {
+		Notification.showErrorNotification('This field can only contain letters and numbers');
+	}
+
+	if(newName.length > 20) {
+		Notification.showErrorNotification('This field can only be 20 characters long');
+	}
+
+	return newName.substring(0, 20);
 }

@@ -2,7 +2,7 @@ import { GameModes } from '../constants.js';
 import Router from '../Router.js';
 import State from '../State.js';
 import * as Cookies from '../services/cookies.js';
-import { buttonIdToGameMode } from '../utils/utils.js';
+import { buttonIdToGameMode, checkInput } from '../utils/utils.js';
 import * as Notification from '../services/notification.js';
 
 export class GameSetupView {
@@ -108,16 +108,8 @@ export class GameSetupView {
 
 		this.UIelements.player1Input.addEventListener('input', () => {
 			const input = this.UIelements.player1Input;
-			const name = input.value;
-			const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
-
-			if (newName !== name) {
-				Notification.showErrorNotification('Player name can only contain letters and numbers');
-			}
-
-			input.value = newName;
-		}
-		);
+			input.value = checkInput(input);
+		});
 	}
 
 	initSettingsUI() {
@@ -183,14 +175,7 @@ export class GameSetupView {
 
 		newPlayerInput.querySelector('input').addEventListener('input', () => {
 			const input = newPlayerInput.querySelector('input');
-			const name = input.value;
-			const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
-
-			if (newName !== name) {
-				Notification.showErrorNotification('Player name can only contain letters and numbers');
-			}
-
-			input.value = newName;
+			input.value = checkInput(input);
 		});
 
 		this.UIelements.playerInputs.appendChild(newPlayerInput);
@@ -208,14 +193,7 @@ export class GameSetupView {
 
 		newPlayerInput.querySelector('input').addEventListener('input', () => {
 			const input = newPlayerInput.querySelector('input');
-			const name = input.value;
-			const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
-
-			if (newName !== name) {
-				Notification.showErrorNotification('Player name can only contain letters and numbers');
-			}
-
-			input.value = newName;
+			input.value = checkInput(input);
 		});
 
 		this.UIelements.playerInputs.appendChild(newPlayerInput);

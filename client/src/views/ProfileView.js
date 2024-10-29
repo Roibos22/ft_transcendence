@@ -3,6 +3,7 @@ import * as Notification from '../services/notification.js';
 import * as UserService from '../services/api/userService.js';
 import * as Cookies from '../services/cookies.js';
 import State from '../State.js';
+import { checkInput } from '../utils/utils.js';
 
 export class ProfileView {
 	constructor() {
@@ -77,14 +78,7 @@ export class ProfileView {
 	
 		inputs.forEach(input => {
 			input.addEventListener('input', () => {
-				const name = input.value;
-				const newName = name.replace(/[^a-zA-Z0-9 ]/g, '');
-	
-				if (newName !== name) {
-					Notification.showErrorNotification('This field can only contain letters and numbers');
-				}
-	
-				input.value = newName;
+				input.value = checkInput(input);
 			});
 		});
 	}
