@@ -5,15 +5,20 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-	/* background-color: black; */
+}
+
+header {
+	position: absolute;
+	width: 100%;
+	top: 0;
 }
 
 #app {
 	padding: 5rem;
 	position: relative;
 	min-height: 100vh;
-	overflow-y: auto;  /* Makes content scrollable */
-	z-index: 1;        /* Ensures content stays above background */
+	overflow-y: auto;
+	z-index: 100;
 }
 
 .content {
@@ -23,9 +28,10 @@ html, body {
 
 .title {
 	font-family: "Brush Script MT", cursive;
-	color: #6c757d;
-	font-size: 5rem;
+	color: black;
+	font-size: 2.5rem;
 	padding-bottom: 1rem;
+	padding-top: 1rem;
 }
 
 .background-image {
