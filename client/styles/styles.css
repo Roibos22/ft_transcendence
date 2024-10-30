@@ -22,7 +22,7 @@ header {
 	position: relative;
 	min-height: 100vh;
 	overflow-y: auto;
-	z-index: 100;
+	/* z-index: 100; */
 }
 
 .content {
