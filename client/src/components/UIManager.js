@@ -28,7 +28,7 @@ export class UIManager {
 			const show3D = this.content.displayToggle.checked;
 			State.set('gameSettings', 'displayType', show3D ? GameTypes.THREE_D : GameTypes.TWO_D);
 		});
-
+		this.content.displayToggle.checked = State.get('gameSettings', 'displayType') === GameTypes.THREE_D;
 		this.content.scoreCard = {
 			player1Name: document.getElementById('player1Name'),
 			player2Name: document.getElementById('player2Name'),
