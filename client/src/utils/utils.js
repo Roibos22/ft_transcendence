@@ -104,7 +104,7 @@ export function checkInput(input) {
 	return newName.substring(0, 20);
 }
 
-export const DEBUG = false;
+export const DEBUG = true;
 export function debug(...args) {
 	if (DEBUG) {
 		console.log(...args);

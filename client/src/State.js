@@ -61,7 +61,9 @@ class State {
 
 		path[lastKey] = value;
 		this.saveToSessionStorage();
-		currentView.view.update();
+		if (currentView.view && typeof currentView.view.update === 'function') {
+			currentView.view.update();
+		}
 	}
 
 	reset() {
@@ -107,6 +109,7 @@ class State {
 				}
 			}
 		}
+		//this.data.gameData = newData;
 		this.set('gameData', newData);
 	}
 
@@ -123,7 +126,7 @@ class State {
 			ballRadius: gameData.ball_radius,
 			winner: ""
 		};
-
+		//this.data.gameData.constants = newData;
 		this.set('gameData', 'constants', newData);
 	}
 
