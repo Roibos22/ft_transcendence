@@ -25,7 +25,6 @@ export class OnlineGameLoadingView {
 		this.matchMakingSocket.addEventListenersMatchmaking();
 		this.matchMakingSocket.socket.addEventListener('message', async (event) => {
 			const data = JSON.parse(event.data);
-			console.log("Matchmaking Socket Message received", data);
 			if (data.type === 'game_joined') {
 				this.matchMakingSocket.close();
 				this.connectGameSocket(data);
@@ -35,7 +34,6 @@ export class OnlineGameLoadingView {
 
 	async connectGameSocket(data) {
 		Cookies.setCookie("gameId", data.game_id, 24);
-		console.log("Matchmaking Done");
 		await this.initGameSocket(Cookies.getCookie("gameId"));
 		window.history.pushState({}, "", "/online-game");
 		Router.handleLocationChange();

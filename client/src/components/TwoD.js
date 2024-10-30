@@ -1,4 +1,5 @@
 import State from '../State.js';
+import { debug } from '../utils/utils.js'
 
 export default class TwoD {
 	constructor(game) {
@@ -21,7 +22,7 @@ export default class TwoD {
 
 	printGameStatus() {
 		setInterval(() => {
-			console.log(State);
+			debug(State);
 		}, 2000);
 	}
 

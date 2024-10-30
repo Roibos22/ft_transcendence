@@ -1,5 +1,5 @@
 import { GameModes, initState } from "./constants.js";
-import { deepCopy } from "./utils/utils.js";
+import { deepCopy, debug } from "./utils/utils.js";
 import { currentView } from "./constants.js";
 import Socket from './services/Socket.js';
 
@@ -13,7 +13,7 @@ class State {
 		const savedState = sessionStorage.getItem('appState');
 		if (savedState) {
 			this.data = JSON.parse(savedState);
-			console.log("State loaded from Session Storage", this);
+			debug("State loaded from Session Storage", this);
 			this.reconnect();
 		} else {
 			this.data = deepCopy(initState);
@@ -23,7 +23,7 @@ class State {
 	reconnect() {
 		if (this.data.gameData.gameId && (window.location.pathname === '/game' || window.location.pathname === '/online-game' || window.location.pathname == '/online-game-loading'))
 		{
-			console.log("reconnecting to Socket");
+			debug("reconnecting to Socket");
 			const currentMatch = this.get('tournament', 'matches')[this.get('tournament', 'currentMatchIndex')];
 			const gameId = this.data.gameData.gameId;
 			const oldUrl = this.get('gameSettings', 'mode') === GameModes.ONLINE ? 'online_game' : 'local_game';
@@ -68,7 +68,7 @@ class State {
 		this.closeAllSockets();
 		this.data = deepCopy(initState);
 		this.saveToSessionStorage();
-		console.log("State reset", this);
+		debug("State reset", this);
 	}
 
 	closeAllSockets() {
@@ -112,7 +112,6 @@ class State {
 
 	initialiseGameData(gameData) {
 		const oldData = this.get('gameData', 'constants');
-		console.log("gameData", gameData);
 		const newData = {
 			...oldData,
 			mapHeight: gameData.map_height,

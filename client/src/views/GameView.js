@@ -15,7 +15,6 @@ export class GameView {
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
 		this.setupGame();
-		console.log("GameView INIT");
 	}
 
 	setupGame() {
@@ -27,7 +26,6 @@ export class GameView {
 			this.game = new PongGame(matches[currentMatchIndex].socket);
 			this.UIManager = new UIManager();
 		} else {
-			console.log("Tournament completed");
 			this.navigateToOverview();
 		}
 	}
@@ -74,7 +72,6 @@ export class GameView {
 		if (this.isHandlingGameFinish) return;
 		this.isHandlingGameFinish = true;
 
-		console.log("Handling game finish");
 		this.UIManager.update();
 		const tournament = State.get('tournament');
 		const matchIndex = tournament.currentMatchIndex;
@@ -127,11 +124,6 @@ export class GameView {
 	}
 
 	cleanup() {
-		console.log("Clean up GameView");
-		this.destroyCurrentGame();
-	}
-
-	destroyCurrentGame() {
 		if (this.game && State.get('gameSettings', 'mode') !== GameModes.ONLINE) {
 			this.game.destroy();
 			this.game = null;

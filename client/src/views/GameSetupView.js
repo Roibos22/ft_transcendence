@@ -221,7 +221,6 @@ export class GameSetupView {
 
 	renumberPlayersInput() {
 		const inputGroups = this.UIelements.playerInputs.querySelectorAll('.player-input-group');
-		console.log(inputGroups);
 		inputGroups.forEach((group, index) => {
 			const input = group.querySelector('input');
 			if (input) {

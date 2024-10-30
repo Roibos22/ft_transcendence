@@ -29,7 +29,6 @@ export function incrementCurrentMatchIndex() {
 }
 
 export function buttonIdToGameMode(id) {
-	console.log(id);
 	switch (id) {
 		case 'btn_singleplayer':
 			return GameModes.SINGLE;
@@ -103,4 +102,11 @@ export function checkInput(input) {
 	}
 
 	return newName.substring(0, 20);
+}
+
+export const DEBUG = false;
+export function debug(...args) {
+	if (DEBUG) {
+		console.log(...args);
+	}
 }

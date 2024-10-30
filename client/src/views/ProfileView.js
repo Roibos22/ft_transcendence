@@ -29,7 +29,6 @@ export class ProfileView {
 		}
 		catch (error) {
 			Notification.showErrorNotification(["Failed to load profile", "Please try again later"]);
-			console.log(error);
 		}
 	}
 

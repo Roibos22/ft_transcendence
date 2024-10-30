@@ -33,8 +33,6 @@ export class LocalGameOverviewView {
 			this.setupNextMatch();
 		}
 
-		console.log("Local Overview Init", State);
-
 		this.update();
 	}
 
@@ -61,7 +59,6 @@ export class LocalGameOverviewView {
 	}
 
 	initGameSocket(currentMatch, gameId) {
-		console.log("INIT GAME SOCKET");
 		if (currentMatch.socket && currentMatch.socket.readyState === WebSocket.OPEN) {
 			currentMatch.socket.close();
 		}
