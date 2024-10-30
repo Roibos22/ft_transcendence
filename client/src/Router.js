@@ -30,7 +30,7 @@ class Router {
 		}
 	}
 
-	async handleUnauthenticatedAccess(route) {
+	async handleUnauthenticatedAccess() {
 		history.pushState(null, "", "/");
 		await this.loadView(this.routes["/"]);
 		Notification.showErrorNotification(["Session Expired", "Please log in again"]);
@@ -52,7 +52,7 @@ class Router {
 			return;
 		}
 
-		if (!route.public && !this.validateToken()) {
+		if (!route.public && !(await this.validateToken())) {
 			await this.handleUnauthenticatedAccess(route);
 			return;
 		}
