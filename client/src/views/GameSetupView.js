@@ -120,6 +120,8 @@ export class GameSetupView {
 	}
 
 	update() {
+		if (!this.UIelements) return;
+
 		const gameMode = State.get('gameSettings', 'mode');
 		const numberOfGames = State.get('tournament', 'numberOfGames');
 
