@@ -41,12 +41,11 @@ export default class TwoD {
 	}
 
 	drawPaddles() {
-		const paddleHeight = 50;
-		const paddleWidth = 10;
-		const player1PosState = State.data.gameData.player1Pos;
-		const player2PosState = State.data.gameData.player2Pos;
-		const leftPaddleY = player1PosState;
-		const rightPaddleY = player2PosState;
+		const gameData = State.get('gameData');
+		const paddleHeight = gameData.constants.paddleHeight;
+		const paddleWidth = gameData.constants.paddleWidth;
+		const leftPaddleY = gameData.player1Pos;
+		const rightPaddleY = gameData.player2Pos;
 	
 		this.ctx.fillStyle = 'white';
 		this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
