@@ -1,4 +1,5 @@
 import State from '../State.js';
+import { debug } from '../utils/utils.js'
 
 export default class TwoD {
 	constructor(game) {
@@ -21,7 +22,7 @@ export default class TwoD {
 
 	printGameStatus() {
 		setInterval(() => {
-			console.log(State);
+			debug(State);
 		}, 2000);
 	}
 
@@ -41,12 +42,11 @@ export default class TwoD {
 	}
 
 	drawPaddles() {
-		const paddleHeight = 50;
-		const paddleWidth = 10;
-		const player1PosState = State.data.gameData.player1Pos;
-		const player2PosState = State.data.gameData.player2Pos;
-		const leftPaddleY = player1PosState;
-		const rightPaddleY = player2PosState;
+		const gameData = State.get('gameData');
+		const paddleHeight = gameData.constants.paddleHeight;
+		const paddleWidth = gameData.constants.paddleWidth;
+		const leftPaddleY = gameData.player1Pos;
+		const rightPaddleY = gameData.player2Pos;
 	
 		this.ctx.fillStyle = 'white';
 		this.ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
@@ -67,7 +67,7 @@ export default class TwoD {
 	}
 
 	drawBackground() {
-		this.ctx.fillStyle = '#33CB99';
+		this.ctx.fillStyle = '#4CAF50';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 

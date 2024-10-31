@@ -3,18 +3,52 @@
 
 html, body {
 	height: 100%;
-	background-color: black;
+	margin: 0;
+	padding: 0;
+}
+
+body::-webkit-scrollbar {
+	display: none;
+}
+
+header {
+	position: absolute;
+	width: 100%;
+	top: 0;
 }
 
 #app {
 	padding: 5rem;
+	position: relative;
+	min-height: 100vh;
+	overflow-y: auto;
+	/* z-index: 100; */
+}
+
+.content {
+	position: relative;
+	z-index: 1;
 }
 
 .title {
 	font-family: "Brush Script MT", cursive;
-	color: #6c757d;
-	font-size: 5rem;
+	color: black;
+	font-size: 2.5rem;
 	padding-bottom: 1rem;
+	padding-top: 1rem;
+}
+
+.background-image {
+	background-image: url('../public/background/background.png');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	width: 100%;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: -1;
 }
 
 .background-gradient {
@@ -26,7 +60,6 @@ html, body {
 /* MAIN CARD */
 
 .main-card {
-	max-width: 600px;
 	margin-left: auto;
 	margin-right: auto;
 	background-color: #2ec58e;
@@ -47,7 +80,6 @@ html, body {
 .profile-card-body {
 	padding: 1rem;
 }
-
 
 /* SCORE CARD */
 
@@ -89,57 +121,6 @@ html, body {
 	transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.btn:hover, .btn.active {
-	background-color: black;
-	color: white;
-	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-/* Ensure the hover effect doesn't change the active state */
-.btn.active:hover {
-	background-color: black;
-	color: white;
-}
-
-.settings-group {
-	text-align: center;
-}
-
-.settings-group .btn-container {
-	gap: 0.5rem;
-	margin-bottom: 0.5rem;
-}
-
-/* Action Buttons */
-
-.btn-action {
-	width: 150px;
-	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-/* Game Mode Buttons */
-.btn-group-game-mode .btn-game-mode {
-	width: 150px;
-}
-
-/* Number of Games Buttons */
-.btn-group-number-of-games .btn-setting {
-	width: 60px;
-}
-
-/* Links */
-
-.link {
-	color: rgba(0, 26, 255, 0.7);
-	text-decoration: none;
-}
-
-.link:hover { 
-	text-decoration: underline;
-}
-
-/* GAME SETUP VIEW */
-
 .btn-setting {
 	background-color: #2ec58e;
 	color: black;
@@ -155,29 +136,53 @@ html, body {
 	/* color: #2ec58e; */
 }
 
-
-/* .btn-check:checked + .btn-outline-primary {
-	background-color: #2ec58e;
-	color: #fff;
-}
-.btn-check:not(:checked) + .btn-outline-primary {
-	background-color: #fff;
-	color: #0d6efd;
+.btn:hover, .btn.active {
+	background-color: black;
+	color: white;
+	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-.btn-outline-secondary {
-	background-color: #fff;
-	color: #000000;
-} */
-
-.profile-icon {
-	font-size: 2rem;
-	color: #007bff;
-	background-color: white;
-	border-radius: 50%;
-	padding: 5px;
-	box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+.btn.active:hover {
+	background-color: black;
+	color: white;
 }
+
+.settings-group {
+	text-align: center;
+}
+
+.settings-group .btn-container {
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+/* ACTION BUTTON */
+
+.btn-action {
+	width: 150px;
+	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* GAME MODE BUTTONS */
+
+.btn-group-game-mode .btn-game-mode {
+	width: 125px;
+	height: 75px;
+	text-wrap: wrap;
+}
+
+/* Links */
+
+.link {
+	color: rgba(0, 26, 255, 0.7);
+	text-decoration: none;
+}
+
+.link:hover { 
+	text-decoration: underline;
+}
+
+/* PROFILE VIEW */
 
 .player-input-fields {
 	max-width: 400px;
@@ -194,50 +199,14 @@ html, body {
 
 /* PROFILE VIEW */
 
-/* 
-.profile-card {
-	max-width: 1000px;
-	margin-left: auto;
-	margin-right: auto;
-	background-color: rgba(255, 255, 255, 0.9);
-	border-radius: 15px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.profile-card .card-body {
-	padding: 2rem;
-}
-
-.profile-card h2, .profile-card h3, .profile-card h4, .profile-card h5 {
-	color: #0d6efd;
-}
-
-.profile-card .small {
-	font-size: 0.875em;
-} */
-
-.account-status {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-
 .status-item {
 	display: flex;
 	flex-direction: column;
 	font-size: 0.875rem;
+	gap: 0.5rem;
 }
-
-.status-item strong {
-	margin-bottom: 0.25rem;
-}
-
-
-/* GAME VIEW */
-
 
 /* NOTIFICATIONS */
-
 
 .notification {
 	position: fixed;

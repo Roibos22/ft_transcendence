@@ -8,7 +8,7 @@ import * as Utils from '../utils/utils.js';
 
 export class LocalGameOverviewView {
 	constructor() {
-		this.content = {
+		this.UIelements = {
 			fixtures: null,
 			standings: null,
 			standingsTable: null,
@@ -19,12 +19,12 @@ export class LocalGameOverviewView {
 		const content = await Router.loadTemplate('local-game-overview');
 		document.getElementById('app').innerHTML = content;
 
-		this.content.fixtures = document.getElementById('fixtures');
-		this.content.standings = document.getElementById('standings');
-		this.content.standingsTable = document.getElementById('standingsTable');
-		this.content.nextMatchButton = document.getElementById('goToNextMatch');
-		this.content.tournamentInfoText = document.getElementById('tournamentInfoText');
-		this.content.finishTournamentButton = document.getElementById('finishTournament');
+		this.UIelements.fixtures = document.getElementById('fixtures');
+		this.UIelements.standings = document.getElementById('standings');
+		this.UIelements.standingsTable = document.getElementById('standingsTable');
+		this.UIelements.nextMatchButton = document.getElementById('goToNextMatch');
+		this.UIelements.tournamentInfoText = document.getElementById('tournamentInfoText');
+		this.UIelements.finishTournamentButton = document.getElementById('finishTournament');
 
 		const tournament = State.get('tournament');
 		if (!tournament || !tournament.matches || tournament.matches.length === 0) {
@@ -32,8 +32,6 @@ export class LocalGameOverviewView {
 		} else if (!tournament.completed) {
 			this.setupNextMatch();
 		}
-
-		console.log("Local Overview Init", State);
 
 		this.update();
 	}
@@ -61,7 +59,6 @@ export class LocalGameOverviewView {
 	}
 
 	initGameSocket(currentMatch, gameId) {
-		console.log("INIT GAME SOCKET");
 		if (currentMatch.socket && currentMatch.socket.readyState === WebSocket.OPEN) {
 			currentMatch.socket.close();
 		}
@@ -80,11 +77,11 @@ export class LocalGameOverviewView {
 
 		if (!State.get('tournament', 'completed')) {
 			const nextMatch = tournament.matches[tournament.currentMatchIndex];
-			this.content.tournamentInfoText.textContent = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
+			this.UIelements.tournamentInfoText.textContent = `${nextMatch.players[0].name} vs ${nextMatch.players[1].name}`;
 		} else {
-			this.content.nextMatchButton.style.display = 'none';
-			this.content.finishTournamentButton.style.display = 'block';
-			this.content.tournamentInfoText.textContent = `Torunament Completed!`;
+			this.UIelements.nextMatchButton.style.display = 'none';
+			this.UIelements.finishTournamentButton.style.display = 'block';
+			this.UIelements.tournamentInfoText.textContent = `Torunament Completed!`;
 		}
 	}
 	
@@ -100,7 +97,7 @@ export class LocalGameOverviewView {
 			}));
 
 		var tableRows = standings.map(playerStats => standingsTableRow(playerStats)).join('');
-		this.content.standingsTable.innerHTML = `${tableRows}`;
+		this.UIelements.standingsTable.innerHTML = `${tableRows}`;
 	}
 
 	updateMatchList() {
@@ -134,7 +131,7 @@ export class LocalGameOverviewView {
 			return `<li class="${matchClass}" style="${matchStyle}">${matchContent}</li>`;
 		}).join('');
 	
-		this.content.fixtures.innerHTML = `
+		this.UIelements.fixtures.innerHTML = `
 			<div class="card">
 				<div class="card-header text-center rounded-top" style="background-color: #4CAF50;">
 					<h5 class="mb-0 fw-bold">Matches</h5>

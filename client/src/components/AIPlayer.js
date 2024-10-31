@@ -7,8 +7,8 @@ export default class AIPlayer {
 		this.game = game;
 		this.lastDecisionTime = 0;
 		this.targetY = 0;
-		this.paddleHeight = 50;
-		this.paddleWidth = 5;
+		this.paddleHeight = State.get('gameData', 'constants', 'paddleHeight');
+		this.paddleWidth = State.get('gameData', 'constants', 'paddleWidth');
 		this.ballRadius = 5;
 
 		this.calculateInterval = setInterval(() => this.calculateTargetY(), 1000);

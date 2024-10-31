@@ -1,3 +1,5 @@
+import { debug } from '../utils/utils.js'
+
 export function setCookie(name, value, hoursToLive) {
 	const date = new Date();
 	// date.setTime(date.getTime() +  (10000));
@@ -17,7 +19,7 @@ export function deleteAllCookies() {
 		deleteCookie(cookieName);
 	});
 
-	console.log("All cookies deleted");
+	debug("All cookies deleted");
 }
 
 export function getCookie(name) {

@@ -34,7 +34,6 @@ export class PongGame {
 		State.get("gameSettings", "displayType") === GameTypes.TWO_D ? this.twoD.show() : this.twoD.hide();
 		State.get("gameSettings", "displayType") === GameTypes.THREE_D ? this.threeD.show() : this.threeD.hide();
 		if (!this.AIplayer && this.gameMode === GameModes.SINGLE) {
-			console.log('AIPlayer created');
 			this.AIplayer = new AIPlayer(this);
 		}
 	}
