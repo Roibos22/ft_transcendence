@@ -62,13 +62,13 @@ class Ball:
         self.calculate_velocity()
 
     def calculate_velocity(self):
-        self._velocity_x = self._speed * self._direction_x
-        self._velocity_y = self._speed * self._direction_y
+        self._velocity_x = int(self._speed * self._direction_x)
+        self._velocity_y = int(self._speed * self._direction_y)
 
     def normalize_direction(self):
         magnitude = math.sqrt(self._direction_x ** 2 + self._direction_y ** 2)
-        self._direction_x /= magnitude
-        self._direction_y /= magnitude
+        self._direction_x = self._direction_x / magnitude
+        self._direction_y = self._direction_y / magnitude
 
     def check_wall_collision(self):
         if self._position_y <= self._ball_radius or self._position_y >= self._map_height - self._ball_radius:

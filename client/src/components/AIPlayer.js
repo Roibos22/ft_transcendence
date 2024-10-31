@@ -36,6 +36,13 @@ export default class AIPlayer {
 		}
 
 		this.targetY = ballFinalY;
+
+		if (Math.random() < 0.25) {
+			this.targetY += 100 * (Math.random() > 0.5 ? 1 : -1);
+			console.log('randomly adding 25 to targetY');
+		}
+
+		console.log('targetY', this.targetY);
 	}
 
 	movePaddle() {
