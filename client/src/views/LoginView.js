@@ -3,6 +3,7 @@ import * as Cookies from '../services/cookies.js';
 import * as UserService from '../services/api/userService.js';
 import * as Notification from '../services/notification.js';
 import State from '../State.js';
+import { debug } from '../utils/utils.js'
 
 export class LoginView {
 	constructor() {
@@ -52,16 +53,15 @@ export class LoginView {
 	
 			if (response.success) {
 				const data = response.data;
-				console.log(response.data);
 				Cookies.setCookie("accessToken", data.tokens.access, 24);
 				Cookies.setCookie("refreshToken", data.tokens.refresh, 24);
 				Cookies.setCookie("username", data.username, 24);
 				if (data["2fa_required"]) {
-					console.log('2FA required');
+					debug('2FA required');
 					Notification.showNotification(["2FA required", "Please enter the code sent to your email"]);
 					window.history.pushState({}, "", "/two-factor")
 				} else {
-					console.log('Login successful');
+					debug('Login successful');
 					Notification.showNotification(["Login successful"]);
 					window.history.pushState({}, "", "/game-setup");
 				}

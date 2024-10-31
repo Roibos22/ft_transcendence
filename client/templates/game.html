@@ -1,59 +1,49 @@
 <div id="gameView" class="container">
+	<div class="main-card" style="max-width: 1200px; padding: 2.5rem;">
 
-	<!-- TITLE -->
-	<div class="row">
-		<div class="col-12">
-			<h1 class="text-center title"><i>elepong</i></h1>
-		</div>
-	</div>
-
-	<!-- GAME INFORMATION -->
-	<div class="d-flex flex-column align-items-center p-3">
-		<h5 class="text-center mb-3 fw-bold fs-3" id="gameInformation">Loading...</h5>
-		<div class="mb-3 text-center" style="display: none;" id="goBackButton">
-			<a href="/game-setup" class="btn btn-primary fw-bold">Finish</a>
-		</div>
-	</div>
-
-	<!-- GAME CANVAS -->
-	<div class="row mb-3">
-		<div class="col-12 text-center">
-			<canvas id="gameCanvas2D" class="img-fluid rounded" width="1000" height="500"></canvas>
-			<canvas id="gameCanvas3D" class="img-fluid rounded" width="1000" height="500"></canvas>
-		</div>
-	</div>
-	
-	<!-- TOGGLE 2D/3D -->
-	<div class="row mb-3">
-		<div class="col-12">
-			<div class="form-check form-switch">
-				<input class="form-check-input" type="checkbox" id="viewToggle" />
-				<label class="form-check-label" for="viewToggle">Toggle 2D/3D</label>
+		<!-- GAME INFORMATION -->
+		<div class="d-flex flex-column align-items-center p-3">
+			<h5 class="text-center mb-3 fw-bold fs-3" id="gameInformation">Loading...</h5>
+			<div class="mb-3 text-center" style="display: none;" id="goBackButton">
+				<a href="/game-setup" class="btn btn-primary fw-bold">Finish</a>
 			</div>
 		</div>
-	</div>
 
-	
+		<!-- TOGGLE 2D/3D -->
+		<div class="d-flex flex-column align-items-center pb-2">
+			<div class="form-check form-switch">
+				<input class="form-check-input" type="checkbox" id="viewToggle" />
+				<label class="form-check-label" for="viewToggle">3D</label>
+			</div>
+		</div>
 
-	<!-- SCORECARD -->
-	<div id="scorecard" class="container-fluid px-0 mb-3" style="max-width: 1000px;">
-		<div class="card scorecard-card">
-			<div class="card-body p-4">
-				<div class="row align-items-center text-center">
-					<div class="col-12 col-md-4 mb-3 mb-md-0">
-						<span class="h4 custom-player-name fw-bold" id="player1Name">Player 1</span>
-					</div>
-					<div class="col-12 col-md-4 mb-3 mb-md-0">
-						<span class="badge custom-score fs-5 me-4" id="player1Score">0</span>
-						<span class="badge custom-vs fs-6">VS</span>
-						<span class="badge custom-score fs-5 ms-4" id="player2Score">0</span>
-					</div>
-					<div class="col-12 col-md-4">
-						<span class="h4 custom-player-name fw-bold" id="player2Name">Player 2</span>
+		<!-- GAME CANVAS -->
+		<div class="row mb-3">
+			<div class="col-12 text-center">
+				<canvas id="gameCanvas2D" class="img-fluid rounded" width="1000" height="500"></canvas>
+				<canvas id="gameCanvas3D" class="img-fluid rounded" width="1000" height="500"></canvas>
+			</div>
+		</div>
+
+		<!-- SCORECARD -->
+		<div id="scorecard" class="container-fluid px-0 mb-3" style="max-width: 1000px;">
+			<div class="card scorecard-card">
+				<div class="card-body p-4">
+					<div class="row align-items-center text-center">
+						<div class="col-12 col-md-4 mb-3 mb-md-0">
+							<span class="h4 custom-player-name fw-bold" id="player1Name">Player 1</span>
+						</div>
+						<div class="col-12 col-md-4 mb-3 mb-md-0">
+							<span class="badge custom-score fs-5 me-4" id="player1Score">0</span>
+							<span class="badge custom-vs fs-6">VS</span>
+							<span class="badge custom-score fs-5 ms-4" id="player2Score">0</span>
+						</div>
+						<div class="col-12 col-md-4">
+							<span class="h4 custom-player-name fw-bold" id="player2Name">Player 2</span>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 </div>

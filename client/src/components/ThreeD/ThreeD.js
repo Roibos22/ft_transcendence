@@ -48,7 +48,7 @@ export default class ThreeD {
         this.canvas.height = 500;
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0xC3E5D4);
+        this.scene.background = new THREE.Color(0x2EC58E);
     }
 
     setupCamera() {
@@ -79,7 +79,7 @@ export default class ThreeD {
 
     addFloor() {
         const floorGeometry = new THREE.PlaneGeometry(this.game.map.width, this.game.map.height);
-        const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x33CB99, side: THREE.DoubleSide });
+        const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x4CAF50, side: THREE.DoubleSide });
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
         floor.receiveShadow = true;
         floor.rotation.x = Math.PI / 2;

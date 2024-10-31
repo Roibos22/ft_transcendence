@@ -28,7 +28,7 @@ export class UIManager {
 			const show3D = this.content.displayToggle.checked;
 			State.set('gameSettings', 'displayType', show3D ? GameTypes.THREE_D : GameTypes.TWO_D);
 		});
-
+		this.content.displayToggle.checked = State.get('gameSettings', 'displayType') === GameTypes.THREE_D;
 		this.content.scoreCard = {
 			player1Name: document.getElementById('player1Name'),
 			player2Name: document.getElementById('player2Name'),
@@ -48,7 +48,6 @@ export class UIManager {
 		this.content.canvases.twoD.style.display = displayType === GameTypes.TWO_D ? 'inline' : 'none';
 		this.content.canvases.threeD.style.display = displayType === GameTypes.THREE_D ? 'inline' : 'none';
 	}
-
 
 	update() {
 		this.updateCanvases();
@@ -79,13 +78,11 @@ export class UIManager {
 		}
 	}
 
-	// tournament
 	updateScoreCard() {
 		const gameData = State.get('gameData');
-		this.content.scoreCard.player1Name.innerHTML = gameData.constants.player1Username;
-		this.content.scoreCard.player2Name.innerHTML = gameData.constants.player2Username;
+		this.content.scoreCard.player1Name.innerHTML = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[0].name;
+		this.content.scoreCard.player2Name.innerHTML = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
 		this.content.scoreCard.player1Score.innerHTML = gameData.player1Score;
 		this.content.scoreCard.player2Score.innerHTML = gameData.player2Score;
 	}
-
 }

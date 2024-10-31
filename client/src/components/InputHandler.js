@@ -1,4 +1,5 @@
 import { GameModes } from "../constants.js";
+import { debug } from '../utils/utils.js'
 
 export default class InputHandler {
 	constructor(game) {
@@ -62,7 +63,7 @@ export default class InputHandler {
 
 	isSocketConnected() {
 		if (!this.game.socket) {
-			console.log("No Socket Connected");
+			debug("No Socket Connected");
 			return false;
 		}
 		return true;
@@ -85,6 +86,5 @@ export default class InputHandler {
 		this.game = null;
 		this.currentlyPressedKeys = null;
 
-		console.log('InputHandler destroyed');
 	}
 }

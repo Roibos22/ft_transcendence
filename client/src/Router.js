@@ -30,7 +30,7 @@ class Router {
 		}
 	}
 
-	async handleUnauthenticatedAccess(route) {
+	async handleUnauthenticatedAccess() {
 		history.pushState(null, "", "/");
 		await this.loadView(this.routes["/"]);
 		Notification.showErrorNotification(["Session Expired", "Please log in again"]);
@@ -40,10 +40,7 @@ class Router {
 		const location = this.getValidLocation();
 		this.handleAuthRoutes(location);
 
-		if (this.currentPath === location) {
-			console.log("Already on this route, skipping reload");
-			return;
-		}
+		if (this.currentPath === location) { return; }
 
 		const route = this.routes[location] || this.routes["404"];
 		
@@ -52,9 +49,7 @@ class Router {
 			return;
 		}
 
-		const token_validity = await this.validateToken();
-
-		if (!route.public && !token_validity) {
+		if (!route.public && !(await this.validateToken())) {
 			await this.handleUnauthenticatedAccess(route);
 			return;
 		}
@@ -87,6 +82,8 @@ class Router {
 	}
 
 	async validateToken() {
+		if (!Cookies.getCookie('accessToken'))
+			return false;
 		try {
 			await UserService.fetchUserData();
 		} catch (error) {
@@ -111,10 +108,7 @@ class Router {
 		event.preventDefault();
 		const newPath = new URL(target.href).pathname;
 		
-		if (this.shouldSkipNavigation(newPath)) {
-			console.log("Already on this route, skipping navigation");
-			return;
-		}
+		if (this.shouldSkipNavigation(newPath)) { return; }
 
 		window.history.pushState({}, "", target.href);
 		this.handleLocationChange();
@@ -126,20 +120,14 @@ class Router {
 
 	cleanupCurrentView(ViewClass) {
 		if (!currentView.view?.cleanup) return;
-		if (currentView.view instanceof ViewClass) {
-			console.log("Same View loaded. no cleanup called");
-			return;
-		}
+		if (currentView.view instanceof ViewClass) { return; }
 		currentView.view.cleanup();
 	}
 
 	async initCurrentView(route) {
 		const ViewClass = route.view;
 
-		if (this.shouldSkipViewInitialization(ViewClass)) {
-			console.log("Same view type already loaded, skipping initialization");
-			return;
-		}
+		if (this.shouldSkipViewInitialization(ViewClass)) { return; }
 
 		this.cleanupCurrentView(ViewClass);
 		
@@ -147,8 +135,6 @@ class Router {
 		currentView.view = new ViewClass();
 	
 		await currentView.view.init();
-		console.log(`Initialized ${ViewClass.name}`);
-		console.log(Cookies.getAllCookies());
 	}
 
 	async loadTemplate(name) {
