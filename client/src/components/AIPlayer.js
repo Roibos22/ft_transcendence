@@ -8,7 +8,7 @@ export default class AIPlayer {
 		this.lastDecisionTime = 0;
 		this.targetY = 0;
 		this.paddleHeight = 50;
-		this.paddleWidth = 10;
+		this.paddleWidth = 5;
 		this.ballRadius = 5;
 
 		this.calculateInterval = setInterval(() => this.calculateTargetY(), 1000);
@@ -36,6 +36,13 @@ export default class AIPlayer {
 		}
 
 		this.targetY = ballFinalY;
+
+		if (Math.random() < 0.25) {
+			this.targetY += 100 * (Math.random() > 0.5 ? 1 : -1);
+			console.log('randomly adding 25 to targetY');
+		}
+
+		console.log('targetY', this.targetY);
 	}
 
 	movePaddle() {
