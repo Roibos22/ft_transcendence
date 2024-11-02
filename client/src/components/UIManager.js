@@ -1,5 +1,5 @@
 import State from '../State.js';
-import { GamePhases, GameTypes } from '../constants.js';
+import { GameModes, GamePhases, GameTypes } from '../constants.js';
 
 export class UIManager {
 	constructor() {
@@ -80,8 +80,15 @@ export class UIManager {
 
 	updateScoreCard() {
 		const gameData = State.get('gameData');
-		this.content.scoreCard.player1Name.innerHTML = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[0].name;
-		this.content.scoreCard.player2Name.innerHTML = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
+
+		if (State.get('gameSettings', 'mode') == GameModes.ONLINE) {
+			this.content.scoreCard.player1Name.innerHTML = State.get('gameData', 'constants', 'player1Username');
+			this.content.scoreCard.player2Name.innerHTML = State.get('gameData', 'constants', 'player2Username');
+		} else {
+			this.content.scoreCard.player1Name.innerHTML = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[0].name;
+			this.content.scoreCard.player2Name.innerHTML = State.get('tournament', 'matches')[State.get('tournament', 'currentMatchIndex')].players[1].name;
+		}
+		
 		this.content.scoreCard.player1Score.innerHTML = gameData.player1Score;
 		this.content.scoreCard.player2Score.innerHTML = gameData.player2Score;
 	}

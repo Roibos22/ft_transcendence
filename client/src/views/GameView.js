@@ -3,6 +3,7 @@ import { UIManager } from '../components/UIManager.js';
 import { GameModes } from '../constants.js';
 import Router from '../Router.js';
 import State from '../State.js';
+import * as Notification from '../services/notification.js'
 
 export class GameView {
 	constructor() {
@@ -12,6 +13,12 @@ export class GameView {
 	}
 
 	async init() {
+		if (!State.get('tournament', 'matches')[0].socket) {
+			window.history.pushState({}, "", '/game-setup');
+			Router.handleLocationChange();
+			Notification.showErrorNotification(["Disconnected from Game"]);
+
+		}
 		const content = await Router.loadTemplate('game');
 		document.getElementById('app').innerHTML = content;
 		this.setupGame();
@@ -124,7 +131,7 @@ export class GameView {
 	}
 
 	cleanup() {
-		if (this.game && State.get('gameSettings', 'mode') !== GameModes.ONLINE) {
+		if (this.game) {
 			this.game.destroy();
 			this.game = null;
 		}

@@ -136,10 +136,11 @@ export class GameSetupView {
 		this.UIelements.addPlayerButton.classList.toggle('d-none', gameMode !== GameModes.MULTI);
 
 		settingsContainer.style.display = gameMode === GameModes.ONLINE ? 'none' : 'inline';
-	
+		this.UIelements.player1Input.style.display = gameMode === GameModes.ONLINE ? 'none' : 'inline';
+
 		start.classList.toggle('d-none', gameMode === GameModes.ONLINE);
 		oneVone.classList.toggle('d-none', gameMode !== GameModes.ONLINE);
-	
+
 		Object.values(numberOfGamesButtons).forEach(button => {
 			const value = parseInt(button.dataset.value);
 			button.classList.toggle('active', numberOfGames === value);
