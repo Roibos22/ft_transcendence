@@ -3,3 +3,4 @@ to-do.*
 .venv
 .idea
 __pycache__
+.env
