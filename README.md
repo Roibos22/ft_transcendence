@@ -3,6 +3,8 @@
 ## 🌟 Overview
 **ft_transcendence** is the final project in the [42 School](https://www.42berlin.de/en/program/curriculum/) core curriculum. It showcases a comprehensive and full-featured web application that combines system administration and web development skills. The project features a RESTful API backend and a responsive single-page web application, enabling cross-desktop gameplay. While the CLI client provides full game functionality, the Desktop App offers a dynamic 3D visualization. Security is ensured through JWT authentication and 2FA implementation.
 
+[elepong_demo.webm](https://github.com/user-attachments/assets/7b65482c-5b86-4cd3-b917-69d2278edffb)
+
 ## 🖥️ Technologies Used
 - **Web App**: Javascript, HTML, CSS, Bootstrap, Three.js
 - **Backend**: Django, REST
