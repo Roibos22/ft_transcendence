@@ -15,6 +15,7 @@ RESET := \033[0m
 # Help message
 help:
 	@echo "Available targets:"
+	@echo "  setup                  - Setup environment"
 	@echo "  run                    - Run the containers (detached)"
 	@echo "  stop                   - Stop all running containers"
 	@echo "  start                  - Start stopped containers"
@@ -23,7 +24,15 @@ help:
 	@echo "  status                 - Show status of all containers"
 	@echo "  help                   - Show this help message"
 
-# Run containers in detached mode
+# Setup environment
+setup:
+	@if [ -f .env ]; then \
+		echo "$(GREEN).env file already exists$(RESET)"; \
+	else \
+		cp .env.example .env; \
+		echo "$(GREEN).env file created. Please update it with your values$(RESET)"; \
+	fi
+
 run:
 	@echo "$(BLUE)Starting containers ...$(RESET)"
 	@$(DOCKER_COMPOSE) up -d --force-recreate --build
